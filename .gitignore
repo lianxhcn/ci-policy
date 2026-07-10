@@ -1,0 +1,63 @@
+# 本地原始素材与过程文件，不提交 GitHub
+# 包括 Lane (2025) 复现材料和其他内部参考资料
+refers/
+working/
+AGENTS.md
+CLAUDE.md
+.claude/
+.agents/
+
+# 如不希望学生看到 Codex 任务说明，也可忽略
+# task-prompt/
+
+# 运行日志与临时文件
+logs/*.tmp
+logs/
+*.log
+
+# Notebook 缓存
+.ipynb_checkpoints/
+
+# Python 缓存
+__pycache__/
+*.pyc
+
+# R / Stata / 系统临时文件
+.Rhistory
+.RData
+*.stswp
+.DS_Store
+Thumbs.db
+
+/.quarto/
+
+# 过程草稿、临时渲染结果和本地测试输出
+temp-box/
+docs/temp-box/
+tmp/
+
+# GitHub Actions 会在构建过程中生成并上传 docs/，不提交构建产物
+docs/
+
+# 旧稿目录不参与 GitHub 提交和 Quarto 发布
+**/tobe-delete/
+
+# 含有本机环境路径的旧配置归档
+settings/存档/
+
+# LaTeX / Quarto temporary files
+*.aux
+*.toc
+*.log
+*.out
+
+# Quarto / R / Python cache
+.quarto/
+_freeze/
+.Rproj.user/
+.ipynb_checkpoints/
+__pycache__/
+
+# System files
+.DS_Store
+Thumbs.db

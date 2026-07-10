@@ -1,0 +1,137 @@
+---
+format: html
+---
+
+# 🚀课前准备：环境配置 {.unnumbered}
+
+本讲义的重点是因果推断、政策评估和实证设计。环境配置只是为了让后续 Notebook、Stata 示例和 Python 脚本能够顺利运行，不是本课程的主线。
+
+如果你的电脑已经安装了 Anaconda 或 Python、VS Code、Stata，可以直接使用本页的 Agent 辅助配置路线。若你还没有安装这些基础软件，请先参考手动安装资料，完成基础软件安装后再回来做环境诊断和验证。
+
+## 1. 你需要准备什么
+
+后续示例可能会用到几类工具。它们的角色不同，不必把它们理解成同一类软件：
+
+- **统计和编程环境**：Stata、Python / Anaconda。
+- **编辑器和交互环境**：VS Code、Jupyter Notebook / JupyterLab。
+- **Python package 或 Jupyter kernel**：`nbstata`，用于在 Notebook 中运行 Stata 代码。
+- **文档渲染工具**：Quarto 软件本体，以及 VS Code 中名称为 Quarto 的扩展插件。
+
+你不需要在课前掌握所有工具细节。比较重要的是：确认这些软件是否已经安装，并记录它们在自己电脑上的路径。
+
+如果你还不熟悉这些工具的区别，可以先浏览以下手动安装资料。它们会解释 Anaconda、VS Code、Jupyter 和常见安装问题：
+
+- [Python：安装和环境配置](https://lianxhcn.github.io/ds2026/Lecture/00-setup/01_01_install_anaconda.html)
+- [Jupyter Notebook 的使用](https://lianxhcn.github.io/ds2026/Lecture/00-setup/01_02_jupyter_notebook.html)
+- [Python 安装常见问题](https://lianxhcn.github.io/ds2026/Lecture/00-setup/01_03_install_FAQs.html)
+
+::: {.callout-note}
+## 软件、插件和 package
+
+Stata、Anaconda、VS Code 和 Quarto 软件需要安装在电脑上；VS Code 的 Quarto 是编辑器插件；`nbstata` 是安装到 Python 环境中的 package / Jupyter kernel。后续让 Agent 配置环境时，要尽量说清楚是哪一类工具出了问题。
+:::
+
+## 2. 推荐路线
+
+请先判断自己属于哪一种情况。
+
+### 情况 A：已经安装了基础软件
+
+如果你已经安装了 Python / Anaconda、VS Code 和 Stata，建议直接走 Agent 辅助配置路线：
+
+1. 打开 [`settings/README.md`](settings/README.md)。
+2. 按说明填写 `my-local-env.md`，记录自己电脑中的 Python、Conda、Stata 和 Quarto 路径。
+3. 根据自己使用的工具，选择 Codex、Claude Code 或其他 Agent 的入口说明。
+4. 让 Agent 先做环境诊断，不要一开始就安装或修改系统设置。
+5. 诊断通过后，再让 Agent 配置 `nbstata`、Jupyter kernel，并运行最小测试。
+
+这条路线适合大多数学员。它的核心不是让 Agent 从零安装所有软件，而是让 Agent 根据你电脑上的真实路径完成诊断、配置和验证。
+
+### 情况 B：还没有安装基础软件
+
+如果你还没有安装 Anaconda、VS Code 或 Jupyter，请先参考上一节列出的手动安装资料。那些页面适合从零安装基础软件。
+
+安装完成后，请回到本页，再按情况 A 的路线让 Agent 检查路径、配置 `nbstata` 并运行测试。
+
+### 情况 C：希望 Agent 协助安装
+
+你可以让 Agent 帮你做这些事：
+
+- 读取安装说明，列出需要安装的软件。
+- 检查电脑上是否已有 Python、Conda、Stata、Jupyter 和 Quarto。
+- 帮你整理本机路径记录。
+- 在已确认的 Python 环境中安装 `nbstata` 和 Jupyter。
+- 写入或检查 `nbstata.conf`。
+- 运行最小测试并生成环境配置报告。
+
+但不建议让 Agent 全自动完成所有系统级安装。遇到以下情况，应由你手动确认：
+
+- 安装 Anaconda、VS Code、Stata 等图形界面软件；
+- 选择系统级安装路径；
+- 修改系统 `PATH`、注册表或代理；
+- 处理 Stata 许可证、账号、密码或激活信息；
+- 删除已有 Python、Conda、Stata 或 Jupyter 配置。
+
+::: {.callout-warning}
+## 不要一键全自动
+
+本课程不要求大家把环境配置交给 Agent 全自动完成。更稳妥的做法是：先记录本机路径，再让 Agent 做诊断、配置和验证。系统级软件安装、许可证和网络代理问题，应由学员手动确认。
+:::
+
+## 3. Agent 配置文档
+
+本讲义提供了一组面向学员和 Agent 的配置文档，统一放在 `settings/` 文件夹中：
+
+- [`settings/README.md`](settings/README.md)：总入口，说明应该先读哪份文档。
+- [`settings/student-agent-env-setup-guide.md`](settings/student-agent-env-setup-guide.md)：完整通用指南，说明如何记录本机路径、让 Agent 配置 `nbstata` 并验证环境。
+- [`settings/README-codex.md`](settings/README-codex.md)：Codex 用户入口。
+- [`settings/README-claude-code.md`](settings/README-claude-code.md)：Claude Code 用户入口。
+- [`settings/README-other-agents.md`](settings/README-other-agents.md)：cc-switch、DeepSeek、Qwen、Kimi 等其他 Agent 用户入口。
+
+这些 `.md` 文件主要是**本地工作说明**，不是正式讲义正文。在线点击时，浏览器可能会显示原始 Markdown 文本，这是正常现象。更推荐的使用方式是：先 Fork 或 Clone 本仓库到自己的电脑，在本地打开 `settings/` 文件夹，按需填写或修改 `my-local-env.md`，然后让自己的 Agent 进入这个文件夹读取这些文档并执行配置。
+
+这些文档的使用方式很简单：
+
+1. 先打开 `settings/README.md`。
+2. 填写自己的 `my-local-env.md`。
+3. 把 `my-local-env.md` 和 `student-agent-env-setup-guide.md` 交给 Agent。
+4. 复制对应 Agent 入口文档中的提示词。
+5. 让 Agent 先诊断，再配置，最后验证。
+
+## 4. 最小成功标准
+
+环境配置完成后，至少应通过以下测试。
+
+在 Stata 或 Stata Notebook 中可以运行：
+
+```stata
+sysuse auto, clear
+summarize price mpg
+```
+
+如果使用 `nbstata`，Notebook 中还应能运行：
+
+```stata
+%status
+```
+
+并且能生成一张简单图：
+
+```stata
+scatter price mpg
+```
+
+如果这些测试通过，后续课程中大多数 Stata Notebook 示例就具备了基本运行条件。
+
+## 5. 遇到问题时怎么办
+
+不要只说「运行不了」。请保存并提交以下信息：
+
+- 你的 `my-local-env.md`；
+- Agent 生成的环境配置报告；
+- 报错原文；
+- 你使用的是 Codex、Claude Code，还是其他 Agent；
+- 你的 Stata 版本和 Python 路径；
+- 是否已经能手动打开 Stata。
+
+这些信息能帮助老师或助教快速判断：问题是路径错误、Python 环境错误、`nbstata` 配置错误，还是 Stata 授权或网络下载问题。

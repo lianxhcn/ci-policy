@@ -1,0 +1,633 @@
+---
+title: "双重差分：从 TWFE 到 CSDID"
+format: html
+---
+
+::: callout-important
+## 本章核心判断
+
+虽然现在有很多新的 DID 估计方法，但基本处理思路是相同的：把 TWFE 拆成一堆干净的 2×2 小 DID，剔除坏比较，再按明确的研究问题重新加权聚合。理解了这个「拆开—加权」框架，各类的命令就能统一起来。
+
+应用过程中，我们要关注四件事：政策何时发生、处理状态是否吸收、有效对照组从哪里来、目标参数究竟是哪一种 ATT。
+:::
+
+第五章讨论反事实从哪里来：ITSA、DID、RDD、SCM、RCM、SDID，都在回答「如果没有政策，处理组本来会怎样」。本章把镜头推近，只看 DID 这一族。
+
+本章假设读者只熟悉最基本的 2×2 双重差分——两组、两期、一个交互项。其余的交错处理、Bacon 分解、group-time ATT、RA/IPW/AIPW、事件研究修正，我们都从这个 2×2 出发一步步搭起来，不预设任何背景。读完本章，你应当能回答三个问题：一个 DID 系数究竟来自哪些均值？交错处理下 TWFE 到底混入了哪些比较、为什么会出错？当处理效应存在异质性时，现代 DID 估计量分别在修正什么、该怎么选？
+
+全章沿用前几章符号。$i$ 表示个体，$t$ 表示时期，$Y_{it}(1)$、$Y_{it}(0)$ 是潜在结果，$D_{it}$ 是处理状态，$\alpha_i$、$\lambda_t$ 是个体和时间固定效应。两个新符号：$G_i=g$ 表示个体 $i$ **首次**接受处理的时期是 $g$ (从不处理记 $G_i=\infty$，软件里常记为 $g=0$)；$ATT(g,t)$ 表示「$g$ 期首次受处理的这一批个体，在第 $t$ 期的平均处理效应」。注意 $g$ 是一个**组别标签**，用首次处理的时点来给这组命名——所有 2004 年首次受处理的县，构成 $g=2004$ 这一组。
+
+## 为什么 DID 方法突然变多了
+
+一个常见困惑是：同一份面板、同一个政策，换一个 DID 命令，结果就变了，有时连正负号都不一样。这不是软件出错，而是这些命令并不在做同一件事——它们对「拿谁和谁比」「对照组从哪来」「聚合权重怎么定」有不同定义。
+
+过去很多政策评估论文用双向固定效应模型 (TWFE)：
+
+$$
+Y_{it}=\alpha_i+\lambda_t+\beta D_{it}+\varepsilon_{it}
+$$ {#eq-cipolicy-did-twfe}
+
+$D_{it}=1$ 表示个体 $i$ 在第 $t$ 期处于处理中。若所有处理组在同一时点进入政策、且处理效应同质，$\beta$ 有清楚含义：处理组相对对照组在政策前后的平均变化差。
+
+现实往往不是这样。很多政策**分批推进**：试点先在一部分城市实施、几年后扩展；规制先覆盖大企业、再覆盖中小企业；最低工资调整、环保监测站铺设、金融监管试点，都常呈分批结构。此时 $D_{it}$ 不再是简单的前后虚拟变量，而混合了不同处理批次和不同处理后时长。更麻烦的是，处理效应通常不是常数：政策第一年、第二年、第三年的效应可能不同，早试点城市和晚试点城市可能不同。于是 @eq-cipolicy-did-twfe 里一个 $\beta$ 被迫承担太多——它要同时代表不同组、不同年、不同比较。
+
+这一节先给结论，后面几节逐步证明：**交错处理 + 异质效应下，TWFE 的** $\beta$ 不再是一个干净的平均政策效应，而是许多 2×2 比较的加权平均，其中混入了坏比较、甚至可能出现负权重。现代 DID 方法之所以增多，不是为了造命令，而是为了修同一个问题：把有效比较重新定义清楚。
+
+::: callout-tip
+## 本章路线
+
+2×2 DID 给出最干净的基准 → 多期与交错处理带来什么新问题 → Bacon 分解把 TWFE 彻底拆开、看清坏在哪 → 用 $ATT(g,t)$ 重建现代 DID 的共同语言 → 聚合口径就是目标参数：四类聚合的权重公式 → RA / IPW / AIPW 与饱和 TWFE 在有协变量时怎么估单格效应 → 最低工资案例：把每个聚合值拆回格子逐一核账 → 插补法、事件研究修正、平行趋势敏感性、DDD → 一篇论文的证据架构与方法选择表。
+:::
+
+## 2×2 DID：看清「两次差分」
+
+复杂 DID 的所有麻烦，都是这个最干净的 2×2 在多期、分批、异质场景下被打散的结果。为了理清它背后的机理，我们先把它讲透：一个 DID 系数，到底来自哪四个均值。
+
+两组两期：处理组在政策后受处理，对照组始终不受处理。$Treat_i=1$ 标记处理组，$Post_t=1$ 标记政策后。最基础的 DID 回归是：
+
+$$
+y_{it}=\alpha+\theta_1 Treat_i+\theta_2 Post_t+\gamma (Treat_i\times Post_t)+\varepsilon_{it}
+$$ {#eq-cipolicy-did-did2}
+
+真正关心的是交互项 $\gamma$。把四个组别—时期的条件均值写出来 ($C_0,C_1$ 是控制组政策前后，$Y_0,Y_1$ 是处理组政策前后)，列成 @tbl-cipolicy-did-did2-means：
+
+|          |    政策前 |    政策后 |              前后变化 |
+|----------|----------:|----------:|----------------------:|
+| 控制组   |     $C_0$ |     $C_1$ |             $C_1-C_0$ |
+| 处理组   |     $Y_0$ |     $Y_1$ |             $Y_1-Y_0$ |
+| 组间差异 | $Y_0-C_0$ | $Y_1-C_1$ | $(Y_1-C_1)-(Y_0-C_0)$ |
+
+: 2×2 DID 的四格均值 {#tbl-cipolicy-did-did2-means}
+
+三个系数各有身份：$\theta_1=Y_0-C_0$ 是政策前两组的水平差 (不是政策效应，只是两组本来就不同)；$\theta_2=C_1-C_0$ 是控制组的时间变化 (控制组没受政策，用它刻画共同时间趋势)；交互项：
+
+$$
+\gamma=(Y_1-C_1)-(Y_0-C_0)=(Y_1-Y_0)-(C_1-C_0)
+$$ {#eq-cipolicy-did-gamma}
+
+两种写法等价：左边是「政策后组间差」减「政策前组间差」，右边是「处理组前后变化」减「控制组前后变化」。DID 的核心不是拿 $Y_1$ 比 $C_1$ (混入政策前的水平差)，也不是只看 $Y_1-Y_0$ (混入时间趋势)，而是**用控制组的同期变化，替处理组扣掉本来就会发生的共同趋势**。
+
+图 @fig-cipolicy-did-did-2x2 把这四个均值和反事实点画在一起。反事实由此清楚：处理组政策后若没有政策，本会从 $Y_0$ 沿控制组趋势走到 $Y_0+(C_1-C_0)$；实际到了 $Y_1$，二者之差就是 DID：
+
+$$
+Y_1-[Y_0+(C_1-C_0)]=(Y_1-Y_0)-(C_1-C_0)
+$$ {#eq-cipolicy-did-did2-cf}
+
+![2×2 DID 的四个均值与处理组反事实：控制组斜率给出共同时间趋势，处理组偏离这条趋势的部分就是政策效应](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/DID-two-period-03-base_C0.png){#fig-cipolicy-did-did-2x2}
+
+经典例子是 Card and Krueger (1994)：1992 年新泽西上调最低工资、宾夕法尼亚没有，$Treat_i$ 是「是否新泽西」、$Post_t$ 是「是否调薪后」，交互项系数就是最低工资对就业的 DID 估计。处理组、对照组、政策前后、交互项含义全都一目了然——没有一处要猜「在跟谁比」。而这种清晰的比较结构，正是交错处理场景下会被打破的。
+
+动手验证只需 20 行。造一个两组两期面板，真实政策效应设为 $+3$，看交互项能否还原它、三个系数是否各归其位：
+
+``` stata
+clear
+set seed 20260708
+set obs 200
+gen id    = _n
+gen treat = id > 100                       // 后 100 个为处理组
+expand 2
+bysort id: gen post = _n - 1               // 0=政策前, 1=政策后
+
+* DGP: 基线 10 + 组间差 2 + 时间趋势 4 + 政策效应 3
+gen y = 10 + 2*treat + 4*post + 3*(treat*post) + rnormal(0,1)
+
+table post treat, stat(mean y) nformat(%6.2f)   // 四格均值
+reg y i.treat##i.post, vce(robust)              // 交互项应还原 3
+```
+
+回归表中 `1.treat` 是 $\theta_1$ (组间水平差，$\approx2$)，`1.post` 是 $\theta_2$ (控制组时间趋势，$\approx4$)，`1.treat#1.post` 是 $\gamma$ (双重差分，$\approx3$)；四格均值可手算验证 $(Y_1-Y_0)-(C_1-C_0)\approx3$。完整解读见附录 G。
+
+## 从两期到多期
+
+前面的 2×2 只有两期。真实的政策评估几乎总是多期面板：政策实施前有若干期、实施后也有若干期。多期的意义在于两点——事前的多期数据用于直观判断平行趋势，事后的多期数据用于估计政策的动态效应 (第一年、第二年……分别多大)。
+
+把 @eq-cipolicy-did-did2 沿相对政策时间展开，就得到多期 DID (事件研究) 设定。设政策在 $t^*$ 期实施，令 $k=t-t^*$ 为相对政策时间：
+
+$$
+Y_{it}=\alpha_i+\lambda_t+\sum_{k\neq -1}\delta_k\,(Treat_i\times \mathbf 1\{t-t^*=k\})+\varepsilon_{it}
+$$ {#eq-cipolicy-did-multi-did}
+
+以政策前一期 $k=-1$ 作为基准 (系数归一化为零)。这里两组系数的含义要分开看：
+
+-   **事前系数** $\delta_{k}\,(k<-1)$：政策实施之前处理组相对对照组的差异。若平行趋势成立，我们**预期这些系数不显著**——政策没来，两组不该有系统性差异。事前系数是否接近零，是对平行趋势的一个直观 (虽不严谨) 检验。
+-   **事后系数** $\delta_{k}\,(k\ge 0)$：政策实施后第 $k$ 期的处理效应估计，即 $\widehat{ATT}_{k}$。它们连起来就是政策效应的动态路径。
+
+图 @fig-cipolicy-did-multi 是一个标准、干净的多期 DID 结构：处理组在某一时点进入政策并保持，对照组始终不变。它没有什么特别之处，只是把「事前几期、事后几期」这件事画清楚。
+
+![标准的多期 DID 结构：事前若干期用于判断平行趋势，事后若干期用于估计动态效应](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/DID-multi-period-01.png){#fig-cipolicy-did-multi}
+
+一个经典应用是 Beck, Levine and Levkov (2010) 对美国银行业跨州分支管制放松的研究：不同州在不同年份放松管制，作者用多期 DID 估计放松管制对收入不平等的动态影响。图 @fig-cipolicy-did-bblll 是该文的事件研究图，事前系数大致平坦、事后逐步显现效应，正是上面两组系数含义的实证呈现。
+
+![Beck, Levine and Levkov (2010) 的多期 DID 事件研究图](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/Big-Bad-Bank%E5%B9%B6%E4%B8%8D%E7%A8%B3%E5%81%A5DID%E5%85%83%E8%80%81%E7%BA%A7%E6%96%87%E7%8C%AE%E7%9A%84%E8%84%86%E5%BC%B1_%E9%AB%98%E5%90%9B_fig03.png){#fig-cipolicy-did-bblll}
+
+::: callout-note
+## 延伸阅读
+
+-   Beck, T., Levine, R., & Levkov, A. (2010). Big bad banks? The winners and losers from bank deregulation in the United States. *Journal of Finance*, 65 (5), 1637-1667. [Link](https://doi.org/10.1111/j.1540-6261.2010.01589.x), [Data & Prog](https://dataverse.nl/dataset.xhtml?persistentId=hdl:10411/15996).
+-   安贤娟, 2020, [Big Bad Banks：多期 DID 经典论文介绍](https://www.lianxh.cn/details/165.html).
+-   高君, 2025, [Big-Bad-Bank 并不稳健：DID 元老级文献的脆弱](https://www.lianxh.cn/details/1548.html).
+:::
+
+## Bacon 分解：TWFE 系数是什么的加权平均
+
+### 问题背景：交错处理改变了比较对象
+
+上一节是最干净的情形——所有处理组在同一时点进入政策。但多期 DID 常被误解成「把两期 DID 多跑几次」，在多数情况下，这个理解都是不准确的。区别在于处理时点：若处理在**同一时点**发生，多期数据只是多了政策前趋势检验和政策后动态展示，比较对象不变；若处理在**不同时间**发生 (交错处理，staggered adoption)，多期数据改变了比较对象本身。
+
+图 @fig-cipolicy-did-staggered-three-units 先把交错结构画成示意图：从不处理组给出一条干净的基准路径；早处理组进入政策后，路径已被政策改变；晚处理组在进入之前，仍可在某些时间窗口中充当对照。所有新麻烦都出在这些窗口之间的切换上。
+
+![交错处理下的三组时间路径：早处理组进入政策后，其路径已被政策改变](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch06_fig02_staggered_three_units_pen_v3.png){#fig-cipolicy-did-staggered-three-units width="90%"}
+
+> 图源：本章绘制。
+
+为便于理解，举个简单的例子：三个个体，十期。$id=1$ 从不处理，$id=2$ 在 $t=5$ 进入，$id=3$ 在 $t=8$ 进入，处理效应分别是 2 和 4。图 @fig-cipolicy-did-bacon-data 是这份数据的折线。此处，假设处理一旦发生就不可逆 (吸收性处理)。
+
+![Bacon 分解的三个体示例数据：id=1 从不处理，id=2 在 t=5 进入(效应 2)，id=3 在 t=8 进入(效应 4)](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/bacon%E5%88%86%E8%A7%A3_%E5%BA%B7%E5%B8%8C_fig_1.png){#fig-cipolicy-did-bacon-data}
+
+> Source: 康希, 2024, [Stata-DID：异质性多期估计方法-Bacon分解](https://www.lianxh.cn/details/1347.html). 生成图形的 Stata 代码可以在本文中查到。
+
+因为处理是吸收性的，$D_{it}$ 从 0 变 1 之后一直是 1，$g$ 就是它首次变 1 的那一期。多期 TWFE 仍写作 @eq-cipolicy-did-twfe ，但此刻它内部的比较远比 2×2 复杂：任意两个个体、任意两段时间，只要一个「相对更晚变化」，就能凑出一个 2×2 DID。
+
+新麻烦从这里来。2×2 里「谁是处理组、谁是对照组」毫无歧义；但在图 @fig-cipolicy-did-bacon-data 中，当 $id=3$ 晚期进入、需要对照时，有两种选择：一是用从不处理的 $id=1$ (干净)，二是用**已经处理了一段时间的** $id=2$。后者是问题根源——一个已被政策改变过的单位，还能当「没有政策会怎样」的基准吗？TWFE 不替你区分这两种比较，它把它们全塞进一个 $\beta$。要看清这个 $\beta$ 混了什么，需要 Goodman-Bacon 分解。
+
+### 核心结论
+
+Goodman-Bacon (2021) 证明：交错处理下的 TWFE 系数，精确地等于所有可能的 2×2 DID 的加权平均。搞清「有哪些 2×2」「权重怎么定」，后面的方法就都能统一理解。
+
+### 有哪些 2×2 比较
+
+沿用上面的三个体例子把所有两两比较数清楚，它们归成三类。用 $T^e$ 记早处理组 ($id=2$)、$T^l$ 记晚处理组 ($id=3$)、$U$ 记从不处理组 ($id=1$)：
+
+-   **处理组 vs 从不处理组**($T$ vs $U$)：任一处理组和 $id=1$ 比。干净。
+-   **早处理组 vs 晚处理组的未处理期**($T^e$ vs $C^l$)：$t<8$ 时 $id=3$ 还没进入，拿它当 $id=2$ 的对照。干净。
+-   **晚处理组 vs 早处理组的已处理期**($T^l$ vs $C^e$)：$t\ge5$ 后 $id=2$ 已处理，拿它当 $id=3$ 的对照。**这就是坏比较**——对照组自己已经被政策掰弯了。
+
+图 @fig-cipolicy-did-bacon-split 把这几组比较逐一画出来，每张子图对应上面一类。
+
+![四类 2×2 比较的拆解：早 vs 晚未处理期、晚 vs 早已处理期、以及各组 vs 从不处理组](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/bacon%E5%88%86%E8%A7%A3_%E5%BA%B7%E5%B8%8C_fig_7.png){#fig-cipolicy-did-bacon-split}
+
+于是 TWFE 系数是这些 2×2 的加权和：
+
+$$
+\widehat{\beta}^{TWFE}=\sum_{j}s_{jU}\widehat{\beta}_{jU}+\sum_{e}\sum_{l>e}\big (s_{el}\widehat{\beta}_{el}+s_{le}\widehat{\beta}_{le}\big)
+$$ {#eq-cipolicy-did-bacon}
+
+### 权重怎么定：手算一遍
+
+这是关键，也是「基于什么原则加总」的答案。先给 TWFE 系数的另一种等价写法。令 $\tilde D_{it}$ 是处理变量 $D_{it}$ 对个体和时间固定效应做「双向去均值」(残差化) 后的值，则 TWFE 系数是一个用 $\tilde D_{it}$ 加权的结果：
+
+$$
+\tilde D_{it}=D_{it}-\bar D_{i\cdot}-\bar D_{\cdot t}+\bar D_{\cdot\cdot},\qquad
+\widehat{\beta}^{TWFE}=\frac{\sum_i\sum_t \tilde D_{it}\,Y_{it}}{\sum_i\sum_t \tilde D_{it}^2}
+$$ {#eq-cipolicy-did-twfe-resid}
+
+Goodman-Bacon 的贡献，是证明了 @eq-cipolicy-did-twfe-resid 这个看似整体的分式，可以被**精确地重新组织**成一组 2×2 DID 的加权平均：
+
+$$
+\widehat{\beta}^{TWFE}=\sum_{k}s_k\,\widehat{\beta}^{\,2\times2}_k,\qquad \sum_k s_k=1
+$$ {#eq-cipolicy-did-bacon-sum}
+
+这里的下标 $k$ **不是时间、也不是个体，而是给「每一对可比的组合」编的号**：$k$ 索引的是一个具体的 2×2 比较 (比如「早处理组 vs 从不处理组」是一个 $k$，「晚处理组 vs 早处理组已处理期」是另一个 $k$)。$\widehat{\beta}^{\,2\times2}_k$ 是第 $k$ 对比较单独算出的 2×2 DID，$s_k$ 是它在总系数里占的权重。所以 TWFE 系数不是某个单一比较，而是把所有这些 2×2 按 $s_k$ 混合的结果。
+
+关键问题因此变成：$s_k$ 怎么来的？把 @eq-cipolicy-did-twfe-resid 的分子按不同比较拆开、再各自除以分母 $\hat V^D=\frac{1}{NT}\sum_i\sum_t\tilde D_{it}^2$ (处理变量残差化后的总方差，本例 $N=3,T=10$，$\hat V^D=0.0733$)，每一对比较的权重就浮现出来。权重公式表面复杂，但主干是两个因素相乘：
+
+$$
+s_k\;\propto\;\underbrace{n_k (1-n_k)}_{\text{子样本相对大小}}\times\underbrace{\bar D_k (1-\bar D_k)}_{\text{处理方差}}
+$$ {#eq-cipolicy-did-bacon-weight}
+
+其中下标 $k$ 仍指第 $k$ 对比较；$n_k$ 是这对比较里两组占总样本的相对份额，$\bar D_k$ 是这对比较中「处理组处于处理状态」的时间占比。两个因素的含义：
+
+-   **子样本相对大小** $n_k(1-n_k)$：一对比较里两组样本越均衡 ($n_k$ 接近 $1/2$)，权重越高；某处理组很小，它参与的比较就被压低。
+-   **处理方差** $\bar D_k(1-\bar D_k)$：$\bar D_k$ 越接近 $1/2$——也就是**处理时点大致落在样本中段**——方差越大、权重越高；处理时点太靠边 (很早或很晚进入) 的组，权重反而低。这一点后面很重要：**居中进入的组，恰恰是坏比较的高发区，却拿到最高权重**。
+
+全部权重之和恰为 1 (@eq-cipolicy-did-bacon-sum)，所以 $\widehat{\beta}^{TWFE}$ 是一个不折不扣的加权平均。
+
+把数字代进去。本例三组样本各 $1/3$，早处理组处理时间占比 $\bar D_e=6/10$、晚处理组 $\bar D_l=3/10$。按 Goodman-Bacon 的三条权重公式 (早 vs 晚、晚 vs 早、各组 vs 从不处理)，算出：早 vs 晚权重 $0.182$、晚 vs 早权重 $0.136$、两个处理组各自 vs 从不处理的比较合计 $0.682$，三者之和恰为 1。对应的三块效应，`bacondecomp` 给出：vs 从不处理 $2.93$、早 vs 晚 $2$、晚 vs 早 $4$。加权平均：
+
+$$
+2.93\times0.682+2\times0.182+4\times0.136=2.91
+$$ {#eq-cipolicy-did-bacon-check}
+
+与 TWFE 直接跑出的 $\widehat{\beta}^{DD}=2.91$ 分毫不差。图 @fig-cipolicy-did-bacon-plot 是 `bacondecomp` 的可视化，每个点是一个 2×2，横轴权重、纵轴效应。
+
+![Bacon 分解图：每个点是一个 2×2 DID，横轴是权重、纵轴是估计值](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/bacon%E5%88%86%E8%A7%A3_%E5%BA%B7%E5%B8%8C_fig_2.png){#fig-cipolicy-did-bacon-plot}
+
+这张图和上面的手算数据、`bacondecomp` 的完整调用代码，见康希 (2024) 的推文与本章附录 G；在 Stata 中安装后一行 `bacondecomp y treat, ddetail` 即可复现分解表与此图。
+
+这个例子里效应同质、方向一致，还没出问题。它的价值是让你亲眼看到：**TWFE 不是一个单一比较，而是一组比较的加权平均**。
+
+### 异质效应下，负权重让符号翻转
+
+坏比较到底伤不伤人，取决于效应是否异质。图 @fig-cipolicy-did-heterdid-homogeneous 中处理效应同质：任何组、任何时点的效应都是同一个数，即便拿已处理组当对照，多扣掉的部分也是常数，方向不会乱。图 @fig-cipolicy-did-heterdid-bad-good 中效应随组别和暴露时长增长：已处理组的观测路径 (实线) 被政策越掰越弯、离自身反事实 (虚线) 越来越远，拿它当对照，扣除的就不再是共同趋势，而是别人的政策效应。
+
+![同质处理效应下，任意时点的组间差都等于同一个效应，坏比较的危害大为缓解](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch06_diliu_homo_effects_groups_time.png){#fig-cipolicy-did-heterdid-homogeneous width="85%"}
+
+> 图源：Di Liu, *Heterogeneous Difference-in-Differences in Stata*, Stata Webinar slides, p.7。
+
+![异质处理效应下，已处理组的路径已被政策掰弯，不能再充当无政策反事实](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch06_diliu_heter_effects_groups_time.png){#fig-cipolicy-did-heterdid-bad-good width="85%"}
+
+> 图源：Di Liu, *Heterogeneous Difference-in-Differences in Stata*, Stata Webinar slides, p.8/p.28。
+
+接下来把这个直觉推到极端。把例子换成 30 个个体、处理时点随机散布、且处理效应随暴露时间递增 (真实效应处处为正)。图 @fig-cipolicy-did-bacon-heter 是这份数据的折线——所有线都往上走，效应显然为正。
+
+![异质效应模拟数据：30 个个体、处理时点随机、效应随时间递增，所有处理效应都为正](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/bacon%E5%88%86%E8%A7%A3_%E5%BA%B7%E5%B8%8C_fig_8.png){#fig-cipolicy-did-bacon-heter}
+
+可 TWFE 却给出 $\widehat{\beta}=-25.9$，与「效应普遍为正」正好相反。Bacon 分解揭示原因：那些「晚 vs 早」的坏比较，效应估出来大幅为负 (如 $-127$、$-121.5$)，且因处理时点居中、方差大，被 @eq-cipolicy-did-bacon-weight 赋予可观权重 (如 $16\%$)。这些带负号的坏比较把总系数硬生生拖成了负数。
+
+**负权重的来源**也在这里显现出来。de Chaisemartin and D'Haultfœuille (2020) 从另一个角度说明同一问题：TWFE 系数是组别—时期效应的加权和，其中某些权重可能为负。负权重不是软件真给某些观测乘了负样本量，而是**固定效应残差化之后**，一些组别—时期效应在总系数里以反方向进入。当已处理组当对照、且其效应还在增长时，@eq-cipolicy-did-twfe-resid 分子里对应项的符号翻转，等效于一个负权重。极端情况下，即便每个真实效应都为正，TWFE 也可能为负。
+
+到这里，DID 的问题被彻底定性：**TWFE 不是错在公式，而是错在权重**——它给坏比较 (尤其处理时点居中的坏比较) 分配了不该有的分量。这句话直接决定了现代方法的解法：不抛弃「拆成 2×2 再加权」这个框架，而是**在框架内把坏比较剔除、把权重换成有意义的**。
+
+必须强调：**Bacon 分解是诊断工具，不是修正工具**。它告诉你 TWFE 由哪些比较组成、坏比较占多大权重，但它本身不给新的稳健 ATT。诊断之后，要转向现代 DID 估计量。
+
+## 四类单位与「谁能当对照」
+
+进入具体方法前，先把「什么是好对照、什么是坏对照」用一张表固定下来。它是上一节坏比较分析的落地版，后面每个方法都要用。
+
+| 类型            | 含义                     | 能否作对照                     |
+|------------------------|------------------------|------------------------|
+| Never-treated   | 样本期内从不接受处理     | 最干净的对照，但仍需平行趋势   |
+| Not-yet-treated | 当前尚未处理，未来会处理 | 在它**尚未处理的时期**可作对照 |
+| Already-treated | 当前已经处理             | **不能**当作无政策反事实       |
+| Always-treated  | 进入样本前已处理         | 缺可观测处理前期，通常识别不了 |
+
+: 交错处理下的四类单位 {#tbl-cipolicy-did-units}
+
+一句话总结，也是全章红线：**对照只能来自 never-treated 或 not-yet-treated，绝不能是 already-treated**。Bacon 分解中的「坏比较」，本质就是违反了这条红线。现代方法的第一步，无一例外都是把 already-treated 踢出对照池。
+
+图 @fig-cipolicy-did-valid-controls 把四类单位放在同一条时间线上：在任一比较时点，never-treated 与当前尚未处理的 not-yet-treated 站在线的安全一侧；already-treated 与 always-treated 已暴露于政策，出局。
+
+![比较时点上的有效对照与无效对照](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch06_fig03_valid_controls_timeline_pen_v3.png){#fig-cipolicy-did-valid-controls width="90%"}
+
+> 图源：本章绘制。
+
+## ATT (g,t)：拆成一堆干净的小 DID
+
+现代 DID 的共同语言是 $ATT(g,t)$。与其把所有组、所有期压成一个 $\beta$，不如先估每一个定义清楚的组别—时期效应，再按研究问题聚合。
+
+$$
+ATT (g,t)=E[Y_{it}(1)-Y_{it}(0)\mid G_i=g]
+$$ {#eq-cipolicy-did-attgt}
+
+它表示第 $g$ 期首次受处理的组，在第 $t$ 期的平均处理效应 ($t\ge g$ 是处理后，$t<g$ 用于检查政策前走势)。用从不处理组作对照、满足平行趋势时，它就是一个干净的 2×2，基期取处理前一期 $g-1$：
+
+$$
+ATT (g,t)=\underbrace{E[Y_{it}-Y_{i,g-1}\mid G_i=g]}_{g\text{ 组的变化}}-\underbrace{E[Y_{it}-Y_{i,g-1}\mid G_i=\infty]}_{\text{从不处理组的变化}}
+$$ {#eq-cipolicy-did-attgt-never}
+
+若 never-treated 不够，可用 not-yet-treated ($G_i>t$，当前尚未处理) 作对照：
+
+$$
+ATT (g,t)=E[Y_{it}-Y_{i,g-1}\mid G_i=g]-E[Y_{it}-Y_{i,g-1}\mid G_i>t]
+$$ {#eq-cipolicy-did-attgt-notyet}
+
+无论哪种，对照永远是当前未受政策影响的单位，@tbl-cipolicy-did-units 里的坏比较从定义上就进不来。这就是它相对 TWFE 的根本改进——不是换个更花哨的公式，而是**从源头只保留干净比较**。每个 $ATT(g,t)$ 都清楚交代了处理组是谁、对照组是谁、基期哪期、目标哪期。
+
+图 @fig-cipolicy-did-attgt-matrix 画出这张矩阵：行是首次处理时间 $g$，列是日历时间 $t$；橙色格子 ($t\ge g$) 是可估的处理后效应，灰色格子对应处理前时期。现代 DID 的纪律是：先把橙色格子一个个估出来，再决定怎么聚合。
+
+![组别—时期处理效应矩阵：先拆开，再按研究目标聚合](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch06_fig04_attgt_matrix_pen_v3.png){#fig-cipolicy-did-attgt-matrix width="90%"}
+
+> 图源：本章绘制。
+
+估出这张矩阵后，下一步是聚合。
+
+## 加总的原则：聚合口径就是目标参数
+
+这里最常犯的错误，是把聚合理解成软件选项。实际上，**聚合口径就是目标参数**——你要回答哪个问题，就沿哪个方向加总 (@tbl-cipolicy-did-agg)。
+
+| 聚合口径 | 加总方向 | 权重原则 | 回答的问题 |
+|------------------|------------------|------------------|------------------|
+| Overall ATT | 所有处理后格子 | **按组规模加权**(非等权) | 总体平均政策效应多大 |
+| Group/Cohort ATT | 固定 $g$、沿 $t$ 加总 | 组内处理后各期的观测比例 | 哪批处理更有效 |
+| Calendar ATT | 固定 $t$、沿 $g$ 加总 | 该期在治各组按规模加权 | 某年政策总体影响多大 |
+| Event/Dynamic ATT | 固定 $e=t-g$ 加总 | 同一暴露时长的组按规模加权 | 处理后第 $e$ 期效应如何 |
+
+: ATT (g,t) 的四类聚合 {#tbl-cipolicy-did-agg}
+
+四类聚合共享同一个数学骨架：任何聚合都是全体 $ATT(g,t)$ 的一次加权平均，
+
+$$
+\theta=\sum_{g\in\mathbf G}\sum_{t=2}^{T}\underbrace{w(g,t)}_{\text{权重}}\,ATT(g,t)
+$$ {#eq-cipolicy-did-agg-general}
+
+选哪种聚合，就是选哪组权重 $w(g,t)$。四类口径的权重分别是 (Liu 2023)：
+
+**按暴露时长聚合 (event study)**。令 $e=t-g$ 为暴露时长，把暴露了同样久的格子合起来：
+
+$$
+\theta(e)=\sum_{g\in\mathbf G}\underbrace{\mathbf 1(g+e\le T)\,\Pr(G=g\mid g+e\le T)}_{\text{能观测到第 }e\text{ 期的各组所占比例}}\,ATT(g,g+e)
+$$ {#eq-cipolicy-did-agg-event}
+
+指示函数 $\mathbf 1(g+e\le T)$ 说明一个交错处理特有的事实：**越靠后的暴露期，能活到那一期的组越少**，可用信息越少、区间越宽。
+
+**按队列聚合 (cohort)**。固定 $g$，把该组处理后各期的效应平均：
+
+$$
+\theta(g)=\sum_{t=g}^{T}\underbrace{\Pr(G=g\mid G=g,\ t\ge g)}_{\text{该组处理后各期观测所占比例}}\,ATT(g,t)
+$$ {#eq-cipolicy-did-agg-cohort}
+
+平衡面板下即处理后各期的等权平均。它回答：早处理的批次是否收效更大？
+
+**按日历时间聚合 (calendar)**。固定 $t$，把该年**已经在治**的各组按规模合起来：
+
+$$
+\theta(t)=\sum_{g\in\mathbf G}\mathbf 1(t\ge g)\,\Pr(G=g\mid G\le t)\,ATT(g,t)
+$$ {#eq-cipolicy-did-agg-time}
+
+条件 $G\le t$ 划定了「第 $t$ 年谁在治」的范围。它回答：政策效应是否随宏观年景变化？
+
+**总体聚合 (overall)**。把所有处理后格子按组规模加权成一个数：
+
+$$
+\theta=\frac{1}{\kappa}\sum_{g\in\mathbf G}\sum_{t=2}^{T}\mathbf 1(t\ge g)\,\Pr(G=g\mid G\le T)\,ATT(g,t)
+$$ {#eq-cipolicy-did-agg-overall}
+
+其中 $\kappa$ 是归一化常数，使权重之和为 1。
+
+必须讲清一个实操中一定会撞到、也最易误解的点：**overall ATT 不是把所有格子等权平均，而是按各组规模 (观测数) 加权** (@eq-cipolicy-did-agg-overall 中的 $\Pr(G=g\mid G\le T)$)。原因是各 $g$ 组的单位数不同、能观测到的处理后期数也不同。若等权，一个只有几个单位、只处理一年的小组，会和一个单位众多、处理多年的大组占同等分量，既不代表总体、又被小样本噪声主导。按规模加权，才让 overall ATT 逼近「随机抽一个处理过的单位—时期，其处理效应的期望」这个有意义的总体参数。
+
+从这个角度看 `csdid` 的逻辑就很清楚：它不先给一个总系数，而是先估一组 $ATT(g,t)$，再用 `estat simple`、`estat group`、`estat calendar`、`estat event` 沿不同方向聚合——每个命令选项背后就是上面的一组权重 $w(g,t)$。你必须先想清论文要回答哪个问题，再决定怎么聚，而不是看哪个聚合最显著就报哪个。
+
+理解了「拆成干净 2×2 + 主动选权重加总」这一个框架，接下来的方法就只是它的不同侧重：`csdid` 是直接实现；RA/IPW/AIPW 深挖单格效应在有协变量时怎么估；`did_imputation` 换一条路径构造同样的干净效应；Sun–Abraham 专治事件研究版的坏比较。它们有相同的理论基础，但在不同的应用场景下有不同的实现方式。
+
+## 有协变量时怎么估：RA、IPW、AIPW
+
+前面以无条件平行趋势为基础。但现实中，处理组和对照组在政策前往往有可观察差异：城市规模、产业结构、收入、人口、基准结果。若我们认为平行趋势只有在**控制协变量** $X_i$ 后才成立，就进入条件平行趋势：
+
+$$
+E[Y_{it}(0)-Y_{i,g-1}(0)\mid G_i=g,X_i]=E[Y_{it}(0)-Y_{i,g-1}(0)\mid C_i=1,X_i]
+$$ {#eq-cipolicy-did-cond-pt}
+
+$C_i=1$ 表示可用对照组 (never-treated 或 not-yet-treated)。在这个设定下有三种标准估计思路，它们既是 `csdid` 的 `method()` 选项，也是理解双重稳健的钥匙。这三者与经典因果推断里的 RA、IPW、IPWRA 一脉相承，若想系统了解其一般框架，可参考段义学 (2023) \[因果推断中的 RA, IPW, IPWRA\](<https://www.lianxh.cn/details/1268.html>)。
+
+**回归调整 (RA，regression adjustment)** 的做法可以拆成三步：
+
+1.  **在对照组上拟合结果模型**：用可用对照组 ($C_i=1$) 估计「无政策时，结果变化如何随协变量变化」，得到 $m_{g,t}(X_i)=E[Y_{it}-Y_{i,g-1}\mid C_i=1,X_i]$；
+2.  **把这个规律外推到处理组**：对每个处理组单位，代入它自己的协变量 $X_i$，算出它「若不处理本会发生的变化」的预测值 $m_{g,t}(X_i)$；
+3.  **实际变化减预测变化**：用处理组的实际变化减去这个预测的反事实变化，得到效应。
+
+写成公式：
+
+$$
+m_{g,t}(X_i)=E[Y_{it}-Y_{i,g-1}\mid C_i=1,X_i],\qquad
+ATT^{RA}(g,t)=E[Y_{it}-Y_{i,g-1}\mid G_i=g]-E[m_{g,t}(X_i)\mid G_i=g]
+$$ {#eq-cipolicy-did-ra}
+
+一句话直觉：在控制组里学「不同协变量水平下本来会发生什么」，把这个无政策变化预测给处理组。它只依赖**结果模型** $m$。
+
+**逆概率加权 (IPW，inverse probability weighting)**：估「一个单位有多像处理组」的倾向得分 $p_g(X_i)$ (logit 拟合)，给对照组里越像处理组的单位越高的权重，用加权后的对照组变化当反事实：
+
+$$
+ATT^{IPW}(g,t)=E\!\left[\left (\frac{K_{ig}}{E[K_{ig}]}-\frac{\dfrac{p_g (X_i)C_i}{1-p_g (X_i)}}{E\!\left[\dfrac{p_g (X_i)C_i}{1-p_g (X_i)}\right]}\right)(Y_{it}-Y_{i,g-1})\right]
+$$ {#eq-cipolicy-did-ipw}
+
+其中 $K_{ig}=\mathbf 1(G_i=g)$。直觉：不直接回归结果，而是把对照组「重新称重」，让它的协变量分布贴近处理组，再直接比变化。它只依赖**倾向得分** $p$。
+
+**增强逆概率加权 (AIPW)**：把 RA 和 IPW 合起来——对比 @eq-cipolicy-did-ipw，只在括号里多减一个结果回归项 $m_{g,t}(X_i)$：
+
+$$
+ATT^{AIPW}(g,t)=E\!\left[\left (\frac{K_{ig}}{E[K_{ig}]}-\frac{\dfrac{p_g (X_i)C_i}{1-p_g (X_i)}}{E\!\left[\dfrac{p_g (X_i)C_i}{1-p_g (X_i)}\right]}\right)\big (Y_{it}-Y_{i,g-1}-m_{g,t}(X_i)\big)\right]
+$$ {#eq-cipolicy-did-aipw}
+
+就这一处改动，带来**双重稳健**：结果模型 $m$ 和倾向得分 $p$，**只要有一个设定正确，ATT 就一致**。
+
+为什么「其一正确即可」？关键在偏误结构。可以证明，AIPW 的偏误项正比于两个模型误差的**乘积**：
+
+$$
+\text{Bias}\;\propto\;E\big[(\widehat p-p)\times (\widehat m-m)\big]
+$$ {#eq-cipolicy-did-dr-bias}
+
+这个乘积结构是双重稳健的全部秘密。倾向得分设对了，$\widehat p-p=0$，乘积为零，哪怕 $\widehat m$ 错得离谱也无妨；反过来结果模型设对了，$\widehat m-m=0$，乘积同样为零。只有两个**同时**错，两个误差才都非零、乘积才非零、偏误才出现。单个模型正确的概率本就不低，「两个同时错」的概率更小——AIPW 给了你两次做对的机会。这也是为什么 Stata 官方与多数教程默认推荐 AIPW；仅当倾向得分出现极端值 ($p$ 接近 0 或 1、权重爆炸) 时，才退回相对保守的 RA。
+
+`drdid` 就是这套双重稳健估计在**两期**情形的 Stata 实现，`csdid ..., method(dripw)` 则把它用到每个 $ATT(g,t)$ 上。
+
+### 第四种思路：Wooldridge 的饱和 TWFE
+
+RA、IPW、AIPW 之外还有第四种殊途同归的估计思路。经典 TWFE 把处理压成一个系数：
+
+$$
+y_{it}=\theta_t+\eta_i+\alpha D_{it}+\nu_{it}
+$$ {#eq-cipolicy-did-wooldridge-old}
+
+Wooldridge (2021) 的做法是把这一个 $\alpha$ **饱和展开**成每个「组别 $g$ × 时期 $s$」一个单独系数，并允许它们与协变量、固定效应充分交互：
+
+$$
+y_{it}=\theta_t+\eta_i+\sum_{g\in\mathbf G}\sum_{s=g}^{T}\alpha_{g,s}\,\mathbf 1(G_i=g,\ t=s)+\nu_{it}
+$$ {#eq-cipolicy-did-wooldridge-new}
+
+每个 $\alpha_{g,s}$ 就是一个 $ATT(g,s)$。这样，「饱和的 TWFE」也能得到与 CS 框架一致的、不受坏比较污染的组别—时期效应——它用 Mundlak 回归的形式，把「拆成干净 2×2」的思想装进一个大回归里。Stata 18 的 `xthdidregress` (面板) 与 `hdidregress` (重复截面) 把四种估计量收进同一命令：`ra`、`ipw`、`aipw` 对应本节三式，`twfe` 即 @eq-cipolicy-did-wooldridge-new。
+
+图 @fig-cipolicy-did-heter-estimators 回到最简单的两组两期，展示四种估计量的**共同目标**：处理组第二期那个观测不到的无处理反事实 $Y^{treated,T=2}(0)$ (红色虚线的终点)。写成均值分解：
+
+$$
+\text{Effects}=\underbrace{\big[Y^{treated,T=2}-Y^{treated,T=1}\big]}_{\text{处理组前后变化}}-\underbrace{\big[Y^{control,T=2}-Y^{control,T=1}\big]}_{\text{未处理组前后变化}}
+$$ {#eq-cipolicy-did-canonical-effects}
+
+RA 用结果模型预测这条虚线，IPW 用加权对照组模拟它，AIPW 两条腿走路，饱和 TWFE 用充分交互的回归吸收它——四条路，一个终点。
+
+![四种估计量的共同目标：估计处理组第二期观测不到的反事实 (红色虚线终点)](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch06_diliu_canonical_did_counterfactual.png){#fig-cipolicy-did-heter-estimators width="82%"}
+
+> 图源：Di Liu, *Heterogeneous Difference-in-Differences in Stata*, Stata Webinar slides, p.4/p.26。
+
+::: callout-note
+## 这套估计量的三条识别假设
+
+Stata 18 异质性 DID 命令 (亦即 CS 框架) 依赖三条假设 (Liu 2023, p.25)：**无预期效应**——处理前 $t<g$ 时 $E[y_{it}(g)\mid \mathbf x,G_i=g]=E[y_{it}(\infty)\mid \mathbf x,G_i=g]$，政策尚未落地就不该已经起作用；**条件平行趋势**——给定协变量后，$E[y_{it}(\infty)-y_{i,t-1}(\infty)\mid\mathbf x,G_i=g]=E[y_{it}(\infty)-y_{i,t-1}(\infty)\mid\mathbf x,G_i=\infty]$；**重叠假设**——倾向得分远离 0 和 1，每个协变量水平上处理组都能找到可比对照。第一条在前文用 not-yet-treated 作对照时已隐含提过，这里给出正式形式。
+:::
+
+@eq-cipolicy-did-dr-bias 的乘积结构还是**通向第七章的桥**。当协变量很多、$m$ 和 $p$ 的函数形式又未知时，我们会想用机器学习估这两个模型。机器学习为防过拟合会引入正则化偏误，让 $\widehat m,\widehat p$ 各自都不完全正确——但只要这两个偏误能被乘积结构压住 (各自收敛够快，乘积可忽略)，处理效应估计依然稳健。这个「用正交/乘积结构抵消一阶偏误」的思想，正是第七章双重机器学习 (DDML) 的核心。
+
+## 聚合的实战：最低工资案例
+
+上面的权重公式抽象，最好的检验方式是把每个聚合值**拆回** $ATT(g,t)$ 矩阵的格子里看。这一节用 Callaway and Sant'Anna (2021) 论文第五节的最低工资案例走一遍：结果变量是美国县级青年就业率 `lemp`，处理是州政府实施最低工资限制，数据覆盖 2002--2007 年，三个处理批次分别在 2004、2006、2007 年进入——一个标准的交错处理面板。用 Stata 18 的 `xthdidregress aipw` 控制协变量估出全部 $6\text{ 年}\times3\text{ 组}=18$ 个 $ATT(g,t)$ (标准误在州层面聚类)，再用 `estat aggregation` 沿三个方向聚合。命令与完整输出见严安冬 (2024)《Stata：异质性 DID 代码详解》；本章附录 G 的主线用 Stata 17 可跑的 `csdid` 覆盖同一框架。
+
+图 @fig-cipolicy-did-heter-atet 是 `estat atetplot` 给出的原始画像：每个面板是一个批次，虚线左侧为处理前、右侧为处理后。2004 与 2006 批次的处理后效应显著为负——最低工资限制降低了青年就业率。这 18 个格子就是下面三种聚合的全部原料。
+
+![各批次 ATET(g,t) 的原始画像：处理前系数围绕零波动，2004 与 2006 批次处理后转为负](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch06_diliu_atetplot_sci.png){#fig-cipolicy-did-heter-atet width="88%"}
+
+> 图源：Di Liu, *Heterogeneous Difference-in-Differences in Stata*, Stata Webinar slides, p.15。
+
+**按暴露时长聚合** (@eq-cipolicy-did-agg-event，`estat aggregation, dynamic`)。图 @fig-cipolicy-did-heter-dynamic 中，$e=3$ 处的点约 $-0.21$。它其实只是**一个格子**：数据止于 2007 年，三个批次中只有 2004 批次能被观测到暴露第 3 期，所以 $\theta(3)=ATT(2004,2007)=-0.208$，没有任何加权发生。而 $e=1$ 处约 $-0.071$，是两个格子的加权：$ATT(2004,2005)=-0.114$ 与 $ATT(2006,2007)=-0.051$，按两组规模加权 $0.31\times(-0.114)+0.69\times(-0.051)\approx-0.071$，与输出分毫不差。这解释了动态图为什么越往右置信区间越宽——@eq-cipolicy-did-agg-event 里的 $\mathbf 1(g+e\le T)$ 把可用的组越筛越少。
+
+![按暴露时长聚合的事件研究图：右端各点由越来越少的格子支撑，区间随之变宽](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch06_diliu_agg_dynamic.png){#fig-cipolicy-did-heter-dynamic width="82%"}
+
+> 图源：Di Liu, *Heterogeneous Difference-in-Differences in Stata*, Stata Webinar slides, p.18。
+
+**按队列聚合** (@eq-cipolicy-did-agg-cohort，`estat aggregation, cohort`)。图 @fig-cipolicy-did-heter-cohort 中 2004 批次的总效应为 $-0.148$：它就是该组四个处理后格子的等权平均，$(-0.098-0.114-0.172-0.208)/4=-0.148$。三个批次对比清楚地显示，最早进入的 2004 批次效应最深——这正是「先行先试是否收效更大」这类问题需要的口径。
+
+![按队列聚合的批次效应：2004 批次效应最深](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch06_diliu_agg_cohort.png){#fig-cipolicy-did-heter-cohort width="82%"}
+
+> 图源：Di Liu, *Heterogeneous Difference-in-Differences in Stata*, Stata Webinar slides, p.19。
+
+**按日历时间聚合** (@eq-cipolicy-did-agg-time，`estat aggregation, time`)。图 @fig-cipolicy-did-heter-time 中 2004 年的聚合值 $-0.098$ 与 $ATT(2004,2004)$ 完全相同——那一年只有 2004 批次在治，@eq-cipolicy-did-agg-time 的求和只剩一项。2006 年的 $-0.060$ 则是 $ATT(2004,2006)=-0.172$ 与 $ATT(2006,2006)=-0.010$ 按 $0.31/0.69$ 加权的结果。聚合值永远能拆回格子，这是「权重不是黑箱」的直接体现。
+
+![按日历时间聚合的年度效应：每个点都能拆回当年在治各组的格子](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch06_diliu_agg_time.png){#fig-cipolicy-did-heter-time width="82%"}
+
+> 图源：Di Liu, *Heterogeneous Difference-in-Differences in Stata*, Stata Webinar slides, p.20。
+
+三个维度合起来，才是「异质性处理效应」的完整画像。一篇严谨的政策评估论文，通常同时报告动态图 (看效应演化) 和分组结果 (看谁受益更多)，而不是压成一个 overall ATT 了事。
+
+## 插补反事实：先预测 Y (0)，再估效应
+
+Borusyak, Jaravel and Spiess (2024) 走另一条路径：不从一组组 2×2 出发，而是先用未处理观测估无政策结果模型，再外推到处理组。设 $Y_{it}(0)=\alpha_i+\lambda_t+u_{it}$，**只用未处理观测**(never-treated 和各单位处理前的期) 估 $\alpha_i,\lambda_t$，得 $\widehat Y_{it}(0)=\widehat\alpha_i+\widehat\lambda_t$；对处理组处理后观测，效应为 $\widehat\tau_{it}=Y_{it}-\widehat Y_{it}(0)$，再按事件时间等聚合。
+
+`did_imputation` 是它的实现。它与 `csdid` 的对照恰好呼应第五章：`csdid` 像加权对照 (SCM)——找干净的对照单位组合；`did_imputation` 像因子/回归预测 (RCM)——建一个模型把 $Y(0)$ 预测出来。同一族问题，两种反事实哲学。`did2s` (Gardner 2022) 可放在这一类附近：第一阶段只用固定效应和协变量解释结果、不含处理变量，第二阶段用净化后的结果估处理效应，既保留回归的简洁、又避免处理效应污染固定效应估计。
+
+## 事件研究的修正：Sun–Abraham
+
+传统事件研究把 @eq-cipolicy-did-did2 沿相对时间展开：
+
+$$
+Y_{it}=\alpha_i+\lambda_t+\sum_{k\neq-1}\beta_k\mathbf 1 (t-T_i=k)+\varepsilon_{it}
+$$ {#eq-cipolicy-did-event}
+
+$k=t-T_i$ 是相对政策时点的距离，$k=-1$ 归一化为零。$k<0$ 的 lead 看政策前趋势，$k\ge0$ 的 lag 看动态效应。但 Sun and Abraham (2021) 指出：交错处理下，某个 $\beta_k$ 会被**其他队列**的处理效应污染——这正是 Bacon 坏比较的事件研究版本，某个相对期的系数里混进了别的队列在该相对期的效应。所以**事件研究不自动比静态 TWFE 更稳健**。他们的 `eventstudyinteract` 按队列 (cohort) 分别估事件时间效应、再加权汇总，把污染切断。它与 `csdid` 的 `estat event` 殊途同归：都是先得到干净的、分队列的效应，再沿相对时间聚合。
+
+## 平行趋势的现代理解
+
+现代 DID 修正了比较对象和聚合方式，但不能自动消除平行趋势问题——它只是让我们知道，在哪个比较上需要平行趋势。这一节讲这个假设该怎么对待，回应本书从第一章起的立场：**假设是否站得住，比结果是否显著更重要**。
+
+**第一，事前系数不显著，不等于平行趋势成立**。政策前 lead 系数都不显著，很多人就宣布通过。但不显著只是「没有拒绝趋势差异为零」，不等于「证明趋势差异为零」。检验功效常不足：政策前期少、标准误大，即便趋势真的不同，也可能因检验没力气而无法拒绝。看不到差异，可能只是没看清。
+
+**第二，先做预检验、通过才继续，这个流程本身扭曲推断**。Roth (2022) 指出，若流程是「先看事前系数、显著就换样本换窗口、不显著才报主结果」，最终报告的估计已经过筛选，常规置信区间不再有原来的覆盖率。pre-trend 检验应当作为诊断信息，而不是识别假设的证明。
+
+**第三，现代做法是敏感性分析，不是二元判定**。Rambachan and Roth (2023) 的 honest DID 换了个问法：不问平行趋势是否严格成立 (无法证明)，而问——**平行趋势要被违反到什么程度，结论才翻转？** 做法：允许政策后趋势偏离，但限制它不超过政策前观测到的最大偏离的 $\bar M$ 倍，在此约束下算处理效应的稳健置信区间；再找临界的 $\bar M$ (breakdown value)——偏离多大，区间才开始包含零。$\bar M$ 越大，推翻结论所需的趋势违反越离谱，结论越可信。这把「平行趋势成立吗」这个无法回答的是非题，换成「结论对假设违反有多敏感」这个可量化的问题。附录用 `honestdid` 实际算出这个区间。
+
+平行趋势的可信度，最终来自**政策机制**而非模型里堆了多少固定效应。若政策按行政名单分批推进，要说明名单是否与未来结果变化有关；若企业自愿申请，要说明申请行为是否反映对未来的预期；若高污染地区先试点，要说明它们是否正处于不同的产业周期。这些制度细节，才是平行趋势可信与否的真正依据。
+
+## DDD：什么时候需要第三重差异
+
+普通 DID 扣除了共同时间趋势，但有时还残留另一类差异趋势。比如处理地区和对照地区总体趋势相近，但政策主要作用于某类企业，而这类企业本身正经历全国性行业周期——普通 DID 可能把行业周期误当政策效应。DDD 的思路是再引入第三个维度，用一个 DID 去修正另一个 DID。
+
+设 $A_i$ 是处理地区、$Post_t$ 是政策后、$S_i$ 是敏感组 (高暴露组)。用均值写，DDD 是两个 DID 的差：
+
+$$
+DDD=\underbrace{\big[(Y_{A,S,1}-Y_{A,S,0})-(Y_{A,N,1}-Y_{A,N,0})\big]}_{\text{处理地区内部的 DID}}-\underbrace{\big[(Y_{B,S,1}-Y_{B,S,0})-(Y_{B,N,1}-Y_{B,N,0})\big]}_{\text{对照地区内部的 DID}}
+$$ {#eq-cipolicy-did-ddd}
+
+图 @fig-cipolicy-did-ddd-two-did 把这个「两个 DID 之差」画成两个面板：左右各自是一个完整的 DID，DDD 关注的是两个 DID 之间的差。
+
+![DDD：两个 DID 之差](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch06_fig05_ddd_two_did_difference_pen_v3.png){#fig-cipolicy-did-ddd-two-did width="86%"}
+
+> 图源：本章绘制。
+
+逐层看它差掉什么。**第一重**(每个方括号内相减)：处理地区内部拿敏感组减不敏感组。若有某冲击当年同时打在处理地区所有人身上 (不分敏感与否)，这步把它差掉——它对两个子群影响相同，相减抵消。**第二重**(两方括号相减)：处理地区的组内 DID 减对照地区的组内 DID。若敏感组和不敏感组之间本就存在某种随时间变化的固有差异 (两地都一样)，这步把它差掉。两重之后，剩下的才是「政策专门作用于处理地区敏感组」的净效应。实际面板中通常加高维固定效应吸收低阶项 (个体、时间、地区×年份、行业×年份)，只留三重交互项 $A_i\times Post_t\times S_i$ 的系数。
+
+DDD 在本书里是三章合力讲的方法，到这里收口：第四章讲它的**固定效应吸收结构**(Lane 2025 的产业×年份、国家×年份、国家×产业三组高维 FE，让低阶项被吸收、只留三重交互)，第五章讲它作为**反事实**的直觉 (用一个 DID 修正另一个 DID)，本章讲它作为**设计**的适用条件与逐层扣除逻辑。Lane 的跨国 DDD 是最好的例子：韩国目标产业相对非目标产业的国内 DID 仍可能混入全球产业周期，于是引入「韩国 vs 其他国家」这第三重，把全球同产业走势也差掉，最终识别「韩国目标产业相对国际反事实的额外变化」。要提醒的是：**DDD 不是把三重交互项丢进回归就自动更干净**——第三维必须对应一个明确的竞争性解释或机制 (要差掉哪一类普通 DID 差不掉的污染？)，否则只是多一层不知道在控制什么的复杂度，还平白损失精度。
+
+## 各估计量放在一起比一比
+
+进入数字对比前，先把前面几节的方法按思路归成三类 (@tbl-cipolicy-did-three-routes)——按思路分类，比按软件包记命令容易得多。
+
+| 路线 | 代表方法 | 解决的主要问题 | 适合场景 |
+|------------------|------------------|------------------|------------------|
+| 组别—时期 ATT | `csdid`, `xthdidregress`, `eventstudyinteract`, `did_multiplegt` | 剔除坏比较，明确 $ATT(g,t)$ 与聚合权重 | 交错处理、动态效应、队列异质性 |
+| 插补 / 两步 | `did_imputation`, `did2s` | 先估未处理反事实，再算处理效应 | 事件研究、固定效应反事实构造 |
+| 双重稳健 | `drdid`, RA / IPW / AIPW | 条件平行趋势下处理协变量 | 协变量影响处理选择 |
+
+: 现代 DID 估计量的三条主要路线 {#tbl-cipolicy-did-three-routes}
+
+把主要估计量放在同一份模拟数据上对比，最能看清它们的异同。下面的对比基于 Zevelev 的开源复现项目 [Compare-DiD-Estimators](https://github.com/azev77/Compare-DiD-Estimators)，周嘉怡 (2023) \[Stata：各种 DID 估计量的比较分析\](<https://www.lianxh.cn/details/1097.html>) 做了整理与讲解。它用 100 个体 × 15 期的面板，设两个案例：案例一处理效应**同质**(所有组都是 49)，案例二处理效应**异质**(早处理组 20、晚处理组 60)。
+
+**同质效应下 (案例一)**，图 @fig-cipolicy-did-compare-homo 显示：TWFE、Sun–Abraham、Callaway–Sant'Anna、BJS 插补、`did2s`、堆叠回归，几乎所有方法都给出无偏的动态路径、彼此重合。这说明**问题不在方法，而在异质性**——效应同质时，老实的 TWFE 也没错。
+
+![同质处理效应下，各估计量的动态路径几乎重合、都无偏](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/DID%E5%A4%A7%E6%AF%94%E6%8B%BC_%E5%90%84%E7%A7%8D%E4%BC%B0%E8%AE%A1%E9%87%8F%E7%9A%84%E6%AF%94%E8%BE%83%E5%88%86%E6%9E%90_%E5%91%A8%E5%98%89%E6%80%A1_Fig06.png){#fig-cipolicy-did-compare-homo}
+
+**异质效应下 (案例二)**，图 @fig-cipolicy-did-compare-heter 显示分化：TWFE-OLS 和堆叠回归 (stackedev) 明显偏离真实动态路径，而 Callaway–Sant'Anna、Sun–Abraham、BJS 插补、`did2s` 都贴合真值。这张图把全章的核心结论可视化了：**在异质效应下，是否只用干净比较、是否正确加权，决定了估计量偏还是不偏**。
+
+![异质处理效应下，TWFE 和堆叠回归偏离真值，现代估计量贴合真值](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/DID%E5%A4%A7%E6%AF%94%E6%8B%BC_%E5%90%84%E7%A7%8D%E4%BC%B0%E8%AE%A1%E9%87%8F%E7%9A%84%E6%AF%94%E8%BE%83%E5%88%86%E6%9E%90_%E5%91%A8%E5%98%89%E6%80%A1_Fig07.png){#fig-cipolicy-did-compare-heter}
+
+这也提醒一件事：不同估计量结果不一致时，先别急着挑一个报告，而要回到「它们各自在估哪个目标参数、用哪些比较、做了什么加权」——不一致本身往往就是异质性存在的信号。
+
+## 一篇论文里的证据架构
+
+一篇成熟的 DID 论文可以用多种方法，但**不是堆叠稳健性，而是让每种方法承担不同功能**(@tbl-cipolicy-did-architecture)。
+
+| 方法                   | 在论文中的角色                     |
+|------------------------|------------------------------------|
+| TWFE                   | 与既有文献可比的基准结果           |
+| Bacon 分解             | 诊断 TWFE 是否混入大量坏比较       |
+| $ATT(g,t)$ / `csdid`   | 交错处理下的主估计或核心稳健性     |
+| Sun–Abraham 事件研究   | 修正动态污染、展示效应路径         |
+| `drdid` / AIPW         | 条件平行趋势下、协变量调整后的复核 |
+| BJS / `did_imputation` | 用插补型反事实重估动态效应         |
+| honest DID             | 检查结论对平行趋势偏离的敏感性     |
+| DDD                    | 排除某一类明确的竞争性解释         |
+| 溢出与 SUTVA 检查      | 守住无干扰、对照未被污染的边界     |
+
+: 一篇论文中的多方法分工 {#tbl-cipolicy-did-architecture}
+
+好的叙述不是「我们又用了若干方法，结果稳健」，而是逐一说明：TWFE 回答什么基准问题、Bacon 分解说明 TWFE 是否可信、group-time ATT 排除了哪些坏比较、事件研究展示了怎样的前后路径、双重稳健处理了哪些可观察差异、DDD 排除了哪类最主要的竞争性解释、敏感性分析说明结论需要多强的趋势偏离才翻转。可信度来自方法之间的分工和识别假设之间的互相支撑，而不是回归表的数量。Lane (2025) 正是这样：基准事件研究给形状、双重稳健复核、跨国 DDD 排除全球产业周期、pre-trend 和 SUTVA 守边界——当不同比较、不同目标参数、不同假设下结论方向一致时，可信的是整个证据架构，而非某个点估计。
+
+## 方法选择表与通向第七章
+
+最后把全章收成一张表 (@tbl-cipolicy-did-choice)。它不是命令速查，而是研究设计检查表：从左到右，先看处理结构，再问关键问题，落到推荐入口。
+
+| 研究场景 | 先问什么 | 推荐入口 |
+|------------------------|------------------------|------------------------|
+| 统一处理时点，never-treated 清楚 | 政策前平行趋势是否可信？ | TWFE / 事件研究 |
+| 两期 DID，协变量差异明显 | 条件平行趋势是否更合理？ | `drdid` / RA / IPW / AIPW |
+| 多期、分批、处理后持续 | 是否存在组别与时期异质效应？ | `csdid` / `xthdidregress` |
+| 分批处理，重点看动态 | 传统 lead/lag 是否被其他队列污染？ | `eventstudyinteract` / `csdid`+`estat event` |
+| 想用未处理样本预测反事实 | 是否适合先估 $Y(0)$ 再插补？ | `did_imputation` / `did2s` |
+| 处理状态反复开关 | 是否违反吸收性处理假设？ | `did_multiplegt_dyn` |
+| 处理时点近似随机 | rollout 是否可视为随机？ | `staggered` |
+| 处理组少、对照趋势差 | 普通 DID 是否已不可信？ | SCM / SDID (第五章) |
+| 需扣除第三类差异趋势 | 第三维是否对应明确机制？ | DDD |
+
+: DID 方法选择表 {#tbl-cipolicy-did-choice}
+
+这张表与第四章的固定效应递进表、第五章的反事实代价表构成一组——三章各有一张「核心判断表」，都在回答同一个元问题：你的识别究竟建立在什么之上。第四章说固定效应在声明「拿谁和谁比」，第五章说反事实构造各有代价，本章说 DID 内部的方法选择也必须回到比较对象和目标参数。
+
+**通向第七章。** `drdid` 和 AIPW 已把我们带到高维控制问题：若条件平行趋势需要控制大量协变量，结果模型 $m$ 和倾向得分 $p$ 该怎么估？普通线性模型可能太僵硬，机器学习又可能引入正则化偏误。怎样在灵活估计这两个辅助模型的同时，靠 @eq-cipolicy-did-dr-bias 的乘积结构把偏误压住、保证政策效应对第一阶段误差不敏感？这需要 FWL 定理、partial out、Neyman 正交性和双重机器学习 (DDML)。第七章从这里展开。
+
+::: callout-note
+## 配套复现
+
+本章各方法的完整 Stata 复现——2×2 四格均值、Bacon 分解三单位最小例子与权重手算、mpdta 上的 TWFE 诊断、`csdid` 的 $ATT(g,t)$ 与四类聚合、`drdid` 的 RA / IPW / 双重稳健对比、Sun–Abraham 与 BJS 事件研究、`honestdid` 敏感性——见 **附录 G**，每个模块后附输出解读与带复现资料的对口文献。Stata 18 内置的 `xthdidregress`/`hdidregress` 用法见严安冬 (2024)。附录提供 `.ipynb` 与 `.do` 两种格式，数据全部在线读取。
+:::
+
+## 参考文献与延伸阅读
+
+-   Beck, T., Levine, R., & Levkov, A. (2010). Big bad banks? The winners and losers from bank deregulation in the United States. *Journal of Finance*, 65 (5), 1637-1667. [Link](https://doi.org/10.1111/j.1540-6261.2010.01589.x), [Data & Prog](https://dataverse.nl/dataset.xhtml?persistentId=hdl:10411/15996).
+-   Borusyak, K., Jaravel, X., & Spiess, J. (2024). Revisiting event-study designs: Robust and efficient estimation. *Review of Economic Studies*, 91 (6), 3253-3285. [Link](https://doi.org/10.1093/restud/rdae007), [PDF](https://arxiv.org/abs/2108.12419).
+-   Callaway, B., & Sant'Anna, P. H. C. (2021). Difference-in-differences with multiple time periods. *Journal of Econometrics*, 225 (2), 200-230. [Link](https://doi.org/10.1016/j.jeconom.2020.12.001), [PDF](https://psantanna.com/files/Callaway_SantAnna_2020.pdf).
+-   Card, D., & Krueger, A. B. (1994). Minimum wages and employment: A case study of the fast-food industry in New Jersey and Pennsylvania. *American Economic Review*, 84 (4), 772-793. [PDF](https://davidcard.berkeley.edu/papers/njmin-aer.pdf).
+-   Cengiz, D., Dube, A., Lindner, A., & Zipperer, B. (2019). The effect of minimum wages on low-wage jobs. *Quarterly Journal of Economics*, 134 (3), 1405-1454. [Link](https://doi.org/10.1093/qje/qjz014), [Data](https://doi.org/10.7910/DVN/TJCTC7).
+-   de Chaisemartin, C., & D'Haultfoeuille, X. (2020). Two-way fixed effects estimators with heterogeneous treatment effects. *American Economic Review*, 110 (9), 2964-2996. [Link](https://doi.org/10.1257/aer.20181169).
+-   Liu, D. (2023). Heterogeneous Difference-in-Differences in Stata. Stata Webinar slides. [Slides](https://www.stata.com/training/webinar_series/materials/hdidweb1.pdf), [Recording](https://www.stata.com/training/webinar_series/heterogeneous-difference-in-differences1/hetdid.mp4).
+-   Gardner, J. (2022). Two-stage differences in differences. Working paper. [PDF](https://arxiv.org/abs/2207.05943).
+-   Goodman-Bacon, A. (2021). Difference-in-differences with variation in treatment timing. *Journal of Econometrics*, 225 (2), 254-277. [Link](https://doi.org/10.1016/j.jeconom.2021.03.014).
+-   Rambachan, A., & Roth, J. (2023). A more credible approach to parallel trends. *Review of Economic Studies*, 90 (5), 2555-2591. [Link](https://doi.org/10.1093/restud/rdad018).
+-   Roth, J. (2022). Pretest with caution: Event-study estimates after testing for parallel trends. *American Economic Review: Insights*, 4 (3), 305-322. [Link](https://doi.org/10.1257/aeri.20210236).
+-   Sant'Anna, P. H. C., & Zhao, J. (2020). Doubly robust difference-in-differences estimators. *Journal of Econometrics*, 219 (1), 101-122. [Link](https://doi.org/10.1016/j.jeconom.2020.06.003), [PDF](https://arxiv.org/abs/1812.01723).
+-   Sun, L., & Abraham, S. (2021). Estimating dynamic treatment effects in event studies with heterogeneous treatment effects. *Journal of Econometrics*, 225 (2), 175-199. [Link](https://doi.org/10.1016/j.jeconom.2020.09.006).
+-   Wooldridge, J. M. (2021). Two-way fixed effects, the two-way Mundlak regression, and difference-in-differences estimators. Working paper. [Google](https://scholar.google.com/scholar?q=Two-way+fixed+effects+the+two-way+Mundlak+regression).
+-   康希, 2024, [Stata-DID：异质性多期估计方法-Bacon 分解](https://www.lianxh.cn/details/1347.html).
+-   严安冬， 2024, [Stata：异质性 DID 代码详解](https://www.lianxh.cn/details/1399.html).
+-   周嘉怡, 2023, [Stata：各种 DID 估计量的比较分析](https://www.lianxh.cn/details/1097.html).
+
+## 图形来源索引
+
+本章使用三类图：本章为讲义绘制的钢笔风示意图；Di Liu 的 Stata Webinar 讲义原图 (自 slides 提取原生分辨率位图，亦即严安冬 2024 推文所据材料)；以及连享会既有推文材料。列出图源，便于后续修改时追溯。
+
+| 图号 | 图形内容 | 图源 |
+|------------------------|------------------------|------------------------|
+| @fig-cipolicy-did-did-2x2 | 2×2 DID 四均值与反事实 | 本书图库 (`DID-two-period-03-base_C0.png`) |
+| @fig-cipolicy-did-multi | 标准多期 DID 结构 | 本书图库 (`DID-multi-period-01.png`) |
+| @fig-cipolicy-did-bblll | Beck-Levine-Levkov 事件研究图 | 高君 (2025)，[Big-Bad-Bank 并不稳健](https://www.lianxh.cn/details/1548.html) |
+| @fig-cipolicy-did-staggered-three-units, @fig-cipolicy-did-valid-controls, @fig-cipolicy-did-attgt-matrix, @fig-cipolicy-did-ddd-two-did | 交错三组路径、有效对照时间线、$ATT(g,t)$ 矩阵、DDD 两个 DID 之差 | 本章绘制 (钢笔风示意图) |
+| @fig-cipolicy-did-bacon-data, @fig-cipolicy-did-bacon-split, @fig-cipolicy-did-bacon-plot, @fig-cipolicy-did-bacon-heter | Bacon 分解系列 | 康希 (2024)，[Stata-DID：Bacon 分解](https://www.lianxh.cn/details/1347.html)，编译自 Asjad Naqvi, [Bacon decomposition](https://asjadnaqvi.github.io/DiD/docs/code/06_02_bacon/) |
+| @fig-cipolicy-did-heterdid-homogeneous, @fig-cipolicy-did-heterdid-bad-good, @fig-cipolicy-did-heter-atet, @fig-cipolicy-did-heter-dynamic, @fig-cipolicy-did-heter-cohort, @fig-cipolicy-did-heter-time, @fig-cipolicy-did-heter-estimators | 同质/异质效应对照、最低工资案例 ATET 及三类聚合、四估计量共同目标 | Di Liu (2023)，*Heterogeneous DID in Stata*，Stata Webinar slides，p.4--28 |
+| @fig-cipolicy-did-compare-homo, @fig-cipolicy-did-compare-heter | 多估计量同框对比 | 周嘉怡 (2023)，[各种 DID 估计量的比较分析](https://www.lianxh.cn/details/1097.html)，示例来自 [Compare-DiD-Estimators](https://github.com/azev77/Compare-DiD-Estimators) |
+
+### 软件与资料入口
+
+-   Asjad Naqvi, DiD 方法地图与示例：<https://asjadnaqvi.github.io/DiD/>；其中 Bacon decomposition 页面：<https://asjadnaqvi.github.io/DiD/docs/code/06_02_bacon/>
+-   Pedro Sant'Anna, DiD Resources (理论、课程与 checklist 索引)：<https://psantanna.com/did-resources/>
+-   Fernando Rios-Avila, `csdid` / `drdid` 等 Stata 包：<https://github.com/friosavila/stpackages>
+-   Stata, Heterogeneous difference-in-differences (Stata 18 官方页)：<https://www.stata.com/new-in-stata/heterogeneous-difference-in-differences/>
+-   Albert Alex Zevelev, Compare-DiD-Estimators (多估计量模拟对比)：<https://github.com/azev77/Compare-DiD-Estimators>
+-   Kyle Butts, `did2s` (Stata 版)：<https://github.com/kylebutts/did2s_stata>
+-   Mauricio Cáceres Bravo, `honestdid` (Stata 版)：<https://github.com/mcaceresb/stata-honestdid>
+-   段义学, 2023, [因果推断中的 RA, IPW, IPWRA](https://www.lianxh.cn/details/1268.html)

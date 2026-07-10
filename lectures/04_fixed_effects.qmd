@@ -1,0 +1,453 @@
+---
+title: "固定效应：控制了什么"
+format: html
+---
+
+::: callout-important
+## 本章核心判断
+
+固定效应不是回归表格底部的装饰行。每加一组固定效应，研究者都在做两件事：把一类不可观测的混淆因素从干扰项中拿走，同时把一部分识别变异也一起拿走。好的固定效应设定，是在「控制得足够干净」和「留下的变异足够多、足够外生」之间做权衡。
+:::
+
+第三章讨论了谁进入样本、谁被我们观察到。样本确定以后，下一个问题随之而来：处理组和对照组之间，仍然存在大量我们看不见的差异——公司文化、个人能力、地区禀赋、宏观冲击。它们不出现在数据里，却和我们关心的解释变量纠缠在一起。
+
+本章要传达的核心信息是：**不需要观测到这些变量，也可以控制它们**。只要能对它们的变动方式做出假设——不随时间变、不随个体变、或者沿着某些共同因子变——组内去心、双向固定效应、高维固定效应和交互固定效应就可以依次登场。与此同时，读者还要建立另一个意识：每加一组固定效应，都是在换一次比较对象。固定效应设定，本质上是研究者在向读者声明「我在拿谁和谁比」。
+
+## 一切从一张图开始：三家公司的辛普森悖论
+
+先看一个我上课时常用的例子。横轴是公司规模（$Size = \ln(\text{Total Assets})$），纵轴是总资产回报率（ROA）。图 @fig-cipolicy-fe-simpson 上半部分有三家公司：左上角那家初创时规模小，ROA 相对较高；右下角那家初创时规模就很大，ROA 相对较低。这种截面上的差异，与公司所处行业、所有权属性有关——它们基本不随时间变化。
+
+我们想研究的问题是：随着一家公司规模变大，它的 ROA 怎么变。但如果无视三家公司之间的截面差异，把所有点混在一起回归，得到的结论会是「规模越大，ROA 越低」。图的下半部分给出组内去心（de-mean）之后的结果：截面差异被减掉以后，三家公司内部的正向关系显露出来，斜率翻正。
+
+![辛普森悖论：混合回归与组内去心](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/Fig_OLS_FE_01.png){#fig-cipolicy-fe-simpson}
+
+简单的解释是：混合回归回答的是「大公司是不是比小公司 ROA 低」，固定效应回答的是「同一家公司变大以后 ROA 怎么变」。此一时，彼一时。两个问题都可以研究，但它们不是同一个问题；把前者的答案当成后者的答案，就是遗漏变量偏误。
+
+这个例子可以用几行代码复现。数据生成过程中真实的 $\beta = 0.5$，但三家公司的个体效应与初始规模负相关：
+
+``` stata
+*----------------- 模拟：辛普森悖论与组内去心
+clear
+set seed 20260706
+set obs 3
+gen id    = _n
+gen a_i   = 12 - 3*id            // 个体效应：9, 6, 3，与规模负相关
+gen size0 = 2  + 3*id            // 初创规模：5, 8, 11
+expand 100
+gen x = size0 + runiform(0, 4)          // Size
+gen y = a_i + 0.5*x + rnormal(0, 0.8)   // DGP：beta = 0.5
+
+reg  y x                     // 混合回归：斜率为负
+areg y x, absorb(id)         // 固定效应：斜率约 0.5
+
+*----------------- 绘图（需 ssc install binscatter2）
+binscatter2 y x, n(60) by(id)              // 上图：原始数据
+binscatter2 y x, n(60) by(id) absorb(id)   // 下图：组内去心
+```
+
+混合回归的斜率为负，`areg` 的斜率回到 0.5 附近。差别不在数据，而在比较对象：前者把公司之间的差异也算进了「规模的效应」，后者只使用每家公司内部的变化。
+
+## DGP 视角：三类变量与三个下标
+
+把这个小例子引申到数据生成过程（DGP）的视角上来。我的观点是：所有我们研究的 $y$ 都有一个潜在的数据生成过程。对面板数据而言，影响 $y_{it}$ 的变量至少包含三类：
+
+-   不随时间改变的变量 $x_i$：公司文化、个人性格、国家的资源禀赋、地理位置；
+-   不随个体改变的变量 $x_t$：宏观冲击、货币政策、经济政策不确定性；
+-   既随时间又随个体改变的变量 $x_{it}$：规模、杠杆、投资、研发。
+
+三类变量在模型设定中体现为下标的差别。麻烦在于，$x_i$ 和 $x_t$ 中有大量成员是观测不到的，而它们往往又与 $x_{it}$ 相关。以杠杆率为例，假设真实模型中所有权属性 $SOE_i$ 影响杠杆，但我们观测不到它（或懒得放它）：
+
+$$
+\text{True: }\; Lev_{it} = \alpha + SOE_{i} + Size_{it}\beta + \varepsilon_{it}, \qquad
+\text{Estimate: }\; Lev_{it} = \alpha + Size_{it}\theta + u_{it}
+$$ {#eq-cipolicy-fe-omitted}
+
+只要 $Corr(SOE_i, Size_{it}) \neq 0$，$\hat{\theta}$ 就是有偏的——国企普遍规模更大、杠杆更高，$\hat{\theta}$ 里混着所有权的贡献。
+
+固定效应模型的处理办法直接而优雅。把所有不随时间变化的因素（无论能否观测）打包进 $\alpha_i$：
+
+$$
+\begin{aligned}
+y_{it} &= \alpha_i + x_{it}\beta + \varepsilon_{it} \\
+\bar{y}_{i} &= \alpha_i + \bar{x}_{i}\beta + \bar{\varepsilon}_{i} \\
+y_{it} - \bar{y}_{i} &= (x_{it} - \bar{x}_{i})\beta + ({\color{red}{\alpha_i - \alpha_i}}) + (\varepsilon_{it} - \bar{\varepsilon}_{i})
+\end{aligned}
+$$ {#eq-cipolicy-fe-demean}
+
+第三行中 $\alpha_i - \alpha_i = 0$，这一步就是「不用观测也能控制」的全部秘密：我们没有测量 $SOE_i$、公司文化或者管理层风格，但只要它们不随时间变，组内去心就把它们连同 $\alpha_i$ 一起减掉了。对去心后的数据做 OLS，得到的 $\hat{\beta}$ 与直接在模型里放 $N$ 个公司虚拟变量完全等价——这是 FWL 定理的一个典型应用。FWL 的一句话版本是「先剔除、再回归」与「一起回归」等价，正式表述和部分回归图留到第 6 章展开。
+
+Stata 中至少有四种等价写法。前三种是现成命令，第四种手动去心，可以帮助确认自己真的理解了组内变换在做什么：
+
+``` stata
+xtset id year
+xtreg   y x, fe vce(cluster id)                //  [1]
+areg    y x, absorb(id) vce(cluster id)        //  [2]
+reghdfe y x, absorb(id) vce(cluster id)        //  [3]
+bysort id: center y x, prefix(c_)              //  [4] 手动去心
+reg c_y c_x, vce(cluster id)                   //      系数同上，标准误需调整
+xtreg   y x, be                                //  对照：组间关系长什么样
+```
+
+四种方法的 $\hat{\beta}$ 完全相同。顺手跑一个 `xtreg, be`，可以看到组间（between）关系——在辛普森悖论的例子里，它就是那条为负的混合斜率的主要来源。
+
+## TWFE 及其扩展：同质冲击假设与三条降维路径
+
+在 $\alpha_i$ 之外加入年份效应 $\lambda_t$，就得到实证中应用最广的双向固定效应模型（TWFE）：
+
+$$
+Y_{it} = \mathbf{x}_{it}'\beta + \alpha_i + \lambda_t + \varepsilon_{it}
+$$ {#eq-cipolicy-fe-twfe}
+
+为便于理解，把它写成虚拟变量的形式：
+
+$$
+Y_{it} = \mathbf{x}_{it}'\beta + \sum_{i=1}^N \alpha_i A_i + \sum_{t=1}^T \lambda_t B_t + \varepsilon_{it}
+$$ {#eq-cipolicy-fe-twfe-dummy}
+
+其中 $A_i$ 是 $N$ 个个体虚拟变量，$B_t$ 是 $T$ 个年份虚拟变量。这个写法暴露出 TWFE 隐含的一条关键假设：**第** $t$ 年的宏观冲击 $B_t$ 对所有个体的影响都相同，均为 $\lambda_t$。同一次央行加息、同一次石油涨价，被假设为对每家公司施加同样的效应。这显然有点牵强——高杠杆公司和现金充裕公司对加息的反应本就不同。
+
+如果要放开这条假设，允许宏观冲击对不同个体有异质影响，就得加入个体与时间的交互项：
+
+$$
+Y_{it} = \mathbf{x}_{it}'\beta + \alpha_i + \lambda_t + \alpha_i\lambda_t + \varepsilon_{it}
+$$ {#eq-cipolicy-fe-twfe-interact}
+
+但这个模型的参数个数超过了样本量 $N \times T$，无法识别。出路是施加约束、给参数降维。实证中常见三条路径。
+
+**路径 A：变系数模型——让异质性停在更高层级。** 假设宏观冲击的异质影响只存在于比个体更高的层级（如行业），把 $\sum_i\sum_t \theta_{it}A_iB_t$ 换成 $\sum_j\sum_t \theta_{jt}S_jB_t$，其中 $S_j$ 是行业虚拟变量：
+
+$$
+Y_{it} = \mathbf{x}_{it}'\beta + \alpha_i + \mathbf{g}_j\lambda_t + \varepsilon_{it}
+$$ {#eq-cipolicy-fe-industry-year}
+
+这就是「行业 × 年份固定效应」，允许每个行业每年有自己的共同冲击。
+
+``` stata
+reghdfe y x, absorb(id industry#year) vce(cluster id)
+```
+
+**路径 B：个体异质趋势——让每个个体走自己的时间线。** 把宏观冲击设定为个体特有的线性趋势 $\theta_i \cdot t$，即每个个体有自己的斜率：
+
+$$
+Y_{it} = \mathbf{x}_{it}'\beta + \alpha_i + \lambda_t + \alpha_i t + \varepsilon_{it}
+$$ {#eq-cipolicy-fe-hetero-trend}
+
+这里 `c.year` 表示把年份当作连续变量处理。该设定在 DID 的稳健性检验中极常见，用来吸收处理组和对照组政策前的不同趋势。
+
+``` stata
+reghdfe y x, absorb(id year id#c.year) vce(cluster id)   // 推荐，如上市公司数据
+* 也可对模型做一阶差分，此时 alpha_i*t 差分后变为常数 alpha_i
+xtreg D.y D.x D.(i.year), fe robust
+```
+
+**路径 C：用可观测宏观变量替代** $\lambda_t$。 很多时候我们关心的核心解释变量本身就是宏观变量 $\mathbf{z}_t$（人均 GDP、货币增速、经济政策不确定性 EPU）。此时 $\mathbf{z}_t$ 与 $\lambda_t$ 完全共线，必须删掉 $\lambda_t$：
+
+$$
+Y_{it} = \alpha_i + \mathbf{x}_{it}'\beta + {\color{red}{\mathbf{z}_t'\gamma}} + v_{it}
+$$ {#eq-cipolicy-fe-macro}
+
+``` stata
+xtreg y x z1 z2, fe vce(cluster id)
+```
+
+问题在于，即使 $\mathbf{z}_t$ 里放了三五个宏观变量，仍会遗漏一些重要却难测量的因素——央行的口头沟通、疫情演变。把年份效应拆成 $\lambda_t = \mathbf{z}_t'\gamma + \mathbf{w}_t'\eta$，我们用 $\mathbf{z}_t$ 替代了 $\lambda_t$，被漏掉的 $\mathbf{w}_t'\eta$ 就进了干扰项：$v_{it} = \mathbf{w}_t'\eta + \varepsilon_{it}$。只要 $Corr(\mathbf{w}_t, \mathbf{z}_t) \neq 0$ 或 $Corr(\mathbf{w}_t, \mathbf{x}_{it}) \neq 0$，估计就有偏；而且 $\mathbf{w}_t$ 是所有个体共同面对的，会造成干扰项的截面相关。
+
+路径 C 的困境——想控制的宏观因素和想估计的宏观变量撞在同一维度——正是交互固定效应要解决的问题。这条线索我们放到本章后面专门展开。
+
+## 每加一组固定效应，就换一次比较对象
+
+上一节的三条路径已经透露出一个规律：固定效应不是越多越好，也不是随手加的。每往模型里放一组，被控制的混淆更多，剩下的识别变异也更少。关键是每一步都要能回答同一个问题：**剩下的变异是什么，系数在回答什么问题**。
+
+| 设定 | `absorb()` | 被吸收的混淆 | 剩余识别变异 | 系数回答的问题 |
+|---------------|---------------|---------------|---------------|---------------|
+| POLS | 无 | 无 | 全部变异 | 公司间差异与公司内变化混在一起 |
+| FE | `id` | 不随时间变的公司特征 | 公司内部的时间变异 | 同一公司变化时，$y$ 怎么变 |
+| TWFE | `id year` | \+ 同质的宏观冲击 | 公司内、相对当年平均的变异 | 相对同年其他公司，该公司的变化带来什么 |
+| 行业 × 年份 | `id ind#year` | \+ 行业年度景气 | 同行业同年份内部的差异 | 相对同行业同年的公司，该公司的变化带来什么 |
+
+: 固定效应设定与比较对象的递进 {#tbl-cipolicy-fe-ladder}
+
+表 @tbl-cipolicy-fe-ladder 是本章最重要的一张表。图 @fig-cipolicy-fe-ladder 用图形方式呈现同一逻辑：固定效应逐步细化，比较对象逐步收窄。
+
+![逐步细化的固定效应：控制什么，比较什么](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ci-policy-fe-05-%E9%80%90%E6%AD%A5%E7%BB%86%E5%8C%96%E7%9A%84%E5%9B%BA%E5%AE%9A%E6%95%88%E5%BA%94%E5%9B%BE%E8%A7%A3.png){#fig-cipolicy-fe-ladder}
+
+回到本书的主线案例。Lane (2025) 的基准事件研究只用了 $\alpha_i + \tau_t$：产业固定效应吸收各产业的长期水平差异，年份固定效应吸收韩国制造业整体的宏观波动，剩余的识别变异是「目标产业相对非目标产业、相对 1972 年基准的差异变化」。到了跨国三重差分（DDD），固定效应结构升级为产业 × 年份、国家 × 年份、国家 × 产业三组高维交互——每一组都对应排除一类竞争性解释。这个设定我们放到本章后面的文献解读中细讲。
+
+这里先点破一个常见误区：**固定效应不能和处理变量处在同一变异层级**。如果政策变量本身是「行业 × 年份」层面的（比如某行业某年是否受政策支持），再放行业 × 年份固定效应，处理变量就会被吸收殆尽——Stata 会直接把它 omit 掉，或者报告一个由残余噪声估出来的系数。这不是软件出错，而是研究者向数据要了一个自相矛盾的东西：既要控制行业 × 年份的一切共同变动，又要估计一个只在行业 × 年份层面变动的变量。
+
+``` stata
+*----------------- 递进的固定效应：观察系数与比较对象一起变化
+reghdfe y x, noabsorb                 vce(cluster id)
+est store m1
+reghdfe y x, absorb(id)               vce(cluster id)
+est store m2
+reghdfe y x, absorb(id year)          vce(cluster id)
+est store m3
+reghdfe y x, absorb(id ind#year)      vce(cluster id)
+est store m4
+esttab m1 m2 m3 m4, nogap s(N r2_within)
+
+*----------------- 处理变量与固定效应同层级：被吸收
+* d_jt 是行业 j 在年份 t 的政策虚拟变量
+reghdfe y d_jt, absorb(id ind#year) vce(cluster ind)
+* 结果：d_jt omitted because of collinearity
+```
+
+这条规则在第 5 章讨论 DID 时还会反复出现：DID 的处理变量 $Treat_i \times Post_t$ 之所以能在 TWFE 下识别，正是因为它比 $\alpha_i$ 和 $\lambda_t$ 都「高一个层级」——它在个体 × 时间维度上变动。
+
+## HDFE：当虚拟变量多到装不下
+
+固定效应的组数和维度一旦上去，直接放虚拟变量在计算上就不可行了。两个典型场景：一是国际贸易的引力模型，出口国 × 年份、进口国 × 年份、国家对三组固定效应动辄数万个虚拟变量；二是劳动经济学的雇主—雇员匹配数据，自 Abowd, Kramarz and Margolis (1999) 以来，研究者需要同时估计百万级的工人效应和几十万个企业效应。`reg y x i.id i.firm i.year` 在内存和时间上都会崩溃。
+
+`reghdfe` 的解决方案是交替去心：轮流对每一组固定效应做组内变换，迭代至收敛，原理仍然是 FWL 定理的反复应用。对使用者而言，只需要把固定效应写进 `absorb()`：
+
+``` stata
+*----------------- 三维引力模型
+reghdfe y x1 x2, absorb(exp#year imp#year exp#imp) ///
+                 vce(cluster exp imp)
+```
+
+实操上有三件事需要说明。
+
+其一，`absorb()` 吸什么和 `vce(cluster )` 聚类到什么，是两个独立的决定。前者由混淆结构决定（哪些不可观测因素需要控制），后者由误差相关结构决定（残差在哪个维度上相关）。二者经常不同：吸收国家对固定效应，聚类却可能放在出口国和进口国两个维度上。
+
+其二，`reghdfe` 会自动剔除 singleton 观测（某组固定效应下只有一个观测的样本），因为它们对组内识别没有贡献、还会使标准误虚低。回归前后的样本量变化要在论文中交代清楚。
+
+其三，非负因变量（专利数、贸易额、补贴金额）不要先 `log(1+y)` 再跑 HDFE。$\log(1+y)$ 的系数没有清晰的弹性解释，且结果对 $y$ 的计量单位敏感；正确做法是改用泊松伪极大似然，`ppmlhdfe` 在高维固定效应下依然快速稳健：
+
+``` stata
+*----------------- 非负因变量：ppmlhdfe 替代 log(1+y)
+ppmlhdfe patents x1 x2, absorb(id year) vce(cluster id)
+```
+
+Lane (2025) 处理 RCA 等非负结果变量时用的正是 PPML。有关 `log(1+y)` 的陷阱和 `ppmlhdfe` 的系数解释，扩展阅读中有三篇推文可以对照学习。
+
+## 混频难题与交互固定效应
+
+现在回到路径 C 留下的困境，把它讲透。被解释变量是公司层面的投资支出或杠杆率，下标是 $it$；但研究关心的核心解释变量是宏观层面的——经济政策不确定性（EPU）、货币政策——只有下标 $t$。想控制的宏观因素和想估计的宏观变量撞在了同一个维度上：放完整的 $\lambda_t$，$z_t$ 就被吸收；删掉 $\lambda_t$，又会漏掉不可观测的 $\mathbf{w}_t$。
+
+出路是承认 $\mathbf{w}_t$ 不可观测，但把它设定为若干共同因子的组合，让数据自己把因子估出来。这就是交互固定效应（interactive fixed effects, IntFE）。Bai (2009) 把复合干扰项设定为因子结构：
+
+$$
+Y_{it} = \mathbf{X}_{it}'\beta + u_{it}, \qquad u_{it} = \lambda_i'F_t + \varepsilon_{it}
+$$ {#eq-cipolicy-fe-intfe}
+
+其中 $F_t$ 是一组不可观测的共同因子（各种宏观冲击的集合），$\lambda_i$ 是因子载荷，刻画共同冲击对不同个体的异质性影响。举个例子：央行突然宣布降准，这对所有上市公司是同一个冲击（共同因子 $F_t$），但高杠杆公司和现金充裕公司的反应显然不同——$\lambda_i$ 就是在刻画「同一冲击、不同反应」，即 $\partial Y_{it}/\partial F_t = \lambda_i$。
+
+理解 IntFE 的最好方式，是看清 TWFE 只是它的特例。设两个因子：
+
+$$
+F_t = \begin{bmatrix} 1 \\ \xi_t \end{bmatrix}, \quad
+\lambda_i = \begin{bmatrix} \alpha_i \\ 1 \end{bmatrix}
+\;\;\Longrightarrow\;\;
+\lambda_i'F_t = \alpha_i + \xi_t
+$$ {#eq-cipolicy-fe-twfe-special}
+
+第一个因子恒为 1，载荷是 $\alpha_i$，这就是个体效应；第二个因子是宏观冲击 $\xi_t$，载荷恒为 1——即假设冲击对所有个体的影响相同。简言之，TWFE 隐含了「宏观冲击同质」这条假设；IntFE 只是把那个「1」换成了 $\lambda_i$。图 @fig-cipolicy-fe-twfe-intfe 直观对比了两种设定：左侧 $\lambda_t$ 把所有个体平移同一段距离，右侧 $\lambda_i'F_t$ 按各自载荷伸缩。
+
+![双向固定效应与交互固定效应](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ci-policy-fe-04-twfe-regife-%E5%8F%8C%E5%90%91%E5%9B%BA%E5%AE%9A%E6%95%88%E5%BA%94%E4%B8%8E%E4%BA%A4%E4%BA%92%E5%9B%BA%E5%AE%9A%E6%95%88%E5%BA%94%E5%AF%B9%E6%AF%94.png){#fig-cipolicy-fe-twfe-intfe}
+
+回到混频问题，可观测的宏观变量作为解释变量、不可观测的宏观因素交给因子结构兜底，模型设定为：
+
+$$
+Y_{it} = \alpha_i + \mathbf{X}_{it}'\beta + \gamma\, epu_t + \mathbf{z}_t'\theta + \lambda_i'F_t + \varepsilon_{it}
+$$ {#eq-cipolicy-fe-epu}
+
+这样既估计了我们关心的 $epu_t$，又通过 $\lambda_i'F_t$ 控制住其余不可观测的共同冲击，最大限度地缓解了遗漏变量偏误。
+
+### 两种估计思路
+
+由于 $\lambda_i$ 与 $F_t$ 都不可观测且以乘积形式进入模型，组内去心、一阶差分、LSDV 这些传统办法一般都得不到一致估计（Bai, 2009, p.1230）。文献中有两条主流思路。
+
+**主成分两步法（Coakley et al., 2002）。** 先假设共同因子与解释变量不相关，直接对 $Y_{it} = \mathbf{X}_{it}'\beta + u_{it}$ 做混合 OLS，得到残差 $\hat{u}_{it}$；再对残差做主成分分析，提取得分最高的 $r$ 个主成分作为因子估计 $\hat{F}_t$；最后把 $\hat{F}_t$ 当控制变量代回：
+
+$$
+Y_{it} = \mathbf{X}_{it}'\beta + \lambda_i'\hat{F}_t + \varepsilon_{it}
+$$ {#eq-cipolicy-fe-two-step}
+
+**主成分迭代法（Bai, 2009）。** Pesaran (2006) 指出，当共同因子与解释变量相关时（实际应用中非常普遍），两步法不一致。Bai (2009) 的办法是施加识别约束后，把上述两步来回迭代直至收敛，最终得到一致估计量。代价是要求面板为「大 $N$ 大 $T$」结构；Bai (2009, p.1262) 的蒙特卡洛模拟表明，$N$ 较小时估计量不一致——中国省级面板（$N = 31$）要谨慎。此外，因子个数 $r$ 的选择本身是设定问题，实证中建议报告不同 $r$ 下的结果。
+
+### Stata 实现
+
+Bai (2009) 的模型在 Stata 中用 `regife` 命令估计（依赖 `reghdfe` 和 `hdfe`，需一并安装）。用自带的 `nlswork` 数据可以直观感受 FE、TWFE、IntFE 三种设定的差别：
+
+``` stata
+ssc install regife, replace
+webuse "nlswork.dta", clear
+keep if idcode <= 100
+qui xtreg ln_w tenure, fe                       // FE
+est store idfe
+qui xtreg ln_w tenure i.year, fe                // TWFE
+est store idyearfe
+regife ln_w tenure, a(id year) f(id year, 1)    // TWFE + 一维交互固定效应
+est store idyearinterfe
+esttab idfe idyearfe idyearinterfe, drop(*.year) nogap
+```
+
+``` text
+------------------------------------------------------------
+                      (1)             (2)             (3)
+                  ln_wage         ln_wage         ln_wage
+------------------------------------------------------------
+tenure             0.0394***       0.0258***       0.0118*
+                   (8.47)          (4.65)          (2.02)
+------------------------------------------------------------
+```
+
+看 `tenure` 的系数：0.039 → 0.026 → 0.012，控制的固定效应越多，系数越小、显著性越弱。解读是：此前的估计里混着共同冲击对不同个体的异质性反应；把它剥掉以后，工作年限本身的回报没有原来看上去那么大。
+
+需要说明的是，交互固定效应模型发展很快，除 `regife` 外，`xtdcce2`、`xtmg`、`xtivdfreg` 等命令还能允许斜率可变、加入滞后因变量或用 IV 处理内生性。有兴趣的读者可以在 Stata 中 `findit interactive fixed` 进一步探索。
+
+## 控制的代价：慢变量的识别与建模
+
+到这里为止，本章一直在讲固定效应的好处。现在要算代价，而且这笔代价专门砸向一类变量：制度、文化、语言、法律传统、社会信任这些随时间变化极慢、甚至几乎不变的因素。
+
+问题的实质是，**「制度水平差异」和「制度变化效应」是两个不同的 estimand，对应两个不同的问题**。「制度 → 增长」这句话至少有两种读法。一种是横截面含义：制度更好的国家是不是更富？$\log GDP_i = \alpha + \beta\, Institution_i + \gamma X_i + u_i$，$\beta$ 来自国家之间的长期差异。另一种是时间变化含义：同一个国家制度改善以后是不是更富？$\log GDP_{it} = \beta\, Institution_{it} + \gamma X_{it} + \alpha_i + \lambda_t + \varepsilon_{it}$，$\beta$ 来自国家内部随时间的变化。制度、文化、语言这类变量高度持久，它们最主要的信息恰恰来自国家之间、族群之间的长期差异。加入国家固定效应后，模型用的是组内去心后的 $Institution_{it} - \overline{Institution}_i$，长期差异 $\overline{Institution}_i$ 被 $\alpha_i$ 整个吸走，只剩下微弱的组内波动。
+
+所以，**固定效应结果不显著，绝不等于制度没有作用**。它可能只是说明模型把制度变量的大部分有效信息过滤掉了。判断的第一步永远是先看变异来自哪里：
+
+``` stata
+xtset country year
+xtsum institution        // 比较 between 与 within 标准差
+```
+
+如果 `within` 标准差远小于 `between`，说明制度变量的信息主要在国家之间。此时硬套固定效应，等于自己掐断了识别来源。
+
+问题还不止于「变化慢」。慢变量往往和历史路径、地理条件一起形成，横截面差异并非随机分配（一国为何形成某种法律传统、宗教结构，受殖民史、地理、疾病环境影响）；制度改善与经济增长之间还可能反向因果；而制度指数多来自专家评分，其年度变化常被测量噪声主导——这正是对慢变量做一阶差分往往不是「更干净」而是「把信号变成噪声」的原因，长差分（如十年差分）通常更合适。
+
+出路的关键，是**先问清楚要回答哪个 estimand，再选模型**，而不是机械地多加几个固定效应。三条最常用的路线如下。
+
+其一，**想回答长期水平差异，就用横截面或组间估计，并诚实面对内生性**。`xtreg y institution x1 x2, be` 给出组间关系；若要谈因果，需要历史工具变量（如 Acemoglu, Johnson and Robinson (2001) 用殖民者死亡率作为当代制度的工具，Tabellini (2010) 用 19 世纪识字率作为文化的工具）或机制化识别（如 Shapiro (2025) 用国家制度质量 × 行业制度依赖度的交互，让被国家固定效应吸收的制度主效应，通过行业异质性重新可识别）。
+
+其二，**想回答制度变化效应，固定效应才和问题匹配，但慢变量宜用长差分而非一阶差分**：
+
+``` stata
+xtset country year
+gen d10_y    = y - L10.y
+gen d10_inst = institution - L10.institution
+reg d10_y d10_inst i.year, vce(cluster country)
+```
+
+其三，**想同时看清两个 estimand，用 Mundlak / CRE 把组内效应和组间效应并排展示**。Mundlak (1978) 的思路是在随机效应模型里加入解释变量的个体均值 $\bar{x}_i$，得到两个系数：$\beta_W$（同一国家制度改善时 $y$ 如何变）和 $\beta_B$（长期制度水平更高的国家 $y$ 是否更高）。Stata 18 起 `xtreg, cre` 一行实现，并附带一个对异方差和组内相关稳健的 Mundlak 检验（可替代 Hausman 检验）：
+
+``` stata
+xtset country year
+xtreg y institution x1 x2 i.year, cre vce(cluster country)
+estat mundlak
+```
+
+除这三条外，还有几类更专门的工具：Hausman and Taylor (1981) 用外生时变变量的组内均值做非时变内生变量的工具（`xthtaylor`），Chatelain and Ralf (2021) 为其加了内部工具的预检；动态面板中同时含滞后因变量与非时变变量时可用 Kripfganz and Schwarz (2019) 的 `xtseqreg`；担心全球共同冲击造成截面相关时可用 Pesaran (2006) 的 CCE（`xtdcce2`）。这些命令的适用边界见本章附录与扩展阅读，此处不展开——需要强调的一点是，它们回答的是不同问题，不宜笼统地都称为「稳健性检验」。
+
+::: callout-warning
+## 三个容易踩的坑
+
+-   **estimand 不一致**：固定效应不显著就断言「制度没用」。正确表述是「固定效应估计的是国家内部制度变化的影响，与横截面估计的长期水平差异是两回事」。
+-   **对慢变量做一阶差分**：制度年度变化很小、噪声很大，差分会放大测量误差、衰减系数。长差分更稳。
+-   **把工具都叫稳健性检验**：`xtreg, fe`、`xtreg, cre`、`xthtaylor`、`xtseqreg`、`xtdcce2` 解决的是不同问题，混为一谈反而模糊了识别对象。
+:::
+
+还有一类问题连长差分也解决不了：当共同冲击对各国的影响本身异质、且这种异质演化与「谁在何时改革」相关时，双向固定效应控不住。Kim and Oka (2014) 重估美国各州单边离婚法效应就是典型——他们用 Bai (2009) 的交互固定效应把州级不可观测异质性设为 $\lambda_i'F_t$，让数据自己估计共同因子及各州载荷，而不是由研究者钦定州别趋势的函数形式，从而调和了 Friedberg (1998) 与 Wolfers (2006) 之间的长期分歧。他们的模拟还给出一条实用法则：该放交互固定效应而没放会造成偏误，不该放而放了只损失效率。简言之，当结论对「加不加州别趋势」高度敏感时，这往往不是稳健性问题，而是模型设定问题，交互固定效应是比钦定趋势更有原则的答案。
+
+最后交代固定效应的天花板：它只能控制「不变」或「沿共同因子变」的混淆。**随时间变化的个体混淆**——公司治理在样本期内改善、地方官员更替带来的政策环境变化——组内去心对它们无能为力。这正是第 5 章需要平行趋势假设、第 6 章需要 DDML 处理高维时变协变量的根本原因。
+
+## 顶级期刊如何用固定效应实现识别
+
+读一篇论文的固定效应设定，要问三个问题：各类固定效应怎么进入模型？作者用它们在排除哪一类竞争性解释？剩下的识别变异是什么？下面三篇文献覆盖了固定效应的三种角色——吸收结构声明比较对象、交互固定效应分离供求、固定效应本身成为研究对象。
+
+### 吸收结构声明比较对象：Lane (2025)
+
+-   Lane, N. (2025). Manufacturing revolutions: Industrial policy and industrialization in South Korea. *The Quarterly Journal of Economics*, 140(3), 1683–1741. [Link](https://doi.org/10.1093/qje/qjaf025), [Data](https://doi.org/10.7910/DVN/VJECHN), [Google](https://scholar.google.com/scholar?q=Manufacturing+Revolutions+Industrial+Policy+and+Industrialization+in+South+Korea)
+
+第 1、2 章已经介绍了这篇论文的政策背景和数据构造，这里聚焦它的固定效应设计。基准事件研究只需要 $\alpha_i + \tau_t$。但「目标产业增长更快」有一个显眼的竞争性解释：1970 年代重化工业在全球范围内本来就处于上升期，韩国目标产业的扩张可能只是搭了全球产业周期的便车。Lane 的回应是把比较搬到跨国面板上，做三重差分：
+
+$$
+Y_{ict} = \alpha_{it} + \tau_{ct} + \sigma_{ci} + \sum_{j \neq 1972} \beta_{3j}\,(Korea_c \times HCI_i \times Year^j_t) + \varepsilon_{ict}
+$$ {#eq-cipolicy-fe-lane-ddd}
+
+严格设定中三组高维固定效应各司其职：产业 × 年份效应 $\alpha_{it}$ 吸收全球每个产业每年的共同走势（直接掐灭「全球产业周期」这个解释）；国家 × 年份效应 $\tau_{ct}$ 吸收韩国自身的宏观增长路径；国家 × 产业效应 $\sigma_{ci}$ 吸收每个国家每个产业的长期水平。三组固定效应放齐之后，所有低阶交互项都被吸收，唯一活下来的是三重交互项 $\beta_{3j}$——它度量的是：韩国的目标产业，相对同年全球同产业、相对韩国自身宏观走势、相对该国该产业的长期水平，还剩下什么额外变化。固定效应结构在这里不是稳健性装饰，而是识别策略本身：吸收什么，就是在向读者声明排除了什么。
+
+### 交互固定效应分离供给与需求：Khwaja and Mian (2008)
+
+-   Khwaja, A. I., & Mian, A. (2008). Tracing the impact of bank liquidity shocks: Evidence from an emerging market. *American Economic Review*, 98(4), 1413–1442. [Link](https://doi.org/10.1257/aer.98.4.1413), [Google](https://scholar.google.com/scholar?q=Tracing+the+Impact+of+Bank+Liquidity+Shocks+Khwaja+Mian)
+
+银行信贷研究的老大难问题是供求不可分：观察到某银行对某企业的贷款下降，既可能是银行缺钱（供给），也可能是企业不想借（需求）。1998 年巴基斯坦核试验后美元存款被冻结，不同银行受到的流动性冲击差异巨大，这提供了供给侧的变异；但需求侧的混淆仍在。
+
+Khwaja and Mian 的解法是一行固定效应。利用「同一家企业同时向多家银行借款」的贷款层面数据，在贷款变化方程中放入企业固定效应（等价于水平方程中的企业 × 时间效应）：
+
+$$
+\Delta \ln L_{ib} = \eta_i + \beta\, \Delta Liquidity_b + \varepsilon_{ib}
+$$ {#eq-cipolicy-fe-km}
+
+$\eta_i$ 把企业层面的一切信贷需求变化——不管可观测还是不可观测——整个吸掉。剩余的识别变异是：**同一家企业、同一时点、面对不同银行**的贷款变化差异。既然企业是同一个，需求就是同一个，剩下的差异只能来自银行。他们发现受冲击更重的银行对同一企业的放贷收缩显著更多，且小企业无法从其他银行找到替代融资。这套「firm × time FE」设计后来成为银企贷款、供应商—客户、医生—患者等一切多对多匹配数据的标准识别模板，文献中直接以「Khwaja–Mian 设定」相称。
+
+### 固定效应本身成为研究对象：Bonhomme et al. (2023)
+
+-   Bonhomme, S., Holzheu, K., Lamadon, T., Manresa, E., Mogstad, M., & Setzler, B. (2023). How much should we trust estimates of firm effects and worker sorting? *Journal of Labor Economics*, 41(2), 291–322. [Link](https://doi.org/10.1086/720009), [PDF](https://www.nber.org/papers/w27368), [Google](https://scholar.google.com/scholar?q=How+Much+Should+We+Trust+Estimates+of+Firm+Effects+and+Worker+Sorting)
+
+在 AKM 传统中，固定效应完成了一次身份转换：$\ln w_{it} = \theta_i + \psi_{J(i,t)} + \mathbf{x}_{it}'\beta + \varepsilon_{it}$ 里的工人效应 $\theta_i$ 和企业效应 $\psi_j$ 不再是待消除的干扰，而是研究对象本身——用它们做方差分解，可以回答「工资不平等有多少来自企业间的支付差异、有多少来自工人与企业的匹配分选」。基于这一模型的两个著名结论是：企业效应约占对数工资方差的 20%；工人效应与企业效应的相关系数很小甚至为负，即高工资工人并没有向高薪企业集聚。
+
+Bonhomme 等人 2023 年的这篇论文对这两个结论做了系统的体检。问题出在识别来源上：企业效应的识别完全依赖工人在企业间的流动，而现实中流动有限（limited mobility）。当每家企业的流动工人很少时，$\hat{\psi}_j$ 噪声很大，其样本方差机械性偏大、与工人效应的相关系数机械性偏小——固定效应估出来了，不等于估准了。作者用美国和多个欧洲国家的雇主—雇员数据，比较固定效应偏误校正与随机效应分组两类方法，发现有限流动偏误相当严重：校正后，企业效应对工资方差的贡献大幅缩水（如挪威样本从近 20% 降至 10% 左右），而工人分选变为一致为正且通常很强。对本章的启发有两层：固定效应可以从「控制项」升格为「估计目标」；而一旦升格，它的抽样误差就不能再被忽略——这与我们平时只关心 $\hat{\beta}$、把 $\hat{\alpha}_i$ 弃之不顾的场景，是完全不同的统计问题。作者提供了配套的 Stata 与 Python 校正程序包。
+
+### 一个预告：从控制到反事实
+
+交互固定效应还有另一重身份。既然 $\lambda_i'F_t$ 能把处理组结果变量的「正常轨迹」拟合出来，它自然也能用来回答「没有政策会怎样」：用政策前数据估计因子结构，外推到政策后，就得到处理组的反事实路径。Hsiao, Ching and Wan (2012) 评估香港回归的回归控制法、Gobillon and Magnac (2016) 对法国企业区政策的评估、Xu (2017) 的广义合成控制法，以及 Arkhangelsky et al. (2021) 的合成 DID，都建立在这个思想上。从这个角度看，固定效应家族的演进，本质上是在设定越来越细致的条件期望——这与树模型、随机森林拟合条件期望的思路，在深层逻辑上是相通的。完整讨论放在第 5 章。
+
+## 扩展阅读
+
+以下推文按主题分组，供课后延伸。
+
+**固定效应基础**
+
+-   刘潍嘉, 2024, [辛普森悖论及模拟分析](https://www.lianxh.cn/details/1406.html)
+-   游万海, 连玉君, 2020, [Stata: 面板数据模型一文读懂](https://www.lianxh.cn/details/122.html)
+-   曹昊煜, 2022, [FE！FE！面板固定效应模型：你用对了吗](https://www.lianxh.cn/details/1042.html)
+-   连玉君, 2024, [多组成绩调整的简便方法：固定效应模型妙用](https://www.lianxh.cn/details/1343.html)
+
+**HDFE 与 PPML**
+
+-   左志勇, 2022, [Stata：三维引力模型介绍与估计-ppmlhdfe-nbreg-reghdfe](https://www.lianxh.cn/details/848.html)
+-   胡煊翊, 2022, [Stata：为什么计数类变量不宜采用log(1+y)的形式？-ppmlhdfe](https://www.lianxh.cn/details/1094.html)
+-   连小白, 2026, [ppmlhdfe 实证指南：系数解释、固定效应与聚类标准误](https://www.lianxh.cn/details/1807.html)
+-   连小白, 2026, [三维 PPML 引力模型的偏误校正：从 ppmlhdfe 到 ppml_fe_bias](https://www.lianxh.cn/details/1813.html)
+-   连小白, 2026, [非负因变量如何做 DID？从 log(1+y) 到 PPMLHDFE](https://www.lianxh.cn/details/1809.html)
+-   林芷涵, 2026, [PPML 估计 + 一般均衡求解？ge_gravity2 一套 Stata 命令全搞定](https://www.lianxh.cn/details/1755.html)
+
+**交互固定效应**
+
+-   王晓娟, 甘徐沁, 2021, [regife：面板交互固定效应模型-Interactive Fixed Effect](https://www.lianxh.cn/details/42.html)
+
+**慢变量与非时变变量的估计**
+
+-   吕可夫, 2021, [Stata：如何估计包含非时变变量的动态面板模型-xtseqreg](https://www.lianxh.cn/details/827.html)
+-   李姣, 2026, [xthbtest：面板固定效应模型斜率异质性偏差检验](https://www.lianxh.cn/details/1759.html)
+
+**诊断、检验与变量筛选**
+
+-   黄涵麟, 2021, [ocmt：高维固定效应模型的变量筛选问题](https://www.lianxh.cn/details/530.html)
+-   罗兰若, 2022, [Stata论文复现：高维线性回归的变量筛选-baing-ocmt](https://www.lianxh.cn/details/866.html)
+-   黄钊琳, 2021, [locmtest：非线性模型的内生性检验](https://www.lianxh.cn/details/503.html)
+
+## 附录：慢变量与非时变变量的方法工具箱
+
+下表按 estimand 归纳常用方法及其 Stata 实现，供研究者对照选择。核心原则是：先判断要回答的是长期水平差异还是制度变化效应，再选方法；不同行回答的是不同问题，不能互相替代。
+
+| 方法 | Stata | 回答的问题 |
+|------------------------|------------------------|------------------------|
+| 横截面 OLS / 组间估计 | `reg` / `xtreg, be` | 长期制度水平差异 |
+| 固定效应 / 长差分 | `xtreg, fe` / `reghdfe`；手工 `L10.` 差分 | 制度变化效应（长差分更适合慢变量） |
+| Mundlak / CRE | `xtreg, cre` + `estat mundlak` | 同框展示组内效应 $\beta_W$ 与组间效应 $\beta_B$ |
+| Hausman–Taylor / 预检 | `xthtaylor` | 非时变内生变量与个体效应相关时的系数估计 |
+| 动态面板非时变变量 | `xtseqreg` | 滞后因变量 + 非时变解释变量 |
+| 历史工具变量 | `ivregress 2sls` / `ivreghdfe` | 制度、文化长期形成的内生性 |
+| DID / 事件研究 | `xtdidregress` / `csdid` | 明确的制度改革冲击 |
+| 交互固定效应 / CCE | `regife` / `xtdcce2` | 异质共同冲击、截面相关 |
+
+R 中对应 `plm`（`be`/`within`/`fd`/`pht`/`pcce`）与 `fixest`；Python 中对应 `linearmodels`。命令不是难点，问题定义才是难点。
+
+## 从本章走向第五章
+
+本章控制的都是「不变」或「沿共同因子变动」的混淆：不随时间变的进 $\alpha_i$，不随个体变的进 $\lambda_t$，异质性宏观冲击进 $\lambda_i'F_t$。这套工具的共同前提是，混淆的变动方式可以被某种结构性假设约束住。
+
+当政策有明确的时点和处理组、我们要回答的是「没有政策会怎样」时，问题就从「控制混淆」升级为「构造反事实」：处理前趋势是否平行？对照组应该如何加权？分批推进的政策会不会让 TWFE 做出坏的比较？这些是第 5 章 DID、DDD、事件研究与合成控制法的内容。
+
+最后回到本书反复强调的一个意识：并不是只有拿到完美数据，才能识别政策效应。很多不可观测的变量，只要能假设它们随时间变化很慢、或随个体基本不变，我们都有相应的手段去控制。估计政策效应本身就是一个设定条件期望的过程，多数估计量本来就是局部效应，没有人能承诺得到全局的、个体层面的政策效果。把这一点想明白，论文估计完成之后的讨论环节就可以清晰地界定结论边界——这也堵住了审稿人攻击我们的很多入口。

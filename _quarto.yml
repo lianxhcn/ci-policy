@@ -1,0 +1,95 @@
+project:
+  type: book
+  output-dir: docs
+  resources:
+    - settings/*.md
+    - exercises/README.md
+    - resources/agent_workflow/A08_agent_workflow_templates/**
+
+book:
+  title: "因果推断：政策评估中的识别思维与实证设计"
+  reader-mode: true
+  author: "连玉君"
+  date: today
+  date-format: iso
+  # repo-url: https://github.com/lianxhcn/ci-policy
+  repo-branch: master
+  repo-actions: [edit, issue]
+  sidebar:
+    title: "Causal Inference"
+    logo: images/book-logo.png
+    logo-href: https://lianxhcn.github.io/ci-policy/
+    style: floating
+    search: true
+    background: light
+    tools:
+      - icon: github
+        href: https://github.com/lianxhcn/ci-policy
+      - icon: house-fill
+        href: https://www.lianxh.cn
+  favicon: images/book-logo.png
+  site-url: https://lianxhcn.github.io/ci-policy/
+  editor: source
+  page-footer:
+    center: "[lianxh.cn](https://www.lianxh.cn)"
+    right: "基于 [Quarto](https://quarto.org/) 构建"
+  chapters:
+    - index.qmd
+    - syllabus.qmd
+    - settings.qmd
+    - part: "**讲义**"
+      chapters:
+        - lectures/01_policy_to_design.qmd
+        - lectures/02_policy_to_data.qmd
+        - lectures/03_sample_selection.qmd
+        - lectures/04_fixed_effects.qmd
+        - lectures/05_counterfactuals.qmd
+        - lectures/06_did_design.qmd
+        - lectures/07_ddml.qmd
+        - lectures/08_ai_agent_workflow.qmd
+        - lectures/09_reading_list.qmd
+  appendices:
+    - lectures/appendix/A02_government_guidance_fund.qmd
+    - lectures/appendix/A03_heckman_selection_literature.qmd
+    - notebooks/ch03_heckman/heckman_practical_notes.ipynb
+    - notebooks/ch04_fixed_effects/fixed_effects_practical_notes.ipynb
+    - notebooks/ch05_counterfactuals/A05_counterfactual_replication.ipynb
+    - notebooks/ch06_did/A06_did_method_selection.ipynb
+    - notebooks/ch07_ddml/A07_fwl_ddml.ipynb
+    - exercises/exercise_overview.qmd
+
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    theme:
+      light: cosmo
+      dark: darkly
+    linestretch: 1.6
+    fontsize: 11.5pt
+    number-sections: true
+    link-external-newwindow: true
+    highlight: true
+    highlight-style: atom-one
+    code-fold: false
+    code-line-numbers: false
+    code-overflow: wrap
+    css: styles.css
+    callout-appearance: default
+
+crossref:
+  chapters: true
+  appendix-title: "附录"
+  fig-title: "图"
+  fig-prefix: "图"
+  tbl-title: "表"
+  tbl-prefix: "表"
+  eq-prefix: "式"
+  sec-prefix: "节"
+
+fig-cap-location: bottom
+
+language:
+  section-title-appendices: "附录"
+
+editor: visual

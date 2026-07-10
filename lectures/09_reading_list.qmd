@@ -1,0 +1,83 @@
+---
+title: "阅读清单"
+format: html
+---
+
+本章只提供一份可执行的阅读清单。每一类保留少量入口，书目后面的链接分别指向资料主页、公开 PDF、代码仓库或检索页面。读者不需要一次读完全部资料；遇到具体研究问题时，按主题选择一两项即可。
+
+::: {.callout-important}
+## 读书单时先问一个问题
+
+资源解决的是哪一种识别困难？它依赖什么假设？它有没有可以运行的最小例子？能回答这三个问题，书单才会转化为研究训练。
+:::
+
+## 核心教材与方法书
+
+这些书适合建立共同语言：处理效应、反事实、识别假设、研究设计和推断。建议选一两本通读，再把其他书当作工具书。
+
+1. Angrist, J. D., & Pischke, J.-S. (**2009**). *Mostly Harmless Econometrics: An Empiricist's Companion*. Princeton University Press. [Link](https://press.princeton.edu/books/paperback/9780691120355/mostly-harmless-econometrics) [Google](<https://scholar.google.com/scholar?q=Mostly+Harmless+Econometrics+Angrist+Pischke>).
+2. Angrist, J. D., & Pischke, J.-S. (**2015**). *Mastering 'Metrics: The Path from Cause to Effect*. Princeton University Press. [Link](https://press.princeton.edu/books/hardcover/9780691152844/mastering-metrics) [Google](<https://scholar.google.com/scholar?q=Mastering+Metrics+Angrist+Pischke>).
+3. Imbens, G. W., & Rubin, D. B. (**2015**). *Causal Inference for Statistics, Social, and Biomedical Sciences*. Cambridge University Press. [Link](https://doi.org/10.1017/CBO9781139025751) [Google](<https://scholar.google.com/scholar?q=Causal+Inference+for+Statistics+Social+and+Biomedical+Sciences>).
+4. Hernán, M. A., & Robins, J. M. (**2025**). *Causal Inference: What If*. [Link](https://miguelhernan.org/whatifbook) [PDF](https://miguelhernan.org/s/hernanrobins_WhatIf_2jan25.pdf) [Google](<https://scholar.google.com/scholar?q=Hernan+Robins+Causal+Inference+What+If>).
+5. Morgan, S. L., & Winship, C. (**2015**). *Counterfactuals and Causal Inference: Methods and Principles for Social Research* (2nd ed.). Cambridge University Press. [Link](https://doi.org/10.1017/CBO9781107587991) [Google](<https://scholar.google.com/scholar?q=Counterfactuals+and+Causal+Inference+Morgan+Winship>).
+6. Pearl, J., Glymour, M., & Jewell, N. P. (**2016**). *Causal Inference in Statistics: A Primer*. Wiley. [Link](https://www.wiley-vch.de/en/areas-interest/mathematics-statistics/causal-inference-in-statistics-978-1-119-18684-7) [Google](<https://scholar.google.com/scholar?q=Causal+Inference+in+Statistics+A+Primer+Pearl>).
+7. Rosenbaum, P. R. (**2020**). *Design of Observational Studies* (2nd ed.). Springer. [Link](https://doi.org/10.1007/978-3-030-46403-9) [Google](<https://scholar.google.com/scholar?q=Design+of+Observational+Studies+Rosenbaum>).
+
+## 在线书、课程与专题指南
+
+在线书适合边读边运行示例，也适合在写论文时快速查某一种设计。专题论文则用于理解方法为什么需要更新，以及旧估计量在哪些设定下会失效。
+
+1. Cunningham, S. (**2021**). *Causal Inference: The Mixtape*. Yale University Press. [在线书](https://mixtape.scunning.com/) [课程视频](https://mixtape.scunning.com/mixtape_sessions) [Google](<https://scholar.google.com/scholar?q=Causal+Inference+The+Mixtape+Cunningham>).
+2. Huntington-Klein, N. (**2021**). *The Effect: An Introduction to Research Design and Causality*. [在线书](https://theeffectbook.net/) [Google](<https://scholar.google.com/scholar?q=The+Effect+Huntington-Klein>).
+3. Facure, M. (**2022**). *Causal Inference for the Brave and True*. [在线书](https://matheusfacure.github.io/python-causality-handbook/) [GitHub](https://github.com/matheusfacure/python-causality-handbook) [Google](<https://scholar.google.com/scholar?q=Causal+Inference+for+the+Brave+and+True+Facure>).
+4. Ding, P. (**2023**). *A First Course in Causal Inference*. [Link](https://doi.org/10.48550/arXiv.2305.18793) [PDF](https://arxiv.org/pdf/2305.18793.pdf) [Google](<https://scholar.google.com/scholar?q=A+First+Course+in+Causal+Inference+Ding>).
+5. Roth, J., Sant'Anna, P. H. C., Bilinski, A., & Poe, J. (**2022**). What's trending in difference-in-differences? A synthesis of the recent econometrics literature. *Journal of Econometrics*, 235(2), 2218–2244. [Link](https://doi.org/10.1016/j.jeconom.2023.03.008) [PDF](https://arxiv.org/pdf/2201.01194.pdf) [Google](<https://scholar.google.com/scholar?q=What%27s+Trending+in+Difference-in-Differences>).
+6. Baker, A., Callaway, B., Cunningham, S., Goodman-Bacon, A., & Sant'Anna, P. H. C. (**2025**). *Difference-in-Differences Designs: A Practitioner's Guide*. [Link](https://doi.org/10.48550/arXiv.2503.13323) [PDF](https://arxiv.org/pdf/2503.13323.pdf) [Google](<https://scholar.google.com/scholar?q=Difference-in-Differences+Designs+A+Practitioner%27s+Guide>).
+7. Chernozhukov, V., et al. (**2018**). Double/debiased machine learning for treatment and structural parameters. *The Econometrics Journal*, 21(1), C1–C68. [Link](https://doi.org/10.1111/ectj.12097) [Google](<https://scholar.google.com/scholar?q=Double+debiased+machine+learning+for+treatment+and+structural+parameters>).
+8. Ahrens, A., Hansen, C. B., & Schaffer, M. E. (**2024**). `ddml`: Double/debiased machine learning in Stata. *The Stata Journal*, 24(3), 559–582. [Link](https://doi.org/10.1177/1536867X241233641) [文档](https://statalasso.github.io/docs/ddml/) [Google](<https://scholar.google.com/scholar?q=ddml+Double+Debiased+Machine+Learning+in+Stata>).
+
+## 方法论文与软件、代码入口
+
+这类资源适合从书本回到具体研究。使用前先明确目标参数、处理组和对照组，再检查软件实现是否对应自己的设定。
+
+1. Abadie, A., Diamond, A., & Hainmueller, J. (**2010**). Synthetic control methods for comparative case studies. *Journal of the American Statistical Association*, 105(490), 493–505. [Link](https://doi.org/10.1198/jasa.2009.ap08746) [PDF](https://economics.mit.edu/sites/default/files/publications/Synthetic%20Control%20Methods.pdf) [Google](<https://scholar.google.com/scholar?q=Synthetic+Control+Methods+for+Comparative+Case+Studies>).
+2. Arkhangelsky, D., Athey, S., Hirshberg, D. A., Imbens, G. W., & Wager, S. (**2021**). Synthetic difference-in-differences. *American Economic Review*, 111(12), 4088–4118. [Link](https://doi.org/10.1257/aer.20190159) [PDF](https://arxiv.org/pdf/1812.09970.pdf) [Google](<https://scholar.google.com/scholar?q=Synthetic+Difference-in-Differences>).
+3. Callaway, B., & Sant'Anna, P. H. C. (**2021**). Difference-in-differences with multiple time periods. *Journal of Econometrics*, 225(2), 200–230. [Link](https://doi.org/10.1016/j.jeconom.2020.12.001) [PDF](https://psantanna.com/files/Callaway_SantAnna_2020.pdf) [Google](<https://scholar.google.com/scholar?q=Difference-in-Differences+with+Multiple+Time+Periods>).
+4. Borusyak, K., Jaravel, X., & Spiess, J. (**2024**). Revisiting event-study designs: Robust and efficient estimation. *Review of Economic Studies*, 91(6), 3253–3285. [Link](https://doi.org/10.1093/restud/rdae007) [PDF](https://arxiv.org/pdf/2108.12419.pdf) [Google](<https://scholar.google.com/scholar?q=Revisiting+Event-Study+Designs>).
+5. Rambachan, A., & Roth, J. (**2023**). A more credible approach to parallel trends. *Review of Economic Studies*, 90(5), 2555–2591. [Link](https://doi.org/10.1093/restud/rdad018) [Google](<https://scholar.google.com/scholar?q=A+More+Credible+Approach+to+Parallel+Trends>).
+6. Correia, S. (n.d.). `reghdfe` and `ppmlhdfe`: High-dimensional fixed effects in Stata. [reghdfe](https://scorreia.com/software/reghdfe/) [ppmlhdfe](https://scorreia.com/software/ppmlhdfe/) [Google](<https://scholar.google.com/scholar?q=Correia+reghdfe+ppmlhdfe>).
+7. Sant'Anna, P. H. C. (n.d.). Difference-in-differences resources. [Link](https://psantanna.com/did-resources/) [Google](<https://scholar.google.com/scholar?q=Pedro+Sant%27Anna+DiD+resources>).
+8. DoubleML developers. (n.d.). *DoubleML documentation*. [文档](https://docs.doubleml.org/stable/) [GitHub](https://github.com/DoubleML/doubleml-for-py) [Google](<https://scholar.google.com/scholar?q=DoubleML+documentation>).
+9. PyWhy contributors. (n.d.). *DoWhy*. [文档](https://www.pywhy.org/dowhy/) [GitHub](https://github.com/py-why/dowhy) [Google](<https://scholar.google.com/scholar?q=DoWhy+causal+inference>).
+10. Grf contributors. (n.d.). *Generalized random forests*. [文档](https://grf-labs.github.io/grf/) [GitHub](https://github.com/grf-labs/grf) [Google](<https://scholar.google.com/scholar?q=generalized+random+forests+grf>).
+
+::: {.callout-warning}
+## 软件边界
+
+软件包可以实现估计，却不能替研究者决定识别假设是否可信。`ddml` 处理高维控制和非线性函数形式，不能自动解决遗漏变量、无效工具变量、平行趋势或样本选择问题。
+:::
+
+## 中文入口与继续阅读
+
+中文资料适合降低进入门槛，但不能替代原始论文、教材和软件文档。建议先用中文入口弄清术语和操作，再回到英文原文核对假设与结果。
+
+1. 秦利宾. (**2020**). Heckman 模型：你用对了吗？[Link](https://www.lianxh.cn/details/153.html) [Google](<https://www.google.com/search?q=site%3Alianxh.cn+Heckman+模型+你用对了吗>).
+2. 游万海、连玉君. (**2020**). Stata：面板数据模型一文读懂. [Link](https://www.lianxh.cn/details/122.html) [Google](<https://www.google.com/search?q=site%3Alianxh.cn+面板数据模型一文读懂>).
+3. 康希. (**2024**). Stata-DID：异质性多期估计方法——Bacon 分解. [Link](https://www.lianxh.cn/details/1347.html) [Google](<https://www.google.com/search?q=site%3Alianxh.cn+Bacon+分解+康希>).
+4. 严安冬. (**2024**). Stata：异质性 DID 代码详解. [Link](https://www.lianxh.cn/details/1399.html) [Google](<https://www.google.com/search?q=site%3Alianxh.cn+异质性+DID+代码详解>).
+5. 李金桐. (**2023**). 因果推断：双重机器学习——`ddml`. [Link](https://www.lianxh.cn/details/1221.html) [Google](<https://www.google.com/search?q=site%3Alianxh.cn+双重机器学习+ddml+李金桐>).
+6. 连享会. (n.d.). AI 时代如何做实证研究？[课程页](https://www.lianxh.cn/open2025.html) [GitHub](https://github.com/lianxhcn/research_with_AI) [Google](<https://www.google.com/search?q=site%3Alianxh.cn+AI+时代+如何做实证研究>).
+
+## 中国政策冲击与本土场景
+
+研究中国政策评估时，先理解政策如何进入数据和比较设计，再选择估计方法。以下资源可用于筛选候选政策、核对处理定义与识别风险。
+
+1. 连享会. (n.d.). *China Policy Shocks：中国政策冲击数据库*. [首页](https://lianxhcn.github.io/china-policy-shocks/) [政策汇编](https://lianxhcn.github.io/china-policy-shocks/appendix_policy_list.html)。按政策对象、处理组、冲击时间、数据合并键和识别风险整理案例；适合把候选政策转化为可检查的研究设计问题。
+
+## 三条最短阅读路线
+
+- **想建立共同语言**：`Mastering 'Metrics` → *The Effect* → *The Mixtape*。
+- **正在做政策评估**：*What If* → Roth et al. (2022) → Callaway and Sant'Anna (2021) → 一个公开代码仓库。
+- **准备使用 DDML 或因果机器学习**：Chernozhukov et al. (2018) → `ddml` 文档或 `DoubleML` 文档 → 运行一个最小例子并检查目标参数。
+
+最后把书单重新放回研究训练：每读一项资料，记录它处理的识别困难、依赖的关键假设、估计的目标参数，以及能否用最小代码验证。这样形成的阅读地图，比继续增加候选链接更有用。

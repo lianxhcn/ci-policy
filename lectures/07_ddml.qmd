@@ -1,0 +1,336 @@
+---
+title: "双重机器学习：DDML"
+format: html
+---
+
+::: {.callout-important title="本章核心判断"}
+在多数模型设定中，我们都会使用控制变量来「控制」混淆因素的影响。然而，当混淆变量很多、又以未知的非线性方式影响处理变量 $D$ 和结果变量 $Y$ 时，线性设定会带来模型误设偏误。此时，采用机器学习方法估计模型又会引入正则化偏误。双重机器学习 (double/debiased machine learning, DDML) 用 partial out、正交化和交叉拟合走出这个两难：在选择性可观测、正交矩条件、交叉拟合和辅助函数收敛条件下，用灵活的学习器估计辅助函数，同时维持对目标参数的有效推断。
+
+很多人误以为 DDML 是解决内生性问题的万能钥匙，其实不然。DDML 的前提假设是：模型设定中不存在遗漏变量问题，即所有重要混淆变量都已经进入模型。**DDML 应对的是模型误设问题 (各种复杂的非线性关系)，而不是不可观测的遗漏变量问题。**
+:::
+
+前面几章把识别威胁指向两个方向。第 3 章讨论样本选择和自选择：谁进入样本、谁被观测到。第 5 章讨论反事实构造：没有政策时，处理组本来会怎样。第 4 章则讨论用固定效应和控制变量缓解遗漏变量偏误。本章指向另一类更容易被忽视的问题：**控制关系的函数形式**。
+
+问题从一个常见误解开始。很多人把「机器学习 + 因果推断」理解成把结果变量对一大堆特征跑一个随机森林，然后看哪个变量重要——这是预测，不是识别。也有人把几百个控制变量一股脑塞进 Lasso，筛一筛再做 OLS，以为这样就「控制干净」了。这两种做法都忽略了一个基本事实：机器学习天生为预测服务，它对目标参数的估计往往是有偏的，而且这个偏误不会随样本增大而消失。
+
+真正的问题不在于控制变量少，而在于控制变量**既多又非线性**。政策评估里，企业规模、地区禀赋、行业周期、政策暴露之间的关系往往不是简单线性。这时：
+
+-   如果坚持线性设定，就可能因为函数形式设定错误而残留偏误；
+-   如果换成灵活的机器学习去拟合这些关系，正则化又会把偏误漏进我们真正关心的处理效应。
+
+DDML 就是为走出这个两难而生的。读完本章，你应当能回答四个问题：
+
+1.  为什么加了固定效应和一堆控制变量，统计推断仍可能不干净？
+2.  partial out 到底在做什么，它和 Neyman 正交、双重稳健是什么关系？
+3.  DDML 的完整流程是什么，为什么理解了流程就能读懂 Stata 或 Python 里的命令？
+4.  DDML 能修什么，不能修什么？
+
+::: {.callout-tip title="本章路线"}
+非线性混淆 + 高维控制的两难 → FWL：partial out 是基本功 → 天真地套机器学习为什么失败 → 补救：对处理变量也 partial out → Neyman 正交：偏误变成乘积 → 双重稳健：一侧误差为零则偏误为零 → 交叉拟合堵住过拟合 → DDML 四步流程与五种模型 → 能修什么、不能修什么 → 通向第八章。
+:::
+
+本章把技术推导和代码留到 **附录 H**。正文只讲清楚：问题是什么、方法适用于什么场景、前提条件是什么、解决思路是什么。真正的命令怎么写、结果怎么读，配套的 Notebook 会逐段解释。
+
+## 一个被忽视的识别威胁：控制关系的函数形式
+
+先看一个熟悉的设定。研究某项处理 $D$ 对结果 $Y$ 的影响，我们几乎总会加一组控制变量 $X$：
+
+$$
+Y_i=\alpha+\theta D_i+X_i'\beta+\varepsilon_i
+$$ {#eq-cipolicy-ddml-linear-control}
+
+@eq-cipolicy-ddml-linear-control 里，$X$ 进入模型的方式是线性的。第 4 章说明了固定效应如何吸收不随时间变化的个体差异，交互固定效应如何进一步放松比较范围。但所有这些设定都默认了一件事：控制变量以我们写定的函数形式影响结果。
+
+现实往往不是这样。举一个直观的例子。研究「课堂上增加助教」对学生成绩的影响，控制变量包括每天学习时间、作业完成率、出勤率。学习时间和成绩之间是线性的吗？显然不是：学习时间增加会提高成绩，但过长又会因为疲惫、睡眠不足而拉低效率。如果我们用一个线性的「学习时间」项去控制它，就没有真正把这个混淆因素扣干净，残留的部分会漏进 $D$ 的系数。
+
+这里的关键在于，我们**并不关心**学习时间对成绩的影响本身，我们只想干净地估计处理效应 $\theta$。学习时间只是一个需要被「控制掉」的混淆变量。但只要它以非线性方式进入，线性控制就控制不干净。
+
+一个自然的想法是：既然线性不够，就用更灵活的方法去拟合控制关系——随机森林、梯度提升、神经网络、Lasso 都可以逼近复杂的非线性函数。这个思路是对的，但直接套用会引申出新的问题。
+
+::: {.callout-warning title="两难"}
+-   坚持线性设定：控制关系若非线性，模型误设，处理效应有偏；
+-   换成机器学习：正则化偏误会漏进处理效应，估计同样不可信。
+
+DDML 要解决的，正是如何既用机器学习的灵活性拟合控制关系，又不让它的偏误污染处理效应。
+:::
+
+为了讲清 DDML 怎么走出这个两难，我们先回到一个更基本的工具：FWL 定理。它是理解 partial out 的起点，也是 DDML 全部直觉的来源。
+
+## FWL：partial out 是基本功
+
+Frisch-Waugh-Lovell (FWL) 定理讲的是多元回归的一个基本性质。考虑：
+
+$$
+Y=X_1\beta_1+X_2\beta_2+u
+$$ {#eq-cipolicy-ddml-fwl-full}
+
+FWL 定理告诉我们，@eq-cipolicy-ddml-fwl-full 中 $X_1$ 的系数 $\beta_1$，可以用一个「残差对残差」的回归还原出来。做法是先把 $X_2$ 的影响从两边都剔除 (partial out)：
+
+-   用 $Y$ 对 $X_2$ 回归，取残差 $\tilde Y$；
+-   用 $X_1$ 对 $X_2$ 回归，取残差 $\tilde X_1$；
+-   再用 $\tilde Y$ 对 $\tilde X_1$ 回归，得到的系数就等于 $\beta_1$。
+
+@fig-cipolicy-ddml-fwl-venn 用韦恩图把这个过程画了出来。$Y$、$X_1$、$X_2$ 三个圆的重叠部分，代表彼此能解释掉的方差。把 $Y$ 圆内部按字母拆开：
+
+$$
+Y = A + B + C + D
+$$
+
+其中 $A$ 是 $Y$ 里谁也没解释的部分，$B$ 只被 $X_1$ 解释，$D$ 只被 $X_2$ 解释，$C$ 被 $X_1$ 和 $X_2$ 共同解释。所谓「把 $X_2$ partial out」，直观上就是拿一把剪刀，把 $X_2$ 那个圆整个剪掉：$Y$ 里凡是和 $X_2$ 重叠的部分 (也就是 $C$ 和 $D$) 都被剪走，只剩下：
+
+$$
+\tilde Y = A + B
+$$
+
+同样地，$X_1$ 剪掉与 $X_2$ 重叠的部分后得到残差 $\tilde X_1$。再用 $\tilde Y$ 对 $\tilde X_1$ 回归，两者真正共享的只有区域 $B$——也就是「$X_1$ 里扣掉了 $X_2$、$Y$ 里也扣掉了 $X_2$」之后，两边还共同拥有的那块方差。$\beta_1$ 就是从区域 $B$ 里估出来的。
+
+![FWL 定理的方差韦恩图：$\beta_1$ 只用到区域 $B$——把 $X_2$ 从 $X_1$ 和 $Y$ 中同时剪掉之后，两者还共同解释的那部分方差](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/OLS-venn-01.png){#fig-cipolicy-ddml-fwl-venn width="55%"}
+
+这个定理看似只是一个计算技巧，实际上是一整套方法的理论基础。例如，在 Stata 中，`xtreg` 命令的 `fe` 选项，`reghdfe` 命令的 `absorb()` 选项，`ivreg2` 和 `lasso2` 命令的 `partial()` 选项，都是 FWL 的直接应用——它们先把固定效应或一部分控制变量 partial out，再对核心变量做回归。
+
+此处要特别注意的是：**要得到干净的 $\theta$，必须把控制变量从处理变量和结果变量两边都剔除，而不是只从结果变量一边剔除。**
+
+@fig-cipolicy-ddml-fwl-partial-out 把这句话画成了流程图。图中 $\hat E(Y\mid X)$、$\hat E(D\mid X)$ 就是分别用 $X$ 去拟合 $Y$ 和 $D$ 得到的预测值；把它们从 $Y$ 和 $D$ 中减掉，得到两个残差 $\tilde Y$ 和 $\tilde D$，再用 $\tilde Y$ 对 $\tilde D$ 回归，斜率就是干净的处理效应 $\theta$。无论用 OLS 还是机器学习来做「用 $X$ 解释」这一步，只要两边都剔除，逻辑都一样。记住这个「两边同时剔除」的骨架，下一节 DDML 的全部逻辑就水到渠成——也会看到，一旦省掉 $D$ 那一边，估计立刻出问题。完整的手算验证 (三种回归给出同一个系数) 放在附录 H.2。
+
+![FWL 的核心是「两边同时剔除 $X$」：先用 $X$ 分别解释 $Y$ 和 $D$，取残差 $\tilde Y=Y-\hat E(Y\mid X)$、$\tilde D=D-\hat E(D\mid X)$，再用残差对残差回归，$\theta$ 就来自两个残差之间的关系](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch07_fig01_fwl_partial_out_pen.png){#fig-cipolicy-ddml-fwl-partial-out fig-align="center" width="82%"}
+
+## 天真地套机器学习，为什么失败
+
+现在把控制关系写成一般形式。处理变量和结果变量都可能被控制变量 $X$ 影响，可以写成两条方程：
+
+$$
+Y=D\theta_0+g_0(X)+U,\quad E[U\mid X,D]=0
+$$ {#eq-cipolicy-ddml-plm}
+
+$$
+D=m_0(X)+V,\quad E[V\mid X]=0
+$$ {#eq-cipolicy-ddml-treat}
+
+两条方程里各个符号的含义是：
+
+-   $g_0(X)$：控制变量对结果的影响，函数形式未知、可能高度非线性；
+-   $m_0(X)=E[D\mid X]$：处理变量中能被 $X$ 解释的部分，也就是 $X$ 对 $D$ 的影响；
+-   $V=D-m_0(X)$：$D$ 中与 $X$ 无关、真正外生干净的那块变异；
+-   $U$：结果方程里与 $X$、$D$ 都无关的随机扰动；
+-   $\theta_0$：我们唯一关心的处理效应。
+
+@fig-cipolicy-ddml-structure 用因果图把这个结构画了出来：$X$ 同时指向 $D$ 和 $Y$，是必须被控制的混淆变量；$D$ 除了受 $X$ 影响，还带着一块不受 $X$ 影响的外生变异 $V$。识别 $\theta_0$ 的关键，就是把 $X$ 的影响从 $D$ 和 $Y$ 两边都清走，只用 $V$ 携带的外生信息。
+
+![因果结构。控制变量 $X$ 同时影响处理 $D$ 和结果 $Y$，是必须被控制的混淆变量；$V$ 是 $D$ 中不受 $X$ 影响的外生部分，$U$ 是结果方程里与 $X$、$D$ 都无关的扰动。DDML 要做的，就是把 $X$ 的影响从 $D$ 和 $Y$ 两边都清走，只用 $V$ 携带的外生变异识别 $\theta_0$](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/Double-Debiased-Machine-Learning_%E6%9D%8E%E9%87%91%E6%A1%90_Fig01.png){#fig-cipolicy-ddml-structure width="60%"}
+
+有了这个结构，一个最自然的想法是：用机器学习把 $g_0$ 估出来，记为 $\hat g_0$，然后把它从 $Y$ 中扣掉，再用 $D$ 去回归：
+
+$$
+\hat\theta_0=\frac{\frac1n\sum_i D_i\big(Y_i-\hat g_0(X_i)\big)}{\frac1n\sum_i D_i^2}
+$$ {#eq-cipolicy-ddml-naive}
+
+这正是「只从结果变量一边 partial out」的做法：只处理了 $Y$，没有处理 $D$。@eq-cipolicy-ddml-naive 看起来合理，却是有偏的。把估计误差展开，可以分离出偏误的核心项 (完整推导见 **附录 H**，也可参考李金桐 ([2023](https://www.lianxh.cn/details/1221.html)) 的中文推导，以及 Ahrens et al. (2025) 面向应用者的导论)：
+
+$$
+b\;\propto\;\frac{1}{\sqrt n}\sum_i \underbrace{m_0(X_i)}_{\text{数据本身的性质}}\big(g_0(X_i)-\hat g_0(X_i)\big)
+$$ {#eq-cipolicy-ddml-naive-bias}
+
+@eq-cipolicy-ddml-naive-bias 里，$g_0-\hat g_0$ 是机器学习的估计误差。为了在高维下防止过拟合，机器学习普遍带有正则化 (如 Lasso 的惩罚项)，这会让 $\hat g_0$ 系统性地偏离 $g_0$，估计误差收敛很慢。更麻烦的是前面乘着的 $m_0(X_i)$：它就是 @eq-cipolicy-ddml-treat 里定义的 $E[D\mid X]$，即「处理变量 $D$ 中能被 $X$ 解释的部分」，是数据本身的性质，我们改不了。两者相乘，偏误被放大，且不随样本增大而消失。
+
+问题的根源，正是 FWL 已经警告过的：我们只把 $X$ 从 $Y$ 一边剔除了，没有从 $D$ 一边剔除。回到 @eq-cipolicy-ddml-treat，处理变量 $D$ 里其实还带着 $m_0(X)$ 这块被 $X$ 解释掉的信息；只要没把它清走，它就会和 $g_0$ 的估计误差纠缠在一起，@eq-cipolicy-ddml-naive-bias 的偏误就赖着不走。
+
+## 补救：对处理变量也 partial out
+
+补救办法，正是 FWL 的另一半：**对处理变量 $D$ 也做 partial out。**
+
+具体做法是先估计 $\hat m_0(X)=E[D\mid X]$，构造 $D$ 的残差 $\hat V=D-\hat m_0(X)$，再用它替换掉 @eq-cipolicy-ddml-naive 里的 $D$：
+
+$$
+\check\theta_0=\frac{\frac1n\sum_i \hat V_i\big(Y_i-\hat g_0(X_i)\big)}{\frac1n\sum_i \hat V_i D_i},\qquad \hat V_i=D_i-\hat m_0(X_i)
+$$ {#eq-cipolicy-ddml-ortho}
+
+这就是把 FWL 的「两边都剔除」用机器学习实现了一遍：$\hat g_0$ 把 $X$ 从 $Y$ 里清走，$\hat m_0$ 把 $X$ 从 $D$ 里清走，再用两个残差相互回归。残差 $\hat V$ 是 $D$ 中不能被 $X$ 预测的剩余变化 (对应 @fig-cipolicy-ddml-structure 里那条不受 $X$ 干扰的 $V\to D$ 通道)；只要选择性可观测假设成立，它就是用于识别 $\theta$ 的核心变异。
+
+@fig-cipolicy-ddml-naive-vs-orthogonal 把两种做法并排画出来，对比一目了然。左边是天真的做法：只用 $X$ 解释 $Y$、构造残差 $Y-\hat g(X)$，但 $X$ 仍在影响 $D$，于是「预测做了，识别却没有做干净」。右边是正交化：把 $X$ 从 $Y$ 和 $D$ 两边同时拿掉，得到 $\tilde Y$ 和 $\tilde D$，再用 $\tilde Y=\theta\tilde D+e$ 估计处理效应。
+
+![天真估计只处理结果变量 $Y$，$X$ 仍在影响 $D$，识别没做干净；正交化同时处理 $Y$ 和 $D$，把 $X$ 从两边一起拿掉，再用两个残差相互回归](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch07_fig02_naive_vs_orthogonal_pen.png){#fig-cipolicy-ddml-naive-vs-orthogonal fig-align="center" width="88%"}
+
+换成 @eq-cipolicy-ddml-ortho 之后，偏误项发生了关键变化，变成两个估计误差的**乘积**：
+
+$$
+b^*\;\propto\;\frac{1}{\sqrt n}\sum_i \big(m_0(X_i) - \hat m_0(X_i)\big)\big(g_0(X_i)-\hat g_0(X_i)\big)
+$$ {#eq-cipolicy-ddml-product}
+
+对比 @eq-cipolicy-ddml-naive-bias 和 @eq-cipolicy-ddml-product：原来偏误里那个改不动的 $m_0(X_i)$，现在换成了 $m_0(X_i)-\hat m_0(X_i)$，也就是 $D$ 那边模型的**估计误差**。于是偏误从「一个估计误差」变成了「两个估计误差相乘」。
+
+这个乘积结构是全部关键。两个估计误差各自可能收敛得很慢 (机器学习常见的 $n^{-1/4}$ 量级)，但它们相乘之后收敛速度翻倍，足以快到可以忽略。**换句话说，只要把 $X$ 从两边都清走，机器学习「拟合得不够准」这件事就不再致命。** (天真估计与正交估计的偏误对比模拟见附录 H.3。)
+
+## Neyman 正交与双重稳健：偏误为什么变成乘积
+
+上一节的乘积结构，有一个正式的名字：**Neyman 正交** (Neyman orthogonality)。
+
+它的含义可以这样理解。我们用一个矩条件 (moment condition) 来识别 $\theta$，这个矩条件里含有需要估计的辅助函数 (nuisance function)，也就是结果侧的 $g_0$ 和处理侧的 $m_0$。如果矩条件对辅助函数的微小扰动「一阶不敏感」——即在真值附近，辅助函数变一点点，矩条件几乎不动——那么辅助函数的估计误差就只能通过二阶项 (乘积项) 影响 $\theta$。@eq-cipolicy-ddml-ortho 构造的正是这样一个正交矩条件；@eq-cipolicy-ddml-naive 那个天真估计则不正交，辅助函数一动，它就跟着大幅偏移。
+
+正交结构还带来另一个常被单独命名的性质：**双重稳健** (double robustness)。识别处理效应要靠两个辅助模型——一个刻画结果侧的 $E[Y\mid X]$，一个刻画处理侧的 $E[D\mid X]$。双重稳健说的是：只要这两个模型里有一个设定正确，估计就无偏。原因还是那个乘积结构。
+
+@fig-cipolicy-ddml-product-bias 把这个机理画得很直观。图上半部分：两个辅助模型的估计误差 $e_\ell$ (结果侧，$\hat\ell(X)-\ell_0(X)$，其中 $\ell_0(X)=E[Y\mid X]$ 对应正文的结果侧辅助模型) 和 $e_m$ (处理侧，$\hat m(X)-m_0(X)$) 相乘才形成偏误——原本各自的一阶误差，被正交结构压成了二阶乘积。图下半部分把三种情形摆在一起 (对照 @eq-cipolicy-ddml-product)：
+
+-   若结果模型设定正确，$e_\ell=0$，乘积为零，哪怕处理模型错得离谱也无妨；
+-   若处理模型设定正确，$e_m=0$，乘积同样为零；
+-   只有两个模型**同时**错，$e_\ell$、$e_m$ 才都非零，偏误才可能残留。
+
+![Neyman 正交把两个辅助模型各自的一阶误差 $e_\ell$、$e_m$ 压成二阶乘积：只要有一个模型正确 (误差为零)，乘积就为零、偏误消失；只有两个模型同时错，偏误才可能残留](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch07_fig03_neyman_product_bias_pen.png){#fig-cipolicy-ddml-product-bias fig-align="center" width="82%"}
+
+这就是「双重稳健」四个字的由来。要强调的是，双重稳健不是一个概率判断——不是说现实中总有一个模型会对——而是说估计方程本身具有这样的代数结构：只要某一侧的误差为零，乘积偏误就为零。它不要求你把两个模型都估准，而是允许你在其中一个上出错。
+
+::: {.callout-note title="两种「稳健」，别混为一谈"}
+乘积结构在不同模型设定下，给出的稳健性强度并不一样，写作和汇报时要分清：
+
+-   **部分线性模型 (@eq-cipolicy-ddml-ortho)**：两个辅助模型都要估，但各自允许慢速收敛，靠乘积把偏误压到二阶。这是「收敛率意义上的稳健」——两个都要估得像样，但都不必很准。
+-   **交互模型 / AIPW**：更强的「模型设定意义上的稳健」——两个模型只要有一个**精确正确**，另一个哪怕设定错误，估计依然无偏。这才是严格意义上的「一个对就够」。
+
+两者都源自 Neyman 正交，但不要把部分线性模型说成「二者取一即可」：它要的是两个都别太差，而不是一个全对、另一个可以乱来。
+:::
+
+## 交叉拟合：堵住过拟合的后门
+
+正交化解决了偏误的一半，还剩一个后门没堵：**过拟合**。
+
+如果用同一批数据既估计辅助函数 $\hat g_0$、$\hat m_0$，又计算 $\theta$，机器学习会「记住」这批数据里的噪声，残差和噪声之间产生虚假关联，重新引入偏误。这个后门要靠**交叉拟合** (cross-fitting) 堵上。
+
+它的核心思想是：**每个观测值的预测，都要来自一个「没见过它」的模型。** @fig-cipolicy-ddml-cross-fitting 用两块样本把这个思想画了出来：在样本 A 上训练模型，去预测样本 B 的残差；在样本 B 上训练模型，去预测样本 A 的残差 (即「交叉预测」)；把这些「留出样本」上的残差合并起来 (out-of-fold 残差)，再代入正交矩条件估计 $\theta$。因为估计辅助函数和评估矩条件用的从来不是同一批数据，过拟合带来的虚假关联就被切断了。
+
+![交叉拟合：在样本 A 上训练的模型只用来预测样本 B，反之亦然；每个观测值的残差都来自没见过它的模型，合并这些 out-of-fold 残差后再用正交 score 估计 $\theta$](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch07_fig04_cross_fitting_pen.png){#fig-cipolicy-ddml-cross-fitting fig-align="center" width="86%"}
+
+实践中不止分两块，而是把样本分成 $K$ 折 (fold)，轮流让每一折当一次「留出折」：用其余 $K-1$ 折训练辅助函数，只在留出折上算残差、代入矩条件；轮换各折，取平均得到最终的 $\theta$。折数 (常用 5 折或 10 折) 越多，分样本带来的随机性越小。
+
+把三件事合起来——partial out (借 FWL)、正交化 (借 Neyman)、交叉拟合 (防过拟合)——就构成了双重机器学习。「双重」指的是同时对 $Y$ 和 $D$ 两边建模，「去偏」(debiased) 指的正是正交化和交叉拟合合力压掉的那部分偏误。
+
+## 机器学习方法：够用就好
+
+到这里，一个常见疑问是：那到底该用哪种机器学习方法去估 $\hat g_0$ 和 $\hat m_0$？
+
+答案是：**DDML 对用哪种学习器并不挑剔。** Lasso、随机森林、梯度提升、神经网络都可以；实证中用得最多的是 Lasso，因为它自带变量选择、结果好解释。关键不在算法本身，而在前面那套流程——正交矩条件加交叉拟合——它保证了无论辅助函数用什么方法估计，只要估计误差收敛得不太慢，处理效应就稳健。
+
+因此本章不展开机器学习算法的细节。有兴趣深入的读者，可以参考：
+
+::: {.callout-note title="机器学习方法入门"}
+-   拉索回归入门与统计推断：连享会推文 [Lasso 入门](https://www.lianxh.cn/details/169.html)、[再多控制变量和工具变量我也不怕](https://www.lianxh.cn/details/635.html)。
+-   多个学习器的组合 (stacking)：Ahrens et al. (2024), *Model Averaging and Double Machine Learning*，配套 Stata 命令 `pystacked`，中文见 [pystacked 推文](https://www.lianxh.cn/details/1317.html)。DDML 官方推荐把多种学习器 stacking 起来用，避免押注单一模型。
+:::
+
+一个实用建议：与其纠结选哪个学习器，不如把几个学习器 stacking 起来，让数据自己决定权重。这既降低了设定风险，也让结果更稳健。
+
+## DDML 的完整流程：理解了就能读懂任何命令
+
+理解了「两边 partial out + 正交 + 交叉拟合」这一套思想，再看软件命令就会发现，无论 Stata 还是 Python，流程都是同一个骨架，分四步：
+
+1.  **选模型**：声明要估计哪一类因果模型 (下面五种之一)，并设定交叉拟合的折数；
+2.  **设定辅助学习器**：分别指定怎么估 $E[Y\mid X]$ 和 $E[D\mid X]$——用 Lasso、随机森林还是 stacking；
+3.  **交叉拟合**：在各折上估计辅助函数、算出 out-of-fold 残差；
+4.  **估计因果参数**：用正交矩条件汇总，得到 $\theta$ 及其标准误。
+
+@fig-cipolicy-ddml-workflow 把这四步、以及它们要估计的两个辅助模型 $\hat\ell(X)=\hat E(Y\mid X)$、$\hat m(X)=\hat E(D\mid X)$，和它们在 Stata `ddml` 里对应的子命令画在了一起。
+
+![DDML 的四步骨架：选择目标模型 (`partial`/`interactive`/`iv`) → 指定学习器 (估 $E(Y\mid X)$ 与 $E(D\mid X)$) → 交叉拟合 (out-of-fold 预测) → 正交估计 ($\hat\theta$、标准误、置信区间)。不同软件只是语法外壳不同](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch07_fig05_ddml_workflow_pen.png){#fig-cipolicy-ddml-workflow fig-align="center" width="86%"}
+
+在 Stata 里，这四步对应 `ddml` 命令的 `ddml init` → `ddml E[Y|X]` / `ddml E[D|X]` → `ddml crossfit` → `ddml estimate`。看懂了流程，这些子命令的名字几乎是自解释的。Python 的 `DoubleML`、微软的 `EconML` 也是同一逻辑，只是换了语法外壳。**理解流程，命令就能迁移。**
+
+第二步的「选模型」决定了后面一切。DDML 之所以有五种模型，是因为处理变量和控制变量的关系、以及是否需要工具变量，会改变矩条件的形式。@tbl-cipolicy-ddml-models 把五种模型和它们的适用场景对应起来。
+
+| 模型 (`ddml` 选项) | 设定要点 | 目标参数 | 什么时候用 |
+|:------------------|:------------------|:------------------|:------------------|
+| 部分线性 (`partial`) | $D$ 与 $X$ 可线性分离，$D$ 连续或二元 | 部分线性处理效应 $\theta$ | 最常用的起点；处理效应大体同质 |
+| 交互 (`interactive`) | $D$ 二元，效应完全异质，$D$ 与 $X$ 不可线性分离 | ATE / ATTE | 二元处理、关心异质效应 |
+| 部分线性 IV (`iv`) | 有工具变量 $Z$ | $\theta$ | 处理变量内生、且有有效工具 |
+| 交互 IV / LATE (`interactiveiv`) | $D$、$Z$ 均二元 | LATE | 二元处理 + 二元工具 |
+| 高维 IV (`ivhd`) | 工具变量很多 | $\theta$ | 工具变量高维、需要筛选 |
+
+: DDML 的五种模型与适用场景 {#tbl-cipolicy-ddml-models}
+
+选模型的判断很直接：处理变量与控制变量能否线性分离，决定用 `partial` 还是 `interactive`；是否需要、以及有没有工具变量，决定要不要走 IV 版本。附录 H.4–H.6 会在官方示例数据 (`cattaneo2`、`401k`) 上把 `partial`、`interactive` 和 IV 版本各跑一遍，逐行解释输出。
+
+::: {.callout-warning title="面板固定效应：别直接套截面 DDML"}
+本书面向政策评估，读者会本能地写「固定效应 + 一堆控制变量」。但要注意：标准 `ddml` 是**截面**框架，直接把面板做 within 变换后再套 DDML，可能产生偏误。
+
+面板 DDML 目前仍在发展中，正文只做风险提醒，不推荐某一种固定方案。已有研究提醒：直接 within 后套截面 DDML 可能有问题；相关随机效应 (correlated random effects, Mundlak)、一阶差分、within 变换，以及按个体 / 时间分折等做法，需要根据具体设定来选择；面板下的交叉拟合也不能简单随机分折，否则会破坏个体内和时间上的依赖结构 (Clarke and Polselli 2026; Fuhr and Papies 2024)。系统的面板实现可参考 R 包 `xtdml`。附录 H.7 给出一个 Stata 最小示例并标注局限，完整方案见相应链接。
+:::
+
+## 能修什么，不能修什么
+
+DDML 很有用，但它的用途有清楚的边界。把边界说清楚，比展示它能跑出显著结果更重要。
+
+@fig-cipolicy-ddml-can-cannot 用两栏把这条边界画了出来：左边是 DDML 能缓解的问题 (高维控制变量、非线性控制关系、复杂交互项、正则化偏误、有效推断)，右边是它无能为力、只能靠研究设计解决的问题 (不可观测遗漏变量、无效工具变量、平行趋势失败、反事实构造错误、样本选择偏误)。底部那句「前提：重要混淆变量已经进入 $X$」，是使用 DDML 的总前提。@tbl-cipolicy-ddml-scope 给出更细的对照。
+
+![DDML 能缓解与不能替代的边界。左栏是它能处理的函数形式与高维问题，右栏是它替代不了的识别问题；总前提是重要混淆变量都已进入 $X$](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch07_fig06_can_cannot_boundary_pen.png){#fig-cipolicy-ddml-can-cannot fig-align="center" width="82%"}
+
+| DDML 能处理 | DDML 不能处理 |
+|:------------------------------------|:------------------------------------|
+| 控制变量高维 (数量很多) | 不可观测的混淆变量 (遗漏了重要变量) |
+| 控制关系非线性、交互复杂 | 处理变量内生 (存在不可观测因素)，除非另有有效工具变量走 IV 版本 |
+| 需要有效推断 ($\sqrt n$ 收敛、置信区间) | 反事实构造和平行趋势本身 (那是研究设计问题) |
+| 用灵活的机器学习，在条件成立时维持有效推断 | 排他性、SUTVA、溢出效应等识别假设 |
+
+: DDML 的适用边界 {#tbl-cipolicy-ddml-scope}
+
+最需要强调的是左右两栏第一行的对比。
+
+::: {.callout-important title="DDML 的前提：选择性可观测"}
+使用 DDML 的前提是**选择性可观测** (selection on observables)：你已经把所有重要的混淆变量放进了 $X$，模型设定本身不存在遗漏变量问题。在这个前提下，DDML 帮你解决的是「控制变量既多又非线性」带来的模型误设。
+
+如果存在被遗漏的重要变量——一个既影响处理、又影响结果的不可观测因素——那么 DDML 和普通 OLS 一样有偏。它治的是函数形式，不是识别本身。
+:::
+
+对不可观测遗漏变量导致的偏误，DDML 无能为力。这类问题只能通过工具变量、或对因果机器学习估计做**敏感性分析**来应对：设想一个未观测混淆变量，问它要强到什么程度才会推翻结论。相关方法可参考 Chernozhukov et al. (2022) 的 *Long Story Short: Omitted Variable Bias in Causal Machine Learning*。本章不展开，读者需要时按此线索深入即可。
+
+## 从本章走向下一章
+
+本章讨论的是，当控制变量既多又非线性时，如何借助机器学习得到干净的处理效应。核心思路可以收成一句话：**用 FWL 的 partial out 搭骨架，用 Neyman 正交把偏误压成乘积，用交叉拟合堵住过拟合，机器学习就能服务于可信的因果推断，而不是替代因果识别。**
+
+回头看会发现，从第 4 章到本章，我们一直在回答同一个元问题：**你的识别究竟建立在什么之上。** 第 4 章说固定效应在声明拿谁和谁比；第 5 章说反事实构造各有代价；第 6 章最后的方法选择表说明，DID 内部的方法选择要回到比较对象和目标参数；本章说，即使比较对象选对了，控制关系的函数形式也可能让推断失真，而 DDML 只在选择性可观测的前提下修这一类问题。
+
+本章还完成了一次视角的转换：我们第一次让**算法**深度参与估计过程——用机器学习拟合辅助函数，再用统计结构保证结果可信。下一章把这个视角推得更远：当算法不只辅助**估计**、而是辅助**整个研究流程**——读论文、拆解识别策略、审计复现包——AI 和 Agent 又能做什么、不能做什么。这就是第 8 章的主题。
+
+::: {.callout-note title="配套复现"}
+本章各要点的完整 Stata 实操见 **附录 H**，与正文一一对应：
+
+-   H.2　FWL 手算验证 (三种回归给出同一个系数)；
+-   H.3　天真估计与正交估计的偏误对比模拟；
+-   H.4–H.6　`ddml` 的部分线性 / 交互 / IV 三种模型；
+-   H.7　面板固定效应的最小示例与局限提醒。
+
+每个模块后附命令用途、适用场景和结果解读。附录提供 [附录 H](../notebooks/ch07_ddml/A07_fwl_ddml.html) 讲解版 (`.ipynb`，可在 VS Code 中借助 nbstata 或 Stata-MCP 执行) 与简化版 [dofile](../notebooks/ch07_ddml/A07_fwl_ddml.do) 两种格式，数据全部在线读取。R 与 Python 的对应实现只给跳转链接，不重复展开。
+:::
+
+## 参考文献与延伸阅读
+
+-   Ahrens, A., Chernozhukov, V., Hansen, C., Kozbur, D., Schaffer, M., & Wiemann, T. (2025). An Introduction to Double/Debiased Machine Learning. arXiv:2504.08324. [PDF](https://arxiv.org/pdf/2504.08324). (面向应用者的通俗导论，本章主参考)
+-   Ahrens, A., Hansen, C. B., Schaffer, M. E., & Wiemann, T. (2024). ddml: Double/debiased machine learning in Stata. *The Stata Journal*, 24(1), 3–45. [Link](https://doi.org/10.1177/1536867X241233641)．官方文档站：<https://statalasso.github.io/docs/ddml/>。
+-   Ahrens, A., Hansen, C. B., Schaffer, M. E., & Wiemann, T. (2024). Model Averaging and Double Machine Learning. arXiv:2401.01645. [PDF](https://arxiv.org/pdf/2401.01645). (DDML + stacking)
+-   Chernozhukov, V., Chetverikov, D., Demirer, M., Duflo, E., Hansen, C., Newey, W., & Robins, J. (2018). Double/debiased machine learning for treatment and structural parameters. *The Econometrics Journal*, 21(1), C1–C68. [Link](https://doi.org/10.1111/ectj.12097). (DDML 奠基文献)
+-   Chernozhukov, V., Cinelli, C., Newey, W., Sharma, A., & Syrgkanis, V. (2022). Long Story Short: Omitted Variable Bias in Causal Machine Learning. NBER WP 30302 ｜ arXiv:2112.13398. [PDF](https://arxiv.org/abs/2112.13398). (不可观测遗漏变量的敏感性分析)
+-   Clarke, S. P., & Polselli, A. (2026). Double machine learning for static panel models with fixed effects. *The Econometrics Journal*, 29(1), 69–86. [Link](https://academic.oup.com/ectj/article/29/1/69/8120202)．R 包 `xtdml`：<https://github.com/POLSEAN/xtdml>。
+-   Fuhr, J., & Papies, D. (2024). Double Machine Learning meets Panel Data — Promises, Pitfalls, and Potential Solutions. arXiv:2409.01266. [PDF](https://arxiv.org/pdf/2409.01266). (面板 DDML 的分折策略与相关随机效应做法)
+-   Fuhr, J., Berens, P., & Papies, D. (2024). Estimating Causal Effects with Double Machine Learning: A Method Evaluation. arXiv:2403.14385. [PDF](https://arxiv.org/pdf/2403.14385). (DDML 适用场景与实操建议)
+-   Filoso, V. (2013). Regression Anatomy, presented through the Frisch-Waugh-Lovell theorem. *The Stata Journal*, 13(1), 92–106. (FWL 与部分回归)
+-   李金桐, 2023, [因果推断：双重机器学习-ddml](https://www.lianxh.cn/details/1221.html), 连享会 No.1221. (中文推导与 Stata 实例，本章理论主参考)
+-   赵俊, 2025, 静态面板数据下的双重机器学习模型 [(上·理论)](https://www.lianxh.cn/details/1664.html) [(下·R 实操)](https://www.lianxh.cn/details/1665.html). (对口面板 FE)
+
+**软件入口**
+
+-   Stata `ddml` / `pystacked`(官方文档站)：<https://statalasso.github.io/docs/ddml/>
+-   Python / R `DoubleML`：<https://docs.doubleml.org/>
+-   Python `EconML`(微软，异质性/动态处理效应)：<https://econml.azurewebsites.net/>
+-   面板固定效应 R 包 `xtdml`：<https://github.com/POLSEAN/xtdml>
+
+## 图形来源索引
+
+本章配图分两类：既有讲义/图库中的示意图，以及本章为配合公式专门绘制的钢笔风示意图 (帮助数学基础较弱的读者理解公式背后的含义)。列出图源，便于后续修改追溯。
+
+| 图号 | 图形内容 | 图源 |
+|------------------------|------------------------|------------------------|
+| @fig-cipolicy-ddml-fwl-venn | FWL：partial out 的方差韦恩图 | 讲义《线性回归分析 (3)：模型设定》(`OLS-venn-01.png`) |
+| @fig-cipolicy-ddml-fwl-partial-out | FWL：两边同时剔除 $X$ 的流程 | 本章绘制 (`ch07_fig01_fwl_partial_out_pen.png`) |
+| @fig-cipolicy-ddml-structure | 因果结构 DAG (X、D、Y、V、U) | 李金桐 ([2023](https://www.lianxh.cn/details/1221.html)) DDML 推文 (`..._李金桐_Fig01.png`) |
+| @fig-cipolicy-ddml-naive-vs-orthogonal | 天真估计 vs 正交化 | 本章绘制 (`ch07_fig02_naive_vs_orthogonal_pen.png`) |
+| @fig-cipolicy-ddml-product-bias | Neyman 正交：一阶误差压成二阶乘积 | 本章绘制 (`ch07_fig03_neyman_product_bias_pen.png`) |
+| @fig-cipolicy-ddml-cross-fitting | 交叉拟合：out-of-fold 预测 | 本章绘制 (`ch07_fig04_cross_fitting_pen.png`) |
+| @fig-cipolicy-ddml-workflow | DDML 四步流程与 Stata 命令 | 本章绘制 (`ch07_fig05_ddml_workflow_pen.png`) |
+| @fig-cipolicy-ddml-can-cannot | DDML 能修与不能修的边界 | 本章绘制 (`ch07_fig06_can_cannot_boundary_pen.png`) |
+
+> 说明：本章核心示意图 (乘积结构、交叉拟合、四步流程等) 已配齐，见上表。若后续要与第 6 章统一视觉风格，可再微调线条与配色，此处不再另列待绘清单。

@@ -1,0 +1,34 @@
+# Normalize text files
+* text=auto
+
+# Keep scripts and project text files as LF for cross-platform builds
+*.sh    text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+*.qmd   text eol=lf
+*.md    text eol=lf
+*.css   text eol=lf
+*.js    text eol=lf
+*.json  text eol=lf
+*.bib   text eol=lf
+
+# Treat common binary files as binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.pdf   binary
+*.zip   binary
+*.docx  binary
+*.pptx  binary
+*.xlsx  binary
+
+
+.gitignore       text eol=lf
+*.code-workspace text eol=lf
+
+*.ipynb text eol=lf
+*.do    text eol=lf
+*.r     text eol=lf
+*.R     text eol=lf
+*.py    text eol=lf

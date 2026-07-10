@@ -1,0 +1,116 @@
+﻿---
+title: "Heckman 模型扩展阅读"
+---
+
+本附录整理正文未完全展开的相关文献。分类不是为了把文献机械分箱，而是帮助读者把 Heckman 模型的不同使用场景区分开来：有些文献是经典就业选择，有些是分布和分位数扩展，有些只是说明样本选择机制，并不使用 Heckman 模型。读者应根据研究问题选择方法，不宜把 `heckman` 命令当作统一解法。
+
+
+## 按学科分类
+
+### 劳动经济学：工资只在就业者中可见
+
+劳动经济学是 Heckman 样本选择模型最经典的应用领域。原因很直接：研究者通常关心潜在工资报价，但工资只在就业者中被观察到。若劳动参与由能力、偏好、家庭照护责任、保留工资和就业机会共同决定，且这些不可观测因素也影响工资，直接用就业者工资样本估计工资方程就会产生偏误。
+
+代表文献：Blau et al. ([2024](https://doi.org/10.1086/725032))、Borjas and Edo ([2026](https://doi.org/10.1086/732774))、Arellano and Bonhomme ([2017](https://doi.org/10.3982/ECTA14030))、Chernozhukov et al. ([2025](https://doi.org/10.1086/738148))、Maasoumi and Wang ([2019](https://doi.org/10.1086/701788))。
+
+- Blau, F. D., Kahn, L. M., Boboshko, N., & Comey, M. L. (2024). The impact of selection into the labor force on the gender wage gap. *Journal of Labor Economics*, 42(4), 1093–1133. [Link](https://doi.org/10.1086/725032), [PDF](https://www.nber.org/system/files/working_papers/w28855/w28855.pdf), [Data](https://www.openicpsr.org/openicpsr/project/210781/version/V1/view), [Google](https://scholar.google.com/scholar?q=The+Impact+of+Selection+into+the+Labor+Force+on+the+Gender+Wage+Gap).
+
+  这篇文献适合作为女性工资主案例的升级版。它的核心不是展示一个简单 Heckman 两步回归，而是系统比较多种选择校正策略。作者使用 PSID 长面板数据，尽量增加真实工资观测，再对仍然缺失的工资进行概率加权处理。它的教学价值在于提醒读者：观察工资差距的趋势，不一定等于潜在工资报价差距的趋势。若男女劳动参与模式本身发生变化，观察样本中的工资收敛可能被放大或缩小。开放材料方面，openICPSR 提供 supplementary data；公开页面中尚未核验到完整代码仓库。
+
+- Borjas, G. J., & Edo, A. (2026). Gender, selection into employment, and the wage impact of immigration. *Journal of Labor Economics*, 44(2), 515–552. [Link](https://doi.org/10.1086/732774), [PDF](https://gborjas.scholars.harvard.edu/sites/g/files/omnuum4696/files/2026-02/JOLE2026.pdf), [NBER](https://www.nber.org/papers/w28682), [Google](https://scholar.google.com/scholar?q=Gender+Selection+into+Employment+and+the+Wage+Impact+of+Immigration).
+
+  这篇文献把样本选择带入政策冲击估计。移民流入不仅影响本地工资，也可能改变本地劳动者是否就业。作者发现，法国女性面对移民冲击时就业率明显下降，直接观察就业女性工资会低估负面工资效应。文章使用 Heckman-type selection correction，并与 shift-share 工具变量结合。对课堂教学而言，这篇的价值在于说明：处理变量外生并不自动解决 outcome sample 变化问题。即使政策冲击本身有外生来源，也要检查政策是否改变了谁留在结果样本中。公开主页中尚未核验到独立 replication package；作者主页和 NBER 页面提供论文版本。
+
+- Arellano, M., & Bonhomme, S. (2017). Quantile selection models with an application to understanding changes in wage inequality. *Econometrica*, 85(1), 1–28. [Link](https://doi.org/10.3982/ECTA14030), [Working Paper](https://ifs.org.uk/publications/quantile-selection-models-application-understanding-changes-wage-inequality), [PDF](https://cemmap.ac.uk/wp-content/uploads/2020/08/CWP7515.pdf), [Google](https://scholar.google.com/scholar?q=Quantile+Selection+Models+with+an+Application+to+Understanding+Changes+in+Wage+Inequality).
+
+  这篇文献从方法上把样本选择从均值方程推广到分位数。传统 Heckman 校正关注 $E(Y^{*}\mid X)$，但许多问题真正关心的是不同分位点上的工资差距和工资不平等。Arellano and Bonhomme (2017) 用 copula 描述选择误差和结果误差之间的依赖结构，从而校正 quantile regression 中的样本选择。它适合放在高级阅读中，不建议放入入门主文。学生需要先理解 Heckman 的均值校正，再看它如何扩展到分位数。
+
+- Chernozhukov, V., Fernández-Val, I., & Luo, S. (2025). Distribution regression with sample selection and UK wage decomposition. *Journal of Political Economy*, 133(12), 3952–3992. [Link](https://doi.org/10.1086/738148), [PDF](https://www.cemmap.ac.uk/wp-content/uploads/2023/04/CWP0923-Distribution-regression-with-sample-selection-and-UK-wage-decomposition.pdf), [Replication Package](https://doi.org/10.7910/DVN/JOQBNQ), [Data](https://doi.org/10.5255/UKDA-SN-9355-1), [Readme](https://doc.ukdataservice.ac.uk/doc/9355/mrdoc/pdf/9355_readme.pdf), [Google](https://scholar.google.com/scholar?q=Distribution+Regression+with+Sample+Selection+and+UK+Wage+Decomposition).
+
+  这篇文献是 Heckman 思路的现代推广。它把结果方程从均值扩展为 distribution regression，在不同工资阈值上刻画潜在工资分布，并允许选择相关性随工资位置变化。文章的排他变量来自 out-of-work income，用于解释就业选择，但不直接进入潜在工资分布。它的复现材料较完整：作者主页列出 replication package，UK Data Service 提供数据和说明文件。它适合作为正文中的前沿案例，也适合作为附录中「从均值到分布」的代表文献。
+
+- Maasoumi, E., & Wang, L. (2019). The gender gap between earnings distributions. *Journal of Political Economy*, 127(5), 2438–2504. [Link](https://doi.org/10.1086/701788), [PDF](https://hceconomics.uchicago.edu/sites/default/files/Maasoumi_Wang_gender-gaps.pdf), [Google](https://scholar.google.com/scholar?q=The+Gender+Gap+between+Earnings+Distributions).
+
+  这篇文献关注男女收入分布之间的差距，而不是单一均值或中位数差距。它与 Arellano and Bonhomme (2017)、Chernozhukov et al. (2025) 都属于工资分布方向。对教学而言，它可以用来说明：一旦研究对象从平均工资扩展到分布，样本选择问题也会变得更复杂，因为选择可能改变整个分布形状。它不如 Chernozhukov et al. (2025) 适合作为主案例，但适合放在分布选择文献中。
+
+### 国际贸易：零贸易流和贸易伙伴选择
+
+国际贸易中的选择问题很直观。大量国家对之间没有贸易。若研究者只在正贸易流国家对中估计引力模型，就忽略了贸易伙伴形成这一选择过程。这里的样本选择不是个人是否就业，而是国家对之间是否发生贸易。
+
+代表文献：Helpman et al. ([2008](https://doi.org/10.1162/qjec.2008.123.2.441))。
+
+- Helpman, E., Melitz, M., & Rubinstein, Y. (2008). Estimating trade flows: Trading partners and trading volumes. *The Quarterly Journal of Economics*, 123(2), 441–487. [Link](https://doi.org/10.1162/qjec.2008.123.2.441), [PDF](https://melitz.scholars.harvard.edu/sites/g/files/omnuum5906/files/melitz/files/estimatingtradeflows_qje.pdf), [Homepage](https://melitz.scholars.harvard.edu/publications/estimating-trade-flows-trading-partners-and-trading-volumes), [Google](https://scholar.google.com/scholar?q=Estimating+Trade+Flows+Trading+Partners+and+Trading+Volumes).
+
+  这篇文献是跨领域教学的最佳案例之一。文章先从异质性企业进入出口市场的理论出发，说明为什么有些国家对之间贸易额为零；再用第一阶段 Probit 估计是否发生贸易，第二阶段估计正贸易流的贸易量。它的排他变量包括企业进入监管成本和共同宗教指数。与传统 Heckman 不同，它还把 extensive margin 纳入第二阶段，因此不只是简单校正样本选择，还解释了出口企业数量变化如何影响贸易量。作者主页提供论文 PDF 和相关 religion 表格文件；尚未核验到完整代码仓库。
+
+### 金融市场：上市公司样本不是企业总体
+
+金融研究中，很多样本已经经过制度筛选。上市公司不是企业总体，IPO 公司不是所有成长型企业，能长期留在交易所中的企业也不是随机企业。此类问题不一定要用 Heckman 模型处理，但必须在研究设计中正面说明。
+
+代表文献：Allen et al. ([2024](https://doi.org/10.1111/jofi.13312))。
+
+- Allen, F., Qian, J., Shan, C., & Zhu, J. L. (2024). Dissecting the long-term performance of the Chinese stock market. *Journal of Finance*, 79(2), 993–1054. [Link](https://doi.org/10.1111/jofi.13312), [SSRN](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2880021), [PDF](https://cf-jrc.econ.cuhk.edu.hk/wp-content/uploads/2024/06/PDF_QJLeiZhu-DissectingtheLong%E2%80%90TermPerformanceoftheChineseStockMarket.pdf), [Google](https://scholar.google.com/scholar?q=Dissecting+the+Long-Term+Performance+of+the+Chinese+Stock+Market).
+
+  这篇文献不属于 Heckman 方程应用，但适合作为「选择机制论述」的金融案例。文章研究中国 A 股长期表现，比较 A 股上市企业、境外上市中国企业、其他市场企业以及匹配的未上市中国企业。它提醒读者，上市样本本身就是制度筛选结果。对于科创板、注册制和 IPO 政策评估，不能把最终上市企业简单看作处理组总体。若研究者看不到申报失败、撤回、审核未通过、未上市但相似的企业，就必须重新定义估计对象。公开页面中可以访问 SSRN 和作者机构 PDF；尚未核验到公开 replication code。
+
+### 会计研究：Heckman 误用和排他变量问题
+
+会计和公司金融研究中，Heckman 模型经常被当作自选择稳健性检验使用。问题是，很多研究并没有真正说明选择机制，也没有可信的排他变量。此时，Heckman 不是增强可信度，反而可能制造一种形式上的严谨。
+
+代表文献：Lennox et al. ([2012](https://doi.org/10.2308/accr-10195))。
+
+- Lennox, C. S., Francis, J. R., & Wang, Z. (2012). Selection models in accounting research. *The Accounting Review*, 87(2), 589–616. [Link](https://doi.org/10.2308/accr-10195), [Publisher](https://publications.aaahq.org/accounting-review/article/87/2/589/3388/Selection-Models-in-Accounting-Research), [Google](https://scholar.google.com/scholar?q=Selection+Models+in+Accounting+Research+Lennox+Francis+Wang).
+
+  这篇文献是方法警示，不是应用案例。作者系统讨论会计研究中选择模型的使用问题，指出许多研究者把 Heckman 当作机械校正，忽视了排他变量、选择方程解释力、IMR 与核心解释变量共线性、以及模型对函数形式假设的敏感性。它适合放在「排他性变量不是装饰」之后，提醒读者：没有机制支撑的选择方程很难说服审稿人。若研究者只是为了回应「自选择问题」而加入 IMR，通常不能真正解决识别问题。
+
+---
+
+## 按 Heckman 使用要点分类
+
+### 经典两方程思想：结果只在被选择样本中可见
+
+代表文献：Blau et al. ([2024](https://doi.org/10.1086/725032))、Borjas and Edo ([2026](https://doi.org/10.1086/732774))。
+
+这类文献最适合与 Mroz 数据例子搭配。教学重点是：先定义选择变量 $D$，再定义潜在结果 $Y^{*}$，最后说明为何 $Y=Y^{*}$ 只在 $D=1$ 时被观察到。排他变量通常来自家庭结构、非劳动收入、照护责任或财富约束。真正困难的地方不是写方程，而是说明这些变量为什么只影响劳动参与，不直接影响潜在工资。
+
+### 选择校正嵌入政策评估
+
+代表文献：Borjas and Edo ([2026](https://doi.org/10.1086/732774))。
+
+这类文献适合讲 DID、IV 和 shift-share 之外的问题。即使冲击变量本身可以被视为外生，政策冲击仍可能改变谁留在样本中。若政策影响就业参与、上市申请、企业存活、信息披露或样本追踪，研究者需要区分「政策对结果的影响」和「政策对结果可见性的影响」。
+
+### 二元选择 + 正结果方程
+
+代表文献：Helpman et al. ([2008](https://doi.org/10.1162/qjec.2008.123.2.441))。
+
+这类文献的结构是：第一阶段解释是否出现正结果，第二阶段解释正结果的规模。与女性工资相比，它更适合讲贸易、专利、投资、并购、融资、出口等存在大量零值或未进入状态的研究。需要注意的是，零值结果不一定都应该用 Heckman。若零值本身是结果变量的一部分，Poisson、PPML、two-part model 或 hurdle model 也可能更合适。Helpman et al. (2008) 的价值在于它把零贸易流和企业进入出口市场的理论机制连在一起。
+
+### 从均值选择到分布选择
+
+代表文献：Arellano and Bonhomme ([2017](https://doi.org/10.3982/ECTA14030))、Maasoumi and Wang ([2019](https://doi.org/10.1086/701788))、Chernozhukov et al. ([2025](https://doi.org/10.1086/738148))。
+
+这类文献说明，样本选择不只是均值问题。如果研究者关心分位数、分布差距、不平等、顶部工资或底部工资，选择机制可能在分布不同位置产生不同影响。经典 Heckman 的一个相关系数和一个均值校正项太粗糙，未必能描述复杂选择。现代方法把选择校正扩展到 quantile regression 和 distribution regression，但代价是模型更技术化，对识别变量和样本规模要求更高。
+
+### 非 Heckman 的选择机制论述
+
+代表文献：Allen et al. ([2024](https://doi.org/10.1111/jofi.13312))。
+
+并不是所有样本选择问题都要用 Heckman。若结果在处理组和对照组都可见，但处理组进入机制不随机，问题更接近处理效应识别、匹配、DID、合成控制或选择性进入政策的问题。上市公司样本、试点城市样本、被投企业样本、幸存企业样本都属于这一类。研究者需要先说明估计对象，再判断是否需要选择模型。
+
+### Heckman 误用警示
+
+代表文献：Lennox et al. ([2012](https://doi.org/10.2308/accr-10195))。
+
+Heckman 模型最容易被误用为稳健性检验按钮。规范写法不是「我们使用 Heckman 修正自选择偏误，结果稳健」，而是要具体说明：选择方程解释什么？结果方程解释什么？排他变量是什么？为什么它影响选择而不直接影响结果？IMR 与核心解释变量是否高度共线？结果是否对选择方程设定敏感？这些问题比软件命令更重要。
+
+## 可复现材料备注
+
+本附录只列入已经核验到的公开材料链接。
+
+- Blau et al. ([2024](https://doi.org/10.1086/725032)): openICPSR 提供 supplementary data，页面显示项目 DOI 为 10.3886/E210781V1，并列出 `main_PSID.dta`。
+- Chernozhukov et al. ([2025](https://doi.org/10.1086/738148)): 作者主页列出 replication package 和 UK Data Service 数据链接；UKDS Readme 说明包括 Stata 数据、`Construction.do` 和整理后的 DRS 数据。
+- Helpman et al. ([2008](https://doi.org/10.1162/qjec.2008.123.2.441)): Marc Melitz 主页提供论文 PDF 和 religion 表格修正文件。
+- Borjas and Edo ([2026](https://doi.org/10.1086/732774)): 作者主页和 NBER 页面提供论文版本；尚未核验到独立公开 replication package。
+- Arellano and Bonhomme ([2017](https://doi.org/10.3982/ECTA14030))、Maasoumi and Wang ([2019](https://doi.org/10.1086/701788))、Allen et al. ([2024](https://doi.org/10.1111/jofi.13312))、Lennox et al. ([2012](https://doi.org/10.2308/accr-10195)): 本轮整理尚未核验到可直接下载的官方 replication package。后续若要做实操复现，可按论文主页、期刊 replication policy、Dataverse、openICPSR、AEA Data Editor、GitHub 和作者主页逐一检索。
+
+
