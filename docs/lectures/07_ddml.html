@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>7&nbsp; 双重机器学习：DDML – 因果推断：政策评估中的识别思维与实证设计</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../lectures/08_ai_agent_workflow.html" rel="next">
+<link href="../lectures/06_did_design.html" rel="prev">
+<link href="../images/book-logo.png" rel="icon" type="image/png">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e8fb9d25728d58bfeac61b497e4a6629.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-57a92833092fd6dc0d7710b6bdfff9c5.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-7ef202e96c563d31d9e5226e4d6cabf9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-490ba4e843cb1303a232ed0c676384f2.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/01_policy_to_design.html"><strong>讲义</strong></a></li><li class="breadcrumb-item"><a href="../lectures/07_ddml.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">双重机器学习：DDML</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="https://lianxhcn.github.io/ci-policy/" class="sidebar-logo-link">
+      <img src="../images/book-logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Causal Inference</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/lianxhcn/ci-policy" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
+    <a href="https://www.lianxh.cn" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-house-fill"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🏠 前言</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../syllabus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📌讲授计划</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../settings.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🚀课前准备：环境配置</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text"><strong>讲义</strong></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/01_policy_to_design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">从政策背景到研究设计</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/02_policy_to_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">政策如何进入数据</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/03_sample_selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">样本选择偏误</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/04_fixed_effects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">固定效应：控制了什么</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/05_counterfactuals.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">反事实构造</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/06_did_design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">双重差分：从 TWFE 到 CSDID</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/07_ddml.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">双重机器学习：DDML</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/08_ai_agent_workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">AI Agent 辅助实证研究</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/09_reading_list.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">阅读清单</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">附录</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/appendix/A02_government_guidance_fund.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">政府引导基金政策梳理笔记</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/appendix/A03_heckman_selection_literature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Heckman 模型扩展阅读</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch03_heckman/heckman_practical_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Heckman 实操笔记</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch04_fixed_effects/fixed_effects_practical_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">固定效应实操笔记</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch05_counterfactuals/A05_counterfactual_replication.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">加州禁烟：SCM/RCM/SDID</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch06_did/A06_did_method_selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">F</span>&nbsp; <span class="chapter-title">DID 方法与 Stata 实操</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch07_ddml/A07_fwl_ddml.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">G</span>&nbsp; <span class="chapter-title">双重机器学习 Stata 实操</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exercises/exercise_overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">练习概览</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#一个被忽视的识别威胁控制关系的函数形式" id="toc-一个被忽视的识别威胁控制关系的函数形式" class="nav-link active" data-scroll-target="#一个被忽视的识别威胁控制关系的函数形式"><span class="header-section-number">7.1</span> 一个被忽视的识别威胁：控制关系的函数形式</a></li>
+  <li><a href="#fwlpartial-out-是基本功" id="toc-fwlpartial-out-是基本功" class="nav-link" data-scroll-target="#fwlpartial-out-是基本功"><span class="header-section-number">7.2</span> FWL：partial out 是基本功</a></li>
+  <li><a href="#天真地套机器学习为什么失败" id="toc-天真地套机器学习为什么失败" class="nav-link" data-scroll-target="#天真地套机器学习为什么失败"><span class="header-section-number">7.3</span> 天真地套机器学习，为什么失败</a></li>
+  <li><a href="#补救对处理变量也-partial-out" id="toc-补救对处理变量也-partial-out" class="nav-link" data-scroll-target="#补救对处理变量也-partial-out"><span class="header-section-number">7.4</span> 补救：对处理变量也 partial out</a></li>
+  <li><a href="#neyman-正交与双重稳健偏误为什么变成乘积" id="toc-neyman-正交与双重稳健偏误为什么变成乘积" class="nav-link" data-scroll-target="#neyman-正交与双重稳健偏误为什么变成乘积"><span class="header-section-number">7.5</span> Neyman 正交与双重稳健：偏误为什么变成乘积</a></li>
+  <li><a href="#交叉拟合堵住过拟合的后门" id="toc-交叉拟合堵住过拟合的后门" class="nav-link" data-scroll-target="#交叉拟合堵住过拟合的后门"><span class="header-section-number">7.6</span> 交叉拟合：堵住过拟合的后门</a></li>
+  <li><a href="#机器学习方法够用就好" id="toc-机器学习方法够用就好" class="nav-link" data-scroll-target="#机器学习方法够用就好"><span class="header-section-number">7.7</span> 机器学习方法：够用就好</a></li>
+  <li><a href="#ddml-的完整流程理解了就能读懂任何命令" id="toc-ddml-的完整流程理解了就能读懂任何命令" class="nav-link" data-scroll-target="#ddml-的完整流程理解了就能读懂任何命令"><span class="header-section-number">7.8</span> DDML 的完整流程：理解了就能读懂任何命令</a></li>
+  <li><a href="#能修什么不能修什么" id="toc-能修什么不能修什么" class="nav-link" data-scroll-target="#能修什么不能修什么"><span class="header-section-number">7.9</span> 能修什么，不能修什么</a></li>
+  <li><a href="#从本章走向下一章" id="toc-从本章走向下一章" class="nav-link" data-scroll-target="#从本章走向下一章"><span class="header-section-number">7.10</span> 从本章走向下一章</a></li>
+  <li><a href="#参考文献与延伸阅读" id="toc-参考文献与延伸阅读" class="nav-link" data-scroll-target="#参考文献与延伸阅读"><span class="header-section-number">7.11</span> 参考文献与延伸阅读</a></li>
+  <li><a href="#图形来源索引" id="toc-图形来源索引" class="nav-link" data-scroll-target="#图形来源索引"><span class="header-section-number">7.12</span> 图形来源索引</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/01_policy_to_design.html"><strong>讲义</strong></a></li><li class="breadcrumb-item"><a href="../lectures/07_ddml.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">双重机器学习：DDML</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">双重机器学习：DDML</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-important callout-titled" title="本章核心判断">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+本章核心判断
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>在多数模型设定中，我们都会使用控制变量来「控制」混淆因素的影响。然而，当混淆变量很多、又以未知的非线性方式影响处理变量 <span class="math inline">\(D\)</span> 和结果变量 <span class="math inline">\(Y\)</span> 时，线性设定会带来模型误设偏误。此时，采用机器学习方法估计模型又会引入正则化偏误。双重机器学习 (double/debiased machine learning, DDML) 用 partial out、正交化和交叉拟合走出这个两难：在选择性可观测、正交矩条件、交叉拟合和辅助函数收敛条件下，用灵活的学习器估计辅助函数，同时维持对目标参数的有效推断。</p>
+<p>很多人误以为 DDML 是解决内生性问题的万能钥匙，其实不然。DDML 的前提假设是：模型设定中不存在遗漏变量问题，即所有重要混淆变量都已经进入模型。<strong>DDML 应对的是模型误设问题 (各种复杂的非线性关系)，而不是不可观测的遗漏变量问题。</strong></p>
+</div>
+</div>
+<p>前面几章把识别威胁指向两个方向。第 3 章讨论样本选择和自选择：谁进入样本、谁被观测到。第 5 章讨论反事实构造：没有政策时，处理组本来会怎样。第 4 章则讨论用固定效应和控制变量缓解遗漏变量偏误。本章指向另一类更容易被忽视的问题：<strong>控制关系的函数形式</strong>。</p>
+<p>问题从一个常见误解开始。很多人把「机器学习 + 因果推断」理解成把结果变量对一大堆特征跑一个随机森林，然后看哪个变量重要——这是预测，不是识别。也有人把几百个控制变量一股脑塞进 Lasso，筛一筛再做 OLS，以为这样就「控制干净」了。这两种做法都忽略了一个基本事实：机器学习天生为预测服务，它对目标参数的估计往往是有偏的，而且这个偏误不会随样本增大而消失。</p>
+<p>真正的问题不在于控制变量少，而在于控制变量<strong>既多又非线性</strong>。政策评估里，企业规模、地区禀赋、行业周期、政策暴露之间的关系往往不是简单线性。这时：</p>
+<ul>
+<li>如果坚持线性设定，就可能因为函数形式设定错误而残留偏误；</li>
+<li>如果换成灵活的机器学习去拟合这些关系，正则化又会把偏误漏进我们真正关心的处理效应。</li>
+</ul>
+<p>DDML 就是为走出这个两难而生的。读完本章，你应当能回答四个问题：</p>
+<ol type="1">
+<li>为什么加了固定效应和一堆控制变量，统计推断仍可能不干净？</li>
+<li>partial out 到底在做什么，它和 Neyman 正交、双重稳健是什么关系？</li>
+<li>DDML 的完整流程是什么，为什么理解了流程就能读懂 Stata 或 Python 里的命令？</li>
+<li>DDML 能修什么，不能修什么？</li>
+</ol>
+<div class="callout callout-style-default callout-tip callout-titled" title="本章路线">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+本章路线
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>非线性混淆 + 高维控制的两难 → FWL：partial out 是基本功 → 天真地套机器学习为什么失败 → 补救：对处理变量也 partial out → Neyman 正交：偏误变成乘积 → 双重稳健：一侧误差为零则偏误为零 → 交叉拟合堵住过拟合 → DDML 四步流程与五种模型 → 能修什么、不能修什么 → 通向第八章。</p>
+</div>
+</div>
+<p>本章把技术推导和代码留到 <strong>附录 H</strong>。正文只讲清楚：问题是什么、方法适用于什么场景、前提条件是什么、解决思路是什么。真正的命令怎么写、结果怎么读，配套的 Notebook 会逐段解释。</p>
+<section id="一个被忽视的识别威胁控制关系的函数形式" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="一个被忽视的识别威胁控制关系的函数形式"><span class="header-section-number">7.1</span> 一个被忽视的识别威胁：控制关系的函数形式</h2>
+<p>先看一个熟悉的设定。研究某项处理 <span class="math inline">\(D\)</span> 对结果 <span class="math inline">\(Y\)</span> 的影响，我们几乎总会加一组控制变量 <span class="math inline">\(X\)</span>：</p>
+<p><span id="eq-cipolicy-ddml-linear-control"><span class="math display">\[
+Y_i=\alpha+\theta D_i+X_i'\beta+\varepsilon_i
+\tag{7.1}\]</span></span></p>
+<p><a href="#eq-cipolicy-ddml-linear-control" class="quarto-xref">式&nbsp;<span>7.1</span></a> 里，<span class="math inline">\(X\)</span> 进入模型的方式是线性的。第 4 章说明了固定效应如何吸收不随时间变化的个体差异，交互固定效应如何进一步放松比较范围。但所有这些设定都默认了一件事：控制变量以我们写定的函数形式影响结果。</p>
+<p>现实往往不是这样。举一个直观的例子。研究「课堂上增加助教」对学生成绩的影响，控制变量包括每天学习时间、作业完成率、出勤率。学习时间和成绩之间是线性的吗？显然不是：学习时间增加会提高成绩，但过长又会因为疲惫、睡眠不足而拉低效率。如果我们用一个线性的「学习时间」项去控制它，就没有真正把这个混淆因素扣干净，残留的部分会漏进 <span class="math inline">\(D\)</span> 的系数。</p>
+<p>这里的关键在于，我们<strong>并不关心</strong>学习时间对成绩的影响本身，我们只想干净地估计处理效应 <span class="math inline">\(\theta\)</span>。学习时间只是一个需要被「控制掉」的混淆变量。但只要它以非线性方式进入，线性控制就控制不干净。</p>
+<p>一个自然的想法是：既然线性不够，就用更灵活的方法去拟合控制关系——随机森林、梯度提升、神经网络、Lasso 都可以逼近复杂的非线性函数。这个思路是对的，但直接套用会引申出新的问题。</p>
+<div class="callout callout-style-default callout-warning callout-titled" title="两难">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+两难
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>坚持线性设定：控制关系若非线性，模型误设，处理效应有偏；</li>
+<li>换成机器学习：正则化偏误会漏进处理效应，估计同样不可信。</li>
+</ul>
+<p>DDML 要解决的，正是如何既用机器学习的灵活性拟合控制关系，又不让它的偏误污染处理效应。</p>
+</div>
+</div>
+<p>为了讲清 DDML 怎么走出这个两难，我们先回到一个更基本的工具：FWL 定理。它是理解 partial out 的起点，也是 DDML 全部直觉的来源。</p>
+</section>
+<section id="fwlpartial-out-是基本功" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="fwlpartial-out-是基本功"><span class="header-section-number">7.2</span> FWL：partial out 是基本功</h2>
+<p>Frisch-Waugh-Lovell (FWL) 定理讲的是多元回归的一个基本性质。考虑：</p>
+<p><span id="eq-cipolicy-ddml-fwl-full"><span class="math display">\[
+Y=X_1\beta_1+X_2\beta_2+u
+\tag{7.2}\]</span></span></p>
+<p>FWL 定理告诉我们，<a href="#eq-cipolicy-ddml-fwl-full" class="quarto-xref">式&nbsp;<span>7.2</span></a> 中 <span class="math inline">\(X_1\)</span> 的系数 <span class="math inline">\(\beta_1\)</span>，可以用一个「残差对残差」的回归还原出来。做法是先把 <span class="math inline">\(X_2\)</span> 的影响从两边都剔除 (partial out)：</p>
+<ul>
+<li>用 <span class="math inline">\(Y\)</span> 对 <span class="math inline">\(X_2\)</span> 回归，取残差 <span class="math inline">\(\tilde Y\)</span>；</li>
+<li>用 <span class="math inline">\(X_1\)</span> 对 <span class="math inline">\(X_2\)</span> 回归，取残差 <span class="math inline">\(\tilde X_1\)</span>；</li>
+<li>再用 <span class="math inline">\(\tilde Y\)</span> 对 <span class="math inline">\(\tilde X_1\)</span> 回归，得到的系数就等于 <span class="math inline">\(\beta_1\)</span>。</li>
+</ul>
+<p><a href="#fig-cipolicy-ddml-fwl-venn" class="quarto-xref">图&nbsp;<span>7.1</span></a> 用韦恩图把这个过程画了出来。<span class="math inline">\(Y\)</span>、<span class="math inline">\(X_1\)</span>、<span class="math inline">\(X_2\)</span> 三个圆的重叠部分，代表彼此能解释掉的方差。把 <span class="math inline">\(Y\)</span> 圆内部按字母拆开：</p>
+<p><span class="math display">\[
+Y = A + B + C + D
+\]</span></p>
+<p>其中 <span class="math inline">\(A\)</span> 是 <span class="math inline">\(Y\)</span> 里谁也没解释的部分，<span class="math inline">\(B\)</span> 只被 <span class="math inline">\(X_1\)</span> 解释，<span class="math inline">\(D\)</span> 只被 <span class="math inline">\(X_2\)</span> 解释，<span class="math inline">\(C\)</span> 被 <span class="math inline">\(X_1\)</span> 和 <span class="math inline">\(X_2\)</span> 共同解释。所谓「把 <span class="math inline">\(X_2\)</span> partial out」，直观上就是拿一把剪刀，把 <span class="math inline">\(X_2\)</span> 那个圆整个剪掉：<span class="math inline">\(Y\)</span> 里凡是和 <span class="math inline">\(X_2\)</span> 重叠的部分 (也就是 <span class="math inline">\(C\)</span> 和 <span class="math inline">\(D\)</span>) 都被剪走，只剩下：</p>
+<p><span class="math display">\[
+\tilde Y = A + B
+\]</span></p>
+<p>同样地，<span class="math inline">\(X_1\)</span> 剪掉与 <span class="math inline">\(X_2\)</span> 重叠的部分后得到残差 <span class="math inline">\(\tilde X_1\)</span>。再用 <span class="math inline">\(\tilde Y\)</span> 对 <span class="math inline">\(\tilde X_1\)</span> 回归，两者真正共享的只有区域 <span class="math inline">\(B\)</span>——也就是「<span class="math inline">\(X_1\)</span> 里扣掉了 <span class="math inline">\(X_2\)</span>、<span class="math inline">\(Y\)</span> 里也扣掉了 <span class="math inline">\(X_2\)</span>」之后，两边还共同拥有的那块方差。<span class="math inline">\(\beta_1\)</span> 就是从区域 <span class="math inline">\(B\)</span> 里估出来的。</p>
+<div id="fig-cipolicy-ddml-fwl-venn" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-ddml-fwl-venn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/OLS-venn-01.png" class="img-fluid figure-img" style="width:55.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-ddml-fwl-venn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;7.1: FWL 定理的方差韦恩图：<span class="math inline">\(\beta_1\)</span> 只用到区域 <span class="math inline">\(B\)</span>——把 <span class="math inline">\(X_2\)</span> 从 <span class="math inline">\(X_1\)</span> 和 <span class="math inline">\(Y\)</span> 中同时剪掉之后，两者还共同解释的那部分方差
+</figcaption>
+</figure>
+</div>
+<p>这个定理看似只是一个计算技巧，实际上是一整套方法的理论基础。例如，在 Stata 中，<code>xtreg</code> 命令的 <code>fe</code> 选项，<code>reghdfe</code> 命令的 <code>absorb()</code> 选项，<code>ivreg2</code> 和 <code>lasso2</code> 命令的 <code>partial()</code> 选项，都是 FWL 的直接应用——它们先把固定效应或一部分控制变量 partial out，再对核心变量做回归。</p>
+<p>此处要特别注意的是：<strong>要得到干净的 <span class="math inline">\(\theta\)</span>，必须把控制变量从处理变量和结果变量两边都剔除，而不是只从结果变量一边剔除。</strong></p>
+<p><a href="#fig-cipolicy-ddml-fwl-partial-out" class="quarto-xref">图&nbsp;<span>7.2</span></a> 把这句话画成了流程图。图中 <span class="math inline">\(\hat E(Y\mid X)\)</span>、<span class="math inline">\(\hat E(D\mid X)\)</span> 就是分别用 <span class="math inline">\(X\)</span> 去拟合 <span class="math inline">\(Y\)</span> 和 <span class="math inline">\(D\)</span> 得到的预测值；把它们从 <span class="math inline">\(Y\)</span> 和 <span class="math inline">\(D\)</span> 中减掉，得到两个残差 <span class="math inline">\(\tilde Y\)</span> 和 <span class="math inline">\(\tilde D\)</span>，再用 <span class="math inline">\(\tilde Y\)</span> 对 <span class="math inline">\(\tilde D\)</span> 回归，斜率就是干净的处理效应 <span class="math inline">\(\theta\)</span>。无论用 OLS 还是机器学习来做「用 <span class="math inline">\(X\)</span> 解释」这一步，只要两边都剔除，逻辑都一样。记住这个「两边同时剔除」的骨架，下一节 DDML 的全部逻辑就水到渠成——也会看到，一旦省掉 <span class="math inline">\(D\)</span> 那一边，估计立刻出问题。完整的手算验证 (三种回归给出同一个系数) 放在附录 H.2。</p>
+<div id="fig-cipolicy-ddml-fwl-partial-out" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-ddml-fwl-partial-out-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch07_fig01_fwl_partial_out_pen.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:82.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-ddml-fwl-partial-out-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;7.2: FWL 的核心是「两边同时剔除 <span class="math inline">\(X\)</span>」：先用 <span class="math inline">\(X\)</span> 分别解释 <span class="math inline">\(Y\)</span> 和 <span class="math inline">\(D\)</span>，取残差 <span class="math inline">\(\tilde Y=Y-\hat E(Y\mid X)\)</span>、<span class="math inline">\(\tilde D=D-\hat E(D\mid X)\)</span>，再用残差对残差回归，<span class="math inline">\(\theta\)</span> 就来自两个残差之间的关系
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="天真地套机器学习为什么失败" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="天真地套机器学习为什么失败"><span class="header-section-number">7.3</span> 天真地套机器学习，为什么失败</h2>
+<p>现在把控制关系写成一般形式。处理变量和结果变量都可能被控制变量 <span class="math inline">\(X\)</span> 影响，可以写成两条方程：</p>
+<p><span id="eq-cipolicy-ddml-plm"><span class="math display">\[
+Y=D\theta_0+g_0(X)+U,\quad E[U\mid X,D]=0
+\tag{7.3}\]</span></span></p>
+<p><span id="eq-cipolicy-ddml-treat"><span class="math display">\[
+D=m_0(X)+V,\quad E[V\mid X]=0
+\tag{7.4}\]</span></span></p>
+<p>两条方程里各个符号的含义是：</p>
+<ul>
+<li><span class="math inline">\(g_0(X)\)</span>：控制变量对结果的影响，函数形式未知、可能高度非线性；</li>
+<li><span class="math inline">\(m_0(X)=E[D\mid X]\)</span>：处理变量中能被 <span class="math inline">\(X\)</span> 解释的部分，也就是 <span class="math inline">\(X\)</span> 对 <span class="math inline">\(D\)</span> 的影响；</li>
+<li><span class="math inline">\(V=D-m_0(X)\)</span>：<span class="math inline">\(D\)</span> 中与 <span class="math inline">\(X\)</span> 无关、真正外生干净的那块变异；</li>
+<li><span class="math inline">\(U\)</span>：结果方程里与 <span class="math inline">\(X\)</span>、<span class="math inline">\(D\)</span> 都无关的随机扰动；</li>
+<li><span class="math inline">\(\theta_0\)</span>：我们唯一关心的处理效应。</li>
+</ul>
+<p><a href="#fig-cipolicy-ddml-structure" class="quarto-xref">图&nbsp;<span>7.3</span></a> 用因果图把这个结构画了出来：<span class="math inline">\(X\)</span> 同时指向 <span class="math inline">\(D\)</span> 和 <span class="math inline">\(Y\)</span>，是必须被控制的混淆变量；<span class="math inline">\(D\)</span> 除了受 <span class="math inline">\(X\)</span> 影响，还带着一块不受 <span class="math inline">\(X\)</span> 影响的外生变异 <span class="math inline">\(V\)</span>。识别 <span class="math inline">\(\theta_0\)</span> 的关键，就是把 <span class="math inline">\(X\)</span> 的影响从 <span class="math inline">\(D\)</span> 和 <span class="math inline">\(Y\)</span> 两边都清走，只用 <span class="math inline">\(V\)</span> 携带的外生信息。</p>
+<div id="fig-cipolicy-ddml-structure" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-ddml-structure-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/Double-Debiased-Machine-Learning_%E6%9D%8E%E9%87%91%E6%A1%90_Fig01.png" class="img-fluid figure-img" style="width:60.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-ddml-structure-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;7.3: 因果结构。控制变量 <span class="math inline">\(X\)</span> 同时影响处理 <span class="math inline">\(D\)</span> 和结果 <span class="math inline">\(Y\)</span>，是必须被控制的混淆变量；<span class="math inline">\(V\)</span> 是 <span class="math inline">\(D\)</span> 中不受 <span class="math inline">\(X\)</span> 影响的外生部分，<span class="math inline">\(U\)</span> 是结果方程里与 <span class="math inline">\(X\)</span>、<span class="math inline">\(D\)</span> 都无关的扰动。DDML 要做的，就是把 <span class="math inline">\(X\)</span> 的影响从 <span class="math inline">\(D\)</span> 和 <span class="math inline">\(Y\)</span> 两边都清走，只用 <span class="math inline">\(V\)</span> 携带的外生变异识别 <span class="math inline">\(\theta_0\)</span>
+</figcaption>
+</figure>
+</div>
+<p>有了这个结构，一个最自然的想法是：用机器学习把 <span class="math inline">\(g_0\)</span> 估出来，记为 <span class="math inline">\(\hat g_0\)</span>，然后把它从 <span class="math inline">\(Y\)</span> 中扣掉，再用 <span class="math inline">\(D\)</span> 去回归：</p>
+<p><span id="eq-cipolicy-ddml-naive"><span class="math display">\[
+\hat\theta_0=\frac{\frac1n\sum_i D_i\big(Y_i-\hat g_0(X_i)\big)}{\frac1n\sum_i D_i^2}
+\tag{7.5}\]</span></span></p>
+<p>这正是「只从结果变量一边 partial out」的做法：只处理了 <span class="math inline">\(Y\)</span>，没有处理 <span class="math inline">\(D\)</span>。<a href="#eq-cipolicy-ddml-naive" class="quarto-xref">式&nbsp;<span>7.5</span></a> 看起来合理，却是有偏的。把估计误差展开，可以分离出偏误的核心项 (完整推导见 <strong>附录 H</strong>，也可参考李金桐 (<a href="https://www.lianxh.cn/details/1221.html">2023</a>) 的中文推导，以及 Ahrens et al.&nbsp;(2025) 面向应用者的导论)：</p>
+<p><span id="eq-cipolicy-ddml-naive-bias"><span class="math display">\[
+b\;\propto\;\frac{1}{\sqrt n}\sum_i \underbrace{m_0(X_i)}_{\text{数据本身的性质}}\big(g_0(X_i)-\hat g_0(X_i)\big)
+\tag{7.6}\]</span></span></p>
+<p><a href="#eq-cipolicy-ddml-naive-bias" class="quarto-xref">式&nbsp;<span>7.6</span></a> 里，<span class="math inline">\(g_0-\hat g_0\)</span> 是机器学习的估计误差。为了在高维下防止过拟合，机器学习普遍带有正则化 (如 Lasso 的惩罚项)，这会让 <span class="math inline">\(\hat g_0\)</span> 系统性地偏离 <span class="math inline">\(g_0\)</span>，估计误差收敛很慢。更麻烦的是前面乘着的 <span class="math inline">\(m_0(X_i)\)</span>：它就是 <a href="#eq-cipolicy-ddml-treat" class="quarto-xref">式&nbsp;<span>7.4</span></a> 里定义的 <span class="math inline">\(E[D\mid X]\)</span>，即「处理变量 <span class="math inline">\(D\)</span> 中能被 <span class="math inline">\(X\)</span> 解释的部分」，是数据本身的性质，我们改不了。两者相乘，偏误被放大，且不随样本增大而消失。</p>
+<p>问题的根源，正是 FWL 已经警告过的：我们只把 <span class="math inline">\(X\)</span> 从 <span class="math inline">\(Y\)</span> 一边剔除了，没有从 <span class="math inline">\(D\)</span> 一边剔除。回到 <a href="#eq-cipolicy-ddml-treat" class="quarto-xref">式&nbsp;<span>7.4</span></a>，处理变量 <span class="math inline">\(D\)</span> 里其实还带着 <span class="math inline">\(m_0(X)\)</span> 这块被 <span class="math inline">\(X\)</span> 解释掉的信息；只要没把它清走，它就会和 <span class="math inline">\(g_0\)</span> 的估计误差纠缠在一起，<a href="#eq-cipolicy-ddml-naive-bias" class="quarto-xref">式&nbsp;<span>7.6</span></a> 的偏误就赖着不走。</p>
+</section>
+<section id="补救对处理变量也-partial-out" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="补救对处理变量也-partial-out"><span class="header-section-number">7.4</span> 补救：对处理变量也 partial out</h2>
+<p>补救办法，正是 FWL 的另一半：<strong>对处理变量 <span class="math inline">\(D\)</span> 也做 partial out。</strong></p>
+<p>具体做法是先估计 <span class="math inline">\(\hat m_0(X)=E[D\mid X]\)</span>，构造 <span class="math inline">\(D\)</span> 的残差 <span class="math inline">\(\hat V=D-\hat m_0(X)\)</span>，再用它替换掉 <a href="#eq-cipolicy-ddml-naive" class="quarto-xref">式&nbsp;<span>7.5</span></a> 里的 <span class="math inline">\(D\)</span>：</p>
+<p><span id="eq-cipolicy-ddml-ortho"><span class="math display">\[
+\check\theta_0=\frac{\frac1n\sum_i \hat V_i\big(Y_i-\hat g_0(X_i)\big)}{\frac1n\sum_i \hat V_i D_i},\qquad \hat V_i=D_i-\hat m_0(X_i)
+\tag{7.7}\]</span></span></p>
+<p>这就是把 FWL 的「两边都剔除」用机器学习实现了一遍：<span class="math inline">\(\hat g_0\)</span> 把 <span class="math inline">\(X\)</span> 从 <span class="math inline">\(Y\)</span> 里清走，<span class="math inline">\(\hat m_0\)</span> 把 <span class="math inline">\(X\)</span> 从 <span class="math inline">\(D\)</span> 里清走，再用两个残差相互回归。残差 <span class="math inline">\(\hat V\)</span> 是 <span class="math inline">\(D\)</span> 中不能被 <span class="math inline">\(X\)</span> 预测的剩余变化 (对应 <a href="#fig-cipolicy-ddml-structure" class="quarto-xref">图&nbsp;<span>7.3</span></a> 里那条不受 <span class="math inline">\(X\)</span> 干扰的 <span class="math inline">\(V\to D\)</span> 通道)；只要选择性可观测假设成立，它就是用于识别 <span class="math inline">\(\theta\)</span> 的核心变异。</p>
+<p><a href="#fig-cipolicy-ddml-naive-vs-orthogonal" class="quarto-xref">图&nbsp;<span>7.4</span></a> 把两种做法并排画出来，对比一目了然。左边是天真的做法：只用 <span class="math inline">\(X\)</span> 解释 <span class="math inline">\(Y\)</span>、构造残差 <span class="math inline">\(Y-\hat g(X)\)</span>，但 <span class="math inline">\(X\)</span> 仍在影响 <span class="math inline">\(D\)</span>，于是「预测做了，识别却没有做干净」。右边是正交化：把 <span class="math inline">\(X\)</span> 从 <span class="math inline">\(Y\)</span> 和 <span class="math inline">\(D\)</span> 两边同时拿掉，得到 <span class="math inline">\(\tilde Y\)</span> 和 <span class="math inline">\(\tilde D\)</span>，再用 <span class="math inline">\(\tilde Y=\theta\tilde D+e\)</span> 估计处理效应。</p>
+<div id="fig-cipolicy-ddml-naive-vs-orthogonal" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-ddml-naive-vs-orthogonal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch07_fig02_naive_vs_orthogonal_pen.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:88.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-ddml-naive-vs-orthogonal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;7.4: 天真估计只处理结果变量 <span class="math inline">\(Y\)</span>，<span class="math inline">\(X\)</span> 仍在影响 <span class="math inline">\(D\)</span>，识别没做干净；正交化同时处理 <span class="math inline">\(Y\)</span> 和 <span class="math inline">\(D\)</span>，把 <span class="math inline">\(X\)</span> 从两边一起拿掉，再用两个残差相互回归
+</figcaption>
+</figure>
+</div>
+<p>换成 <a href="#eq-cipolicy-ddml-ortho" class="quarto-xref">式&nbsp;<span>7.7</span></a> 之后，偏误项发生了关键变化，变成两个估计误差的<strong>乘积</strong>：</p>
+<p><span id="eq-cipolicy-ddml-product"><span class="math display">\[
+b^*\;\propto\;\frac{1}{\sqrt n}\sum_i \big(m_0(X_i) - \hat m_0(X_i)\big)\big(g_0(X_i)-\hat g_0(X_i)\big)
+\tag{7.8}\]</span></span></p>
+<p>对比 <a href="#eq-cipolicy-ddml-naive-bias" class="quarto-xref">式&nbsp;<span>7.6</span></a> 和 <a href="#eq-cipolicy-ddml-product" class="quarto-xref">式&nbsp;<span>7.8</span></a>：原来偏误里那个改不动的 <span class="math inline">\(m_0(X_i)\)</span>，现在换成了 <span class="math inline">\(m_0(X_i)-\hat m_0(X_i)\)</span>，也就是 <span class="math inline">\(D\)</span> 那边模型的<strong>估计误差</strong>。于是偏误从「一个估计误差」变成了「两个估计误差相乘」。</p>
+<p>这个乘积结构是全部关键。两个估计误差各自可能收敛得很慢 (机器学习常见的 <span class="math inline">\(n^{-1/4}\)</span> 量级)，但它们相乘之后收敛速度翻倍，足以快到可以忽略。<strong>换句话说，只要把 <span class="math inline">\(X\)</span> 从两边都清走，机器学习「拟合得不够准」这件事就不再致命。</strong> (天真估计与正交估计的偏误对比模拟见附录 H.3。)</p>
+</section>
+<section id="neyman-正交与双重稳健偏误为什么变成乘积" class="level2" data-number="7.5">
+<h2 data-number="7.5" class="anchored" data-anchor-id="neyman-正交与双重稳健偏误为什么变成乘积"><span class="header-section-number">7.5</span> Neyman 正交与双重稳健：偏误为什么变成乘积</h2>
+<p>上一节的乘积结构，有一个正式的名字：<strong>Neyman 正交</strong> (Neyman orthogonality)。</p>
+<p>它的含义可以这样理解。我们用一个矩条件 (moment condition) 来识别 <span class="math inline">\(\theta\)</span>，这个矩条件里含有需要估计的辅助函数 (nuisance function)，也就是结果侧的 <span class="math inline">\(g_0\)</span> 和处理侧的 <span class="math inline">\(m_0\)</span>。如果矩条件对辅助函数的微小扰动「一阶不敏感」——即在真值附近，辅助函数变一点点，矩条件几乎不动——那么辅助函数的估计误差就只能通过二阶项 (乘积项) 影响 <span class="math inline">\(\theta\)</span>。<a href="#eq-cipolicy-ddml-ortho" class="quarto-xref">式&nbsp;<span>7.7</span></a> 构造的正是这样一个正交矩条件；<a href="#eq-cipolicy-ddml-naive" class="quarto-xref">式&nbsp;<span>7.5</span></a> 那个天真估计则不正交，辅助函数一动，它就跟着大幅偏移。</p>
+<p>正交结构还带来另一个常被单独命名的性质：<strong>双重稳健</strong> (double robustness)。识别处理效应要靠两个辅助模型——一个刻画结果侧的 <span class="math inline">\(E[Y\mid X]\)</span>，一个刻画处理侧的 <span class="math inline">\(E[D\mid X]\)</span>。双重稳健说的是：只要这两个模型里有一个设定正确，估计就无偏。原因还是那个乘积结构。</p>
+<p><a href="#fig-cipolicy-ddml-product-bias" class="quarto-xref">图&nbsp;<span>7.5</span></a> 把这个机理画得很直观。图上半部分：两个辅助模型的估计误差 <span class="math inline">\(e_\ell\)</span> (结果侧，<span class="math inline">\(\hat\ell(X)-\ell_0(X)\)</span>，其中 <span class="math inline">\(\ell_0(X)=E[Y\mid X]\)</span> 对应正文的结果侧辅助模型) 和 <span class="math inline">\(e_m\)</span> (处理侧，<span class="math inline">\(\hat m(X)-m_0(X)\)</span>) 相乘才形成偏误——原本各自的一阶误差，被正交结构压成了二阶乘积。图下半部分把三种情形摆在一起 (对照 <a href="#eq-cipolicy-ddml-product" class="quarto-xref">式&nbsp;<span>7.8</span></a>)：</p>
+<ul>
+<li>若结果模型设定正确，<span class="math inline">\(e_\ell=0\)</span>，乘积为零，哪怕处理模型错得离谱也无妨；</li>
+<li>若处理模型设定正确，<span class="math inline">\(e_m=0\)</span>，乘积同样为零；</li>
+<li>只有两个模型<strong>同时</strong>错，<span class="math inline">\(e_\ell\)</span>、<span class="math inline">\(e_m\)</span> 才都非零，偏误才可能残留。</li>
+</ul>
+<div id="fig-cipolicy-ddml-product-bias" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-ddml-product-bias-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch07_fig03_neyman_product_bias_pen.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:82.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-ddml-product-bias-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;7.5: Neyman 正交把两个辅助模型各自的一阶误差 <span class="math inline">\(e_\ell\)</span>、<span class="math inline">\(e_m\)</span> 压成二阶乘积：只要有一个模型正确 (误差为零)，乘积就为零、偏误消失；只有两个模型同时错，偏误才可能残留
+</figcaption>
+</figure>
+</div>
+<p>这就是「双重稳健」四个字的由来。要强调的是，双重稳健不是一个概率判断——不是说现实中总有一个模型会对——而是说估计方程本身具有这样的代数结构：只要某一侧的误差为零，乘积偏误就为零。它不要求你把两个模型都估准，而是允许你在其中一个上出错。</p>
+<div class="callout callout-style-default callout-note callout-titled" title="两种「稳健」，别混为一谈">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+两种「稳健」，别混为一谈
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>乘积结构在不同模型设定下，给出的稳健性强度并不一样，写作和汇报时要分清：</p>
+<ul>
+<li><strong>部分线性模型 (<a href="#eq-cipolicy-ddml-ortho" class="quarto-xref">式&nbsp;<span>7.7</span></a>)</strong>：两个辅助模型都要估，但各自允许慢速收敛，靠乘积把偏误压到二阶。这是「收敛率意义上的稳健」——两个都要估得像样，但都不必很准。</li>
+<li><strong>交互模型 / AIPW</strong>：更强的「模型设定意义上的稳健」——两个模型只要有一个<strong>精确正确</strong>，另一个哪怕设定错误，估计依然无偏。这才是严格意义上的「一个对就够」。</li>
+</ul>
+<p>两者都源自 Neyman 正交，但不要把部分线性模型说成「二者取一即可」：它要的是两个都别太差，而不是一个全对、另一个可以乱来。</p>
+</div>
+</div>
+</section>
+<section id="交叉拟合堵住过拟合的后门" class="level2" data-number="7.6">
+<h2 data-number="7.6" class="anchored" data-anchor-id="交叉拟合堵住过拟合的后门"><span class="header-section-number">7.6</span> 交叉拟合：堵住过拟合的后门</h2>
+<p>正交化解决了偏误的一半，还剩一个后门没堵：<strong>过拟合</strong>。</p>
+<p>如果用同一批数据既估计辅助函数 <span class="math inline">\(\hat g_0\)</span>、<span class="math inline">\(\hat m_0\)</span>，又计算 <span class="math inline">\(\theta\)</span>，机器学习会「记住」这批数据里的噪声，残差和噪声之间产生虚假关联，重新引入偏误。这个后门要靠<strong>交叉拟合</strong> (cross-fitting) 堵上。</p>
+<p>它的核心思想是：<strong>每个观测值的预测，都要来自一个「没见过它」的模型。</strong> <a href="#fig-cipolicy-ddml-cross-fitting" class="quarto-xref">图&nbsp;<span>7.6</span></a> 用两块样本把这个思想画了出来：在样本 A 上训练模型，去预测样本 B 的残差；在样本 B 上训练模型，去预测样本 A 的残差 (即「交叉预测」)；把这些「留出样本」上的残差合并起来 (out-of-fold 残差)，再代入正交矩条件估计 <span class="math inline">\(\theta\)</span>。因为估计辅助函数和评估矩条件用的从来不是同一批数据，过拟合带来的虚假关联就被切断了。</p>
+<div id="fig-cipolicy-ddml-cross-fitting" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-ddml-cross-fitting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch07_fig04_cross_fitting_pen.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:86.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-ddml-cross-fitting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;7.6: 交叉拟合：在样本 A 上训练的模型只用来预测样本 B，反之亦然；每个观测值的残差都来自没见过它的模型，合并这些 out-of-fold 残差后再用正交 score 估计 <span class="math inline">\(\theta\)</span>
+</figcaption>
+</figure>
+</div>
+<p>实践中不止分两块，而是把样本分成 <span class="math inline">\(K\)</span> 折 (fold)，轮流让每一折当一次「留出折」：用其余 <span class="math inline">\(K-1\)</span> 折训练辅助函数，只在留出折上算残差、代入矩条件；轮换各折，取平均得到最终的 <span class="math inline">\(\theta\)</span>。折数 (常用 5 折或 10 折) 越多，分样本带来的随机性越小。</p>
+<p>把三件事合起来——partial out (借 FWL)、正交化 (借 Neyman)、交叉拟合 (防过拟合)——就构成了双重机器学习。「双重」指的是同时对 <span class="math inline">\(Y\)</span> 和 <span class="math inline">\(D\)</span> 两边建模，「去偏」(debiased) 指的正是正交化和交叉拟合合力压掉的那部分偏误。</p>
+</section>
+<section id="机器学习方法够用就好" class="level2" data-number="7.7">
+<h2 data-number="7.7" class="anchored" data-anchor-id="机器学习方法够用就好"><span class="header-section-number">7.7</span> 机器学习方法：够用就好</h2>
+<p>到这里，一个常见疑问是：那到底该用哪种机器学习方法去估 <span class="math inline">\(\hat g_0\)</span> 和 <span class="math inline">\(\hat m_0\)</span>？</p>
+<p>答案是：<strong>DDML 对用哪种学习器并不挑剔。</strong> Lasso、随机森林、梯度提升、神经网络都可以；实证中用得最多的是 Lasso，因为它自带变量选择、结果好解释。关键不在算法本身，而在前面那套流程——正交矩条件加交叉拟合——它保证了无论辅助函数用什么方法估计，只要估计误差收敛得不太慢，处理效应就稳健。</p>
+<p>因此本章不展开机器学习算法的细节。有兴趣深入的读者，可以参考：</p>
+<div class="callout callout-style-default callout-note callout-titled" title="机器学习方法入门">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+机器学习方法入门
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>拉索回归入门与统计推断：连享会推文 <a href="https://www.lianxh.cn/details/169.html">Lasso 入门</a>、<a href="https://www.lianxh.cn/details/635.html">再多控制变量和工具变量我也不怕</a>。</li>
+<li>多个学习器的组合 (stacking)：Ahrens et al.&nbsp;(2024), <em>Model Averaging and Double Machine Learning</em>，配套 Stata 命令 <code>pystacked</code>，中文见 <a href="https://www.lianxh.cn/details/1317.html">pystacked 推文</a>。DDML 官方推荐把多种学习器 stacking 起来用，避免押注单一模型。</li>
+</ul>
+</div>
+</div>
+<p>一个实用建议：与其纠结选哪个学习器，不如把几个学习器 stacking 起来，让数据自己决定权重。这既降低了设定风险，也让结果更稳健。</p>
+</section>
+<section id="ddml-的完整流程理解了就能读懂任何命令" class="level2" data-number="7.8">
+<h2 data-number="7.8" class="anchored" data-anchor-id="ddml-的完整流程理解了就能读懂任何命令"><span class="header-section-number">7.8</span> DDML 的完整流程：理解了就能读懂任何命令</h2>
+<p>理解了「两边 partial out + 正交 + 交叉拟合」这一套思想，再看软件命令就会发现，无论 Stata 还是 Python，流程都是同一个骨架，分四步：</p>
+<ol type="1">
+<li><strong>选模型</strong>：声明要估计哪一类因果模型 (下面五种之一)，并设定交叉拟合的折数；</li>
+<li><strong>设定辅助学习器</strong>：分别指定怎么估 <span class="math inline">\(E[Y\mid X]\)</span> 和 <span class="math inline">\(E[D\mid X]\)</span>——用 Lasso、随机森林还是 stacking；</li>
+<li><strong>交叉拟合</strong>：在各折上估计辅助函数、算出 out-of-fold 残差；</li>
+<li><strong>估计因果参数</strong>：用正交矩条件汇总，得到 <span class="math inline">\(\theta\)</span> 及其标准误。</li>
+</ol>
+<p><a href="#fig-cipolicy-ddml-workflow" class="quarto-xref">图&nbsp;<span>7.7</span></a> 把这四步、以及它们要估计的两个辅助模型 <span class="math inline">\(\hat\ell(X)=\hat E(Y\mid X)\)</span>、<span class="math inline">\(\hat m(X)=\hat E(D\mid X)\)</span>，和它们在 Stata <code>ddml</code> 里对应的子命令画在了一起。</p>
+<div id="fig-cipolicy-ddml-workflow" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-ddml-workflow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch07_fig05_ddml_workflow_pen.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:86.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-ddml-workflow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;7.7: DDML 的四步骨架：选择目标模型 (<code>partial</code>/<code>interactive</code>/<code>iv</code>) → 指定学习器 (估 <span class="math inline">\(E(Y\mid X)\)</span> 与 <span class="math inline">\(E(D\mid X)\)</span>) → 交叉拟合 (out-of-fold 预测) → 正交估计 (<span class="math inline">\(\hat\theta\)</span>、标准误、置信区间)。不同软件只是语法外壳不同
+</figcaption>
+</figure>
+</div>
+<p>在 Stata 里，这四步对应 <code>ddml</code> 命令的 <code>ddml init</code> → <code>ddml E[Y|X]</code> / <code>ddml E[D|X]</code> → <code>ddml crossfit</code> → <code>ddml estimate</code>。看懂了流程，这些子命令的名字几乎是自解释的。Python 的 <code>DoubleML</code>、微软的 <code>EconML</code> 也是同一逻辑，只是换了语法外壳。<strong>理解流程，命令就能迁移。</strong></p>
+<p>第二步的「选模型」决定了后面一切。DDML 之所以有五种模型，是因为处理变量和控制变量的关系、以及是否需要工具变量，会改变矩条件的形式。<a href="#tbl-cipolicy-ddml-models" class="quarto-xref">表&nbsp;<span>7.1</span></a> 把五种模型和它们的适用场景对应起来。</p>
+<div id="tbl-cipolicy-ddml-models" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-cipolicy-ddml-models-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;7.1: DDML 的五种模型与适用场景
+</figcaption>
+<div aria-describedby="tbl-cipolicy-ddml-models-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">模型 (<code>ddml</code> 选项)</th>
+<th style="text-align: left;">设定要点</th>
+<th style="text-align: left;">目标参数</th>
+<th style="text-align: left;">什么时候用</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">部分线性 (<code>partial</code>)</td>
+<td style="text-align: left;"><span class="math inline">\(D\)</span> 与 <span class="math inline">\(X\)</span> 可线性分离，<span class="math inline">\(D\)</span> 连续或二元</td>
+<td style="text-align: left;">部分线性处理效应 <span class="math inline">\(\theta\)</span></td>
+<td style="text-align: left;">最常用的起点；处理效应大体同质</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">交互 (<code>interactive</code>)</td>
+<td style="text-align: left;"><span class="math inline">\(D\)</span> 二元，效应完全异质，<span class="math inline">\(D\)</span> 与 <span class="math inline">\(X\)</span> 不可线性分离</td>
+<td style="text-align: left;">ATE / ATTE</td>
+<td style="text-align: left;">二元处理、关心异质效应</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">部分线性 IV (<code>iv</code>)</td>
+<td style="text-align: left;">有工具变量 <span class="math inline">\(Z\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\theta\)</span></td>
+<td style="text-align: left;">处理变量内生、且有有效工具</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">交互 IV / LATE (<code>interactiveiv</code>)</td>
+<td style="text-align: left;"><span class="math inline">\(D\)</span>、<span class="math inline">\(Z\)</span> 均二元</td>
+<td style="text-align: left;">LATE</td>
+<td style="text-align: left;">二元处理 + 二元工具</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">高维 IV (<code>ivhd</code>)</td>
+<td style="text-align: left;">工具变量很多</td>
+<td style="text-align: left;"><span class="math inline">\(\theta\)</span></td>
+<td style="text-align: left;">工具变量高维、需要筛选</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>选模型的判断很直接：处理变量与控制变量能否线性分离，决定用 <code>partial</code> 还是 <code>interactive</code>；是否需要、以及有没有工具变量，决定要不要走 IV 版本。附录 H.4–H.6 会在官方示例数据 (<code>cattaneo2</code>、<code>401k</code>) 上把 <code>partial</code>、<code>interactive</code> 和 IV 版本各跑一遍，逐行解释输出。</p>
+<div class="callout callout-style-default callout-warning callout-titled" title="面板固定效应：别直接套截面 DDML">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+面板固定效应：别直接套截面 DDML
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>本书面向政策评估，读者会本能地写「固定效应 + 一堆控制变量」。但要注意：标准 <code>ddml</code> 是<strong>截面</strong>框架，直接把面板做 within 变换后再套 DDML，可能产生偏误。</p>
+<p>面板 DDML 目前仍在发展中，正文只做风险提醒，不推荐某一种固定方案。已有研究提醒：直接 within 后套截面 DDML 可能有问题；相关随机效应 (correlated random effects, Mundlak)、一阶差分、within 变换，以及按个体 / 时间分折等做法，需要根据具体设定来选择；面板下的交叉拟合也不能简单随机分折，否则会破坏个体内和时间上的依赖结构 (Clarke and Polselli 2026; Fuhr and Papies 2024)。系统的面板实现可参考 R 包 <code>xtdml</code>。附录 H.7 给出一个 Stata 最小示例并标注局限，完整方案见相应链接。</p>
+</div>
+</div>
+</section>
+<section id="能修什么不能修什么" class="level2" data-number="7.9">
+<h2 data-number="7.9" class="anchored" data-anchor-id="能修什么不能修什么"><span class="header-section-number">7.9</span> 能修什么，不能修什么</h2>
+<p>DDML 很有用，但它的用途有清楚的边界。把边界说清楚，比展示它能跑出显著结果更重要。</p>
+<p><a href="#fig-cipolicy-ddml-can-cannot" class="quarto-xref">图&nbsp;<span>7.8</span></a> 用两栏把这条边界画了出来：左边是 DDML 能缓解的问题 (高维控制变量、非线性控制关系、复杂交互项、正则化偏误、有效推断)，右边是它无能为力、只能靠研究设计解决的问题 (不可观测遗漏变量、无效工具变量、平行趋势失败、反事实构造错误、样本选择偏误)。底部那句「前提：重要混淆变量已经进入 <span class="math inline">\(X\)</span>」，是使用 DDML 的总前提。<a href="#tbl-cipolicy-ddml-scope" class="quarto-xref">表&nbsp;<span>7.2</span></a> 给出更细的对照。</p>
+<div id="fig-cipolicy-ddml-can-cannot" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-ddml-can-cannot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch07_fig06_can_cannot_boundary_pen.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:82.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-ddml-can-cannot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;7.8: DDML 能缓解与不能替代的边界。左栏是它能处理的函数形式与高维问题，右栏是它替代不了的识别问题；总前提是重要混淆变量都已进入 <span class="math inline">\(X\)</span>
+</figcaption>
+</figure>
+</div>
+<div id="tbl-cipolicy-ddml-scope" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-cipolicy-ddml-scope-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;7.2: DDML 的适用边界
+</figcaption>
+<div aria-describedby="tbl-cipolicy-ddml-scope-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">DDML 能处理</th>
+<th style="text-align: left;">DDML 不能处理</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">控制变量高维 (数量很多)</td>
+<td style="text-align: left;">不可观测的混淆变量 (遗漏了重要变量)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">控制关系非线性、交互复杂</td>
+<td style="text-align: left;">处理变量内生 (存在不可观测因素)，除非另有有效工具变量走 IV 版本</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">需要有效推断 (<span class="math inline">\(\sqrt n\)</span> 收敛、置信区间)</td>
+<td style="text-align: left;">反事实构造和平行趋势本身 (那是研究设计问题)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">用灵活的机器学习，在条件成立时维持有效推断</td>
+<td style="text-align: left;">排他性、SUTVA、溢出效应等识别假设</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>最需要强调的是左右两栏第一行的对比。</p>
+<div class="callout callout-style-default callout-important callout-titled" title="DDML 的前提：选择性可观测">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+DDML 的前提：选择性可观测
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>使用 DDML 的前提是<strong>选择性可观测</strong> (selection on observables)：你已经把所有重要的混淆变量放进了 <span class="math inline">\(X\)</span>，模型设定本身不存在遗漏变量问题。在这个前提下，DDML 帮你解决的是「控制变量既多又非线性」带来的模型误设。</p>
+<p>如果存在被遗漏的重要变量——一个既影响处理、又影响结果的不可观测因素——那么 DDML 和普通 OLS 一样有偏。它治的是函数形式，不是识别本身。</p>
+</div>
+</div>
+<p>对不可观测遗漏变量导致的偏误，DDML 无能为力。这类问题只能通过工具变量、或对因果机器学习估计做<strong>敏感性分析</strong>来应对：设想一个未观测混淆变量，问它要强到什么程度才会推翻结论。相关方法可参考 Chernozhukov et al.&nbsp;(2022) 的 <em>Long Story Short: Omitted Variable Bias in Causal Machine Learning</em>。本章不展开，读者需要时按此线索深入即可。</p>
+</section>
+<section id="从本章走向下一章" class="level2" data-number="7.10">
+<h2 data-number="7.10" class="anchored" data-anchor-id="从本章走向下一章"><span class="header-section-number">7.10</span> 从本章走向下一章</h2>
+<p>本章讨论的是，当控制变量既多又非线性时，如何借助机器学习得到干净的处理效应。核心思路可以收成一句话：<strong>用 FWL 的 partial out 搭骨架，用 Neyman 正交把偏误压成乘积，用交叉拟合堵住过拟合，机器学习就能服务于可信的因果推断，而不是替代因果识别。</strong></p>
+<p>回头看会发现，从第 4 章到本章，我们一直在回答同一个元问题：<strong>你的识别究竟建立在什么之上。</strong> 第 4 章说固定效应在声明拿谁和谁比；第 5 章说反事实构造各有代价；第 6 章最后的方法选择表说明，DID 内部的方法选择要回到比较对象和目标参数；本章说，即使比较对象选对了，控制关系的函数形式也可能让推断失真，而 DDML 只在选择性可观测的前提下修这一类问题。</p>
+<p>本章还完成了一次视角的转换：我们第一次让<strong>算法</strong>深度参与估计过程——用机器学习拟合辅助函数，再用统计结构保证结果可信。下一章把这个视角推得更远：当算法不只辅助<strong>估计</strong>、而是辅助<strong>整个研究流程</strong>——读论文、拆解识别策略、审计复现包——AI 和 Agent 又能做什么、不能做什么。这就是第 8 章的主题。</p>
+<div class="callout callout-style-default callout-note callout-titled" title="配套复现">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+配套复现
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>本章各要点的完整 Stata 实操见 <strong>附录 H</strong>，与正文一一对应：</p>
+<ul>
+<li>H.2　FWL 手算验证 (三种回归给出同一个系数)；</li>
+<li>H.3　天真估计与正交估计的偏误对比模拟；</li>
+<li>H.4–H.6　<code>ddml</code> 的部分线性 / 交互 / IV 三种模型；</li>
+<li>H.7　面板固定效应的最小示例与局限提醒。</li>
+</ul>
+<p>每个模块后附命令用途、适用场景和结果解读。附录提供 <a href="../notebooks/ch07_ddml/A07_fwl_ddml.html">附录 H</a> 讲解版 (<code>.ipynb</code>，可在 VS Code 中借助 nbstata 或 Stata-MCP 执行) 与简化版 <a href="../notebooks/ch07_ddml/A07_fwl_ddml.do">dofile</a> 两种格式，数据全部在线读取。R 与 Python 的对应实现只给跳转链接，不重复展开。</p>
+</div>
+</div>
+</section>
+<section id="参考文献与延伸阅读" class="level2" data-number="7.11">
+<h2 data-number="7.11" class="anchored" data-anchor-id="参考文献与延伸阅读"><span class="header-section-number">7.11</span> 参考文献与延伸阅读</h2>
+<ul>
+<li>Ahrens, A., Chernozhukov, V., Hansen, C., Kozbur, D., Schaffer, M., &amp; Wiemann, T. (2025). An Introduction to Double/Debiased Machine Learning. arXiv:2504.08324. <a href="https://arxiv.org/pdf/2504.08324">PDF</a>. (面向应用者的通俗导论，本章主参考)</li>
+<li>Ahrens, A., Hansen, C. B., Schaffer, M. E., &amp; Wiemann, T. (2024). ddml: Double/debiased machine learning in Stata. <em>The Stata Journal</em>, 24(1), 3–45. <a href="https://doi.org/10.1177/1536867X241233641">Link</a>．官方文档站：<a href="https://statalasso.github.io/docs/ddml/" class="uri">https://statalasso.github.io/docs/ddml/</a>。</li>
+<li>Ahrens, A., Hansen, C. B., Schaffer, M. E., &amp; Wiemann, T. (2024). Model Averaging and Double Machine Learning. arXiv:2401.01645. <a href="https://arxiv.org/pdf/2401.01645">PDF</a>. (DDML + stacking)</li>
+<li>Chernozhukov, V., Chetverikov, D., Demirer, M., Duflo, E., Hansen, C., Newey, W., &amp; Robins, J. (2018). Double/debiased machine learning for treatment and structural parameters. <em>The Econometrics Journal</em>, 21(1), C1–C68. <a href="https://doi.org/10.1111/ectj.12097">Link</a>. (DDML 奠基文献)</li>
+<li>Chernozhukov, V., Cinelli, C., Newey, W., Sharma, A., &amp; Syrgkanis, V. (2022). Long Story Short: Omitted Variable Bias in Causal Machine Learning. NBER WP 30302 ｜ arXiv:2112.13398. <a href="https://arxiv.org/abs/2112.13398">PDF</a>. (不可观测遗漏变量的敏感性分析)</li>
+<li>Clarke, S. P., &amp; Polselli, A. (2026). Double machine learning for static panel models with fixed effects. <em>The Econometrics Journal</em>, 29(1), 69–86. <a href="https://academic.oup.com/ectj/article/29/1/69/8120202">Link</a>．R 包 <code>xtdml</code>：<a href="https://github.com/POLSEAN/xtdml" class="uri">https://github.com/POLSEAN/xtdml</a>。</li>
+<li>Fuhr, J., &amp; Papies, D. (2024). Double Machine Learning meets Panel Data — Promises, Pitfalls, and Potential Solutions. arXiv:2409.01266. <a href="https://arxiv.org/pdf/2409.01266">PDF</a>. (面板 DDML 的分折策略与相关随机效应做法)</li>
+<li>Fuhr, J., Berens, P., &amp; Papies, D. (2024). Estimating Causal Effects with Double Machine Learning: A Method Evaluation. arXiv:2403.14385. <a href="https://arxiv.org/pdf/2403.14385">PDF</a>. (DDML 适用场景与实操建议)</li>
+<li>Filoso, V. (2013). Regression Anatomy, presented through the Frisch-Waugh-Lovell theorem. <em>The Stata Journal</em>, 13(1), 92–106. (FWL 与部分回归)</li>
+<li>李金桐, 2023, <a href="https://www.lianxh.cn/details/1221.html">因果推断：双重机器学习-ddml</a>, 连享会 No.1221. (中文推导与 Stata 实例，本章理论主参考)</li>
+<li>赵俊, 2025, 静态面板数据下的双重机器学习模型 <a href="https://www.lianxh.cn/details/1664.html">(上·理论)</a> <a href="https://www.lianxh.cn/details/1665.html">(下·R 实操)</a>. (对口面板 FE)</li>
+</ul>
+<p><strong>软件入口</strong></p>
+<ul>
+<li>Stata <code>ddml</code> / <code>pystacked</code>(官方文档站)：<a href="https://statalasso.github.io/docs/ddml/" class="uri">https://statalasso.github.io/docs/ddml/</a></li>
+<li>Python / R <code>DoubleML</code>：<a href="https://docs.doubleml.org/" class="uri">https://docs.doubleml.org/</a></li>
+<li>Python <code>EconML</code>(微软，异质性/动态处理效应)：<a href="https://econml.azurewebsites.net/" class="uri">https://econml.azurewebsites.net/</a></li>
+<li>面板固定效应 R 包 <code>xtdml</code>：<a href="https://github.com/POLSEAN/xtdml" class="uri">https://github.com/POLSEAN/xtdml</a></li>
+</ul>
+</section>
+<section id="图形来源索引" class="level2" data-number="7.12">
+<h2 data-number="7.12" class="anchored" data-anchor-id="图形来源索引"><span class="header-section-number">7.12</span> 图形来源索引</h2>
+<p>本章配图分两类：既有讲义/图库中的示意图，以及本章为配合公式专门绘制的钢笔风示意图 (帮助数学基础较弱的读者理解公式背后的含义)。列出图源，便于后续修改追溯。</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>图号</th>
+<th>图形内容</th>
+<th>图源</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#fig-cipolicy-ddml-fwl-venn" class="quarto-xref">图&nbsp;<span>7.1</span></a></td>
+<td>FWL：partial out 的方差韦恩图</td>
+<td>讲义《线性回归分析 (3)：模型设定》(<code>OLS-venn-01.png</code>)</td>
+</tr>
+<tr class="even">
+<td><a href="#fig-cipolicy-ddml-fwl-partial-out" class="quarto-xref">图&nbsp;<span>7.2</span></a></td>
+<td>FWL：两边同时剔除 <span class="math inline">\(X\)</span> 的流程</td>
+<td>本章绘制 (<code>ch07_fig01_fwl_partial_out_pen.png</code>)</td>
+</tr>
+<tr class="odd">
+<td><a href="#fig-cipolicy-ddml-structure" class="quarto-xref">图&nbsp;<span>7.3</span></a></td>
+<td>因果结构 DAG (X、D、Y、V、U)</td>
+<td>李金桐 (<a href="https://www.lianxh.cn/details/1221.html">2023</a>) DDML 推文 (<code>..._李金桐_Fig01.png</code>)</td>
+</tr>
+<tr class="even">
+<td><a href="#fig-cipolicy-ddml-naive-vs-orthogonal" class="quarto-xref">图&nbsp;<span>7.4</span></a></td>
+<td>天真估计 vs 正交化</td>
+<td>本章绘制 (<code>ch07_fig02_naive_vs_orthogonal_pen.png</code>)</td>
+</tr>
+<tr class="odd">
+<td><a href="#fig-cipolicy-ddml-product-bias" class="quarto-xref">图&nbsp;<span>7.5</span></a></td>
+<td>Neyman 正交：一阶误差压成二阶乘积</td>
+<td>本章绘制 (<code>ch07_fig03_neyman_product_bias_pen.png</code>)</td>
+</tr>
+<tr class="even">
+<td><a href="#fig-cipolicy-ddml-cross-fitting" class="quarto-xref">图&nbsp;<span>7.6</span></a></td>
+<td>交叉拟合：out-of-fold 预测</td>
+<td>本章绘制 (<code>ch07_fig04_cross_fitting_pen.png</code>)</td>
+</tr>
+<tr class="odd">
+<td><a href="#fig-cipolicy-ddml-workflow" class="quarto-xref">图&nbsp;<span>7.7</span></a></td>
+<td>DDML 四步流程与 Stata 命令</td>
+<td>本章绘制 (<code>ch07_fig05_ddml_workflow_pen.png</code>)</td>
+</tr>
+<tr class="even">
+<td><a href="#fig-cipolicy-ddml-can-cannot" class="quarto-xref">图&nbsp;<span>7.8</span></a></td>
+<td>DDML 能修与不能修的边界</td>
+<td>本章绘制 (<code>ch07_fig06_can_cannot_boundary_pen.png</code>)</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p>说明：本章核心示意图 (乘积结构、交叉拟合、四步流程等) 已配齐，见上表。若后续要与第 6 章统一视觉风格，可再微调线条与配色，此处不再另列待绘清单。</p>
+</blockquote>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/lianxhcn\.github\.io\/ci-policy\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../lectures/06_did_design.html" class="pagination-link" aria-label="双重差分：从 TWFE 到 CSDID">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">双重差分：从 TWFE 到 CSDID</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../lectures/08_ai_agent_workflow.html" class="pagination-link" aria-label="AI Agent 辅助实证研究">
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">AI Agent 辅助实证研究</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p><a href="https://www.lianxh.cn">lianxh.cn</a></p>
+</div>
+    <div class="nav-footer-right">
+<p>基于 <a href="https://quarto.org/">Quarto</a> 构建</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

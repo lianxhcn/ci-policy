@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>1&nbsp; 从政策背景到研究设计 – 因果推断：政策评估中的识别思维与实证设计</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../lectures/02_policy_to_data.html" rel="next">
+<link href="../settings.html" rel="prev">
+<link href="../images/book-logo.png" rel="icon" type="image/png">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e8fb9d25728d58bfeac61b497e4a6629.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-57a92833092fd6dc0d7710b6bdfff9c5.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-7ef202e96c563d31d9e5226e4d6cabf9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-490ba4e843cb1303a232ed0c676384f2.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/01_policy_to_design.html"><strong>讲义</strong></a></li><li class="breadcrumb-item"><a href="../lectures/01_policy_to_design.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">从政策背景到研究设计</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="https://lianxhcn.github.io/ci-policy/" class="sidebar-logo-link">
+      <img src="../images/book-logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Causal Inference</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/lianxhcn/ci-policy" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
+    <a href="https://www.lianxh.cn" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-house-fill"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🏠 前言</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../syllabus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📌讲授计划</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../settings.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🚀课前准备：环境配置</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text"><strong>讲义</strong></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/01_policy_to_design.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">从政策背景到研究设计</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/02_policy_to_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">政策如何进入数据</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/03_sample_selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">样本选择偏误</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/04_fixed_effects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">固定效应：控制了什么</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/05_counterfactuals.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">反事实构造</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/06_did_design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">双重差分：从 TWFE 到 CSDID</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/07_ddml.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">双重机器学习：DDML</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/08_ai_agent_workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">AI Agent 辅助实证研究</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/09_reading_list.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">阅读清单</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">附录</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/appendix/A02_government_guidance_fund.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">政府引导基金政策梳理笔记</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/appendix/A03_heckman_selection_literature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Heckman 模型扩展阅读</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch03_heckman/heckman_practical_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Heckman 实操笔记</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch04_fixed_effects/fixed_effects_practical_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">固定效应实操笔记</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch05_counterfactuals/A05_counterfactual_replication.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">加州禁烟：SCM/RCM/SDID</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch06_did/A06_did_method_selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">F</span>&nbsp; <span class="chapter-title">DID 方法与 Stata 实操</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch07_ddml/A07_fwl_ddml.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">G</span>&nbsp; <span class="chapter-title">双重机器学习 Stata 实操</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exercises/exercise_overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">练习概览</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#lane-2025政策背景如何进入研究设计" id="toc-lane-2025政策背景如何进入研究设计" class="nav-link active" data-scroll-target="#lane-2025政策背景如何进入研究设计"><span class="header-section-number">1.1</span> Lane (2025)：政策背景如何进入研究设计</a></li>
+  <li><a href="#政府引导基金研究问题如何从政策事实中长出来" id="toc-政府引导基金研究问题如何从政策事实中长出来" class="nav-link" data-scroll-target="#政府引导基金研究问题如何从政策事实中长出来"><span class="header-section-number">1.2</span> 政府引导基金：研究问题如何从政策事实中长出来</a></li>
+  <li><a href="#政策背景不是铺垫而是研究设计的起点" id="toc-政策背景不是铺垫而是研究设计的起点" class="nav-link" data-scroll-target="#政策背景不是铺垫而是研究设计的起点"><span class="header-section-number">1.3</span> 政策背景不是铺垫，而是研究设计的起点</a></li>
+  <li><a href="#政策目标决定结果变量" id="toc-政策目标决定结果变量" class="nav-link" data-scroll-target="#政策目标决定结果变量"><span class="header-section-number">1.4</span> 政策目标决定结果变量</a></li>
+  <li><a href="#政策对象决定处理组" id="toc-政策对象决定处理组" class="nav-link" data-scroll-target="#政策对象决定处理组"><span class="header-section-number">1.5</span> 政策对象决定处理组</a></li>
+  <li><a href="#政策工具决定作用机制" id="toc-政策工具决定作用机制" class="nav-link" data-scroll-target="#政策工具决定作用机制"><span class="header-section-number">1.6</span> 政策工具决定作用机制</a></li>
+  <li><a href="#分批试点不是技术细节" id="toc-分批试点不是技术细节" class="nav-link" data-scroll-target="#分批试点不是技术细节"><span class="header-section-number">1.7</span> 分批试点不是技术细节</a></li>
+  <li><a href="#政策时间不是文件发布日期" id="toc-政策时间不是文件发布日期" class="nav-link" data-scroll-target="#政策时间不是文件发布日期"><span class="header-section-number">1.8</span> 政策时间不是文件发布日期</a></li>
+  <li><a href="#数据可得性会改变论文能回答的问题" id="toc-数据可得性会改变论文能回答的问题" class="nav-link" data-scroll-target="#数据可得性会改变论文能回答的问题"><span class="header-section-number">1.9</span> 数据可得性会改变论文能回答的问题</a></li>
+  <li><a href="#为什么需要政策文件事实调查和访谈" id="toc-为什么需要政策文件事实调查和访谈" class="nav-link" data-scroll-target="#为什么需要政策文件事实调查和访谈"><span class="header-section-number">1.10</span> 为什么需要政策文件、事实调查和访谈</a></li>
+  <li><a href="#从本章走向后续章节" id="toc-从本章走向后续章节" class="nav-link" data-scroll-target="#从本章走向后续章节"><span class="header-section-number">1.11</span> 从本章走向后续章节</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/01_policy_to_design.html"><strong>讲义</strong></a></li><li class="breadcrumb-item"><a href="../lectures/01_policy_to_design.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">从政策背景到研究设计</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">从政策背景到研究设计</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-important callout-titled" title="本章核心判断">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+本章核心判断
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>政策背景不是论文前面的装饰性介绍，而是研究设计本身的一部分。政策为什么出台、作用于谁、怎样执行、如何进入数据，会直接决定变量设定、样本选择、识别策略和结果解释。</p>
+</div>
+</div>
+<p>很多政策评估论文一开始就进入模型。看到分批试点，就想到 DID；看到只有一个处理地区，就想到合成控制法；看到样本不完整，就想到 Heckman；看到控制变量很多，就想到 DDML。方法本身没有问题，问题在于顺序往往倒了。</p>
+<p>政策评估首先要回答的，不是用哪一种估计方法，而是这项政策本身到底发生了什么。政策为什么出台？它想改变谁的行为？它通过什么工具发挥作用？政策对象能否和数据样本对应起来？政策实施是不是分批推进？第一批试点和后续批次是否可比？政策有没有提前预期、外溢影响或并发改革？</p>
+<p>这些问题不是写作背景，而是识别设计的前提。</p>
+<p>本章从两个例子进入。第一个例子是 Lane (2025) 对韩国重化工业政策的研究。韩国 1973–1979 年的重化工业驱动 (Heavy and Chemical Industry Drive, HCI drive) 有相对清楚的政策背景、目标产业、政策窗口和后续调整过程。正是这些政策事实，使研究者能够进一步构造处理组、政策时点、动态效应和产业链溢出分析。</p>
+<p>第二个例子是政府引导基金研究。这个例子更接近许多经管研究者的真实选题过程：先拿到一份数据，再逐步阅读政策文件、访谈行业人士、理解政策工具属性，最后不断修正研究问题。最初的研究问题可能是政府引导基金是否促进企业创新、融资或产出；进一步理解地方政府设立引导基金的制度目标后，研究问题可能转向产业链安全、供应链韧性和地方优势产业培育。</p>
+<p>这两个例子共同说明一个基本事实：好的政策评估，不是从回归方程开始，而是从政策事实调查开始。</p>
+<section id="lane-2025政策背景如何进入研究设计" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="lane-2025政策背景如何进入研究设计"><span class="header-section-number">1.1</span> Lane (2025)：政策背景如何进入研究设计</h2>
+<p>Lane (2025) 研究韩国 1973–1979 年 HCI drive 对工业化的影响。这项政策并不是一个笼统的产业升级口号，而是韩国政府在 1970 年代特定安全、国防和工业化背景下推出的重大战略。政策重点支持钢铁、有色金属、造船、机械、电子和石化六大战略部门，并在 1979 年以后随着政治和经济环境变化进入调整阶段。</p>
+<p><a href="#fig-cipolicy-background-lane-2025" class="quarto-xref">图&nbsp;<span>1.1</span></a> 将这条逻辑压缩成一张图。左侧是政策发生的历史背景和时间线，中间是目标产业和数据映射，右侧是识别策略与结果变量。沿着这张图看，读者可以看到一篇政策评估论文如何从政策事实一步步走向研究设计。</p>
+<div id="fig-cipolicy-background-lane-2025" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-background-lane-2025-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ci-policy-Lane-2025-intro-outline.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-background-lane-2025-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;1.1: Lane (2025)：从政策背景到研究设计
+</figcaption>
+</figure>
+</div>
+<p>这条链条可以概括为：</p>
+<div class="callout callout-style-default callout-note callout-titled" title="从政策事实到研究设计">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+从政策事实到研究设计
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>政策背景 → 目标产业 → 行业面板 → 动态效应 → 产业链溢出 → 结果解释</p>
+</div>
+</div>
+<p>这项政策之所以能够进入严肃的经验研究，是因为它至少在四个方面具有清楚边界。</p>
+<p>第一，政策事实相对清楚。HCI drive 有明确的政策启动背景、政策实施阶段、重点产业范围和后续调整过程。研究者面对的不是一个模糊的「国家支持工业化」，而是一个可以追踪的政策 episode。</p>
+<p>第二，处理对象相对清楚。政策支持的是特定战略产业，而不是所有制造业部门。只有先确定哪些行业属于政策目标部门，研究者才能进一步界定处理组。</p>
+<p>第三，政策时间相对清楚。1973 年政策启动，1979 年以后政策进入自由化和调整阶段。这个时间结构使研究者可以区分政策实施期、政策退出后的持续效应和动态产业反应。</p>
+<p>第四，数据映射相对清楚。政策支持的是行业，研究者需要将政策文件中的目标产业与行业分类、制造业普查数据、贸易数据和投入产出表对应起来。只有完成这种映射，政策才能从历史事实变成可估计的处理变量。</p>
+<p>从这个角度看，Lane (2025) 的研究设计并不是从 DID 公式中生长出来的，而是从政策事实中生长出来的。政策支持哪些产业，决定了处理组；政策何时启动和调整，决定了时间窗口；政策是否可能通过投入产出网络影响下游部门，决定了为什么不能只看目标产业自身；政策是否可能培育动态比较优势，决定了为什么要关注出口 RCA、TFP 和政策退出后的持续效应。</p>
+<p>通过这个例子可以看出，政策背景不能只写成历史叙述。它要回答后面研究设计中的具体问题：</p>
+<ul>
+<li>为什么这些产业是处理组；</li>
+<li>为什么这些年份构成政策窗口；</li>
+<li>为什么结果变量包括产出、就业、出口比较优势、TFP 和价格；</li>
+<li>为什么需要讨论政策的动态效应；</li>
+<li>为什么政策可能通过投入产出网络影响下游行业；</li>
+<li>为什么估计结果不能简单解释为一个静态平均效应。</li>
+</ul>
+<p>如果不先理解 HCI drive 的政策背景，后面的动态 DID、double-robust DID、DDD 和投入产出网络分析都会显得突兀。反过来，一旦政策背景被拆清楚，方法就不再是孤立的技术工具，而是顺着政策事实自然展开的研究设计。</p>
+</section>
+<section id="政府引导基金研究问题如何从政策事实中长出来" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="政府引导基金研究问题如何从政策事实中长出来"><span class="header-section-number">1.2</span> 政府引导基金：研究问题如何从政策事实中长出来</h2>
+<p>另一个例子是政府引导基金。<a href="#fig-cipolicy-background-government-fund" class="quarto-xref">图&nbsp;<span>1.2</span></a> 展示了这个研究问题逐步形成的过程：从数据和最初直觉出发，经过政策文件、管理办法、新闻公告、申报指南和访谈核查，最终把研究问题从企业层面的创新、融资和绩效，推进到产业链层面的协同、韧性和长期发展。</p>
+<div id="fig-cipolicy-background-government-fund" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-background-government-fund-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ci-policy-Lian-2026-Government-fund-topic-selection.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-background-government-fund-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;1.2: 政府引导基金：研究问题如何形成
+</figcaption>
+</figure>
+</div>
+<p>研究者一开始可能只是拿到了一份政府引导基金数据，例如来自私募清科的基金信息。看到这类数据，最自然的反应是把政府引导基金理解为一种带有政府背景的风险投资，然后研究它是否促进企业创新、改善融资约束、扩大产出或提高企业绩效。</p>
+<p>这条路径可以成立，但未必抓住政府引导基金最重要的政策属性。</p>
+<p>政府引导基金不同于一般市场化 VC。它带有政府资金属性，也承载地方产业政策目标。若只把它理解为风险投资工具，研究设计就容易停留在被投企业层面，结果变量也会自然转向专利、融资、成长性或产出。但如果进一步阅读地方政府设立引导基金的文件、管理办法、新闻报道和申报指南，就会看到另一条线索：很多地方政府设立引导基金时，会反复强调本地优势产业、重点赛道、产业链补短板、供应链安全和长期产业培育。</p>
+<p>随着政府引导基金不断发展，基金名称和投资方向也越来越具体。早期的引导基金可能只是较宽泛地支持创业投资、产业投资或战略性新兴产业；后来的基金则更常指向绿色、芯片、先进制造、生物医药、新能源等具体领域。这种变化说明，政府引导基金并不只是给企业提供资金，它还可能是地方政府围绕产业链和优势产业进行资源配置的一种工具。</p>
+<p>研究问题也随之发生变化。</p>
+<p>最初的问题可能是：</p>
+<ul>
+<li>政府引导基金是否提高被投企业创新；</li>
+<li>政府引导基金是否改善被投企业融资；</li>
+<li>政府引导基金是否促进被投企业产出增长。</li>
+</ul>
+<p>进一步理解政策属性后，问题可能变成：</p>
+<ul>
+<li>政府引导基金是否推动地方优势产业集聚；</li>
+<li>政府引导基金是否改善产业链上下游协同；</li>
+<li>政府引导基金是否增强供应链韧性；</li>
+<li>政府引导基金是否缓解产业链中的局部波动和长鞭效应；</li>
+<li>政府引导基金是否在纠正市场化 VC 短期化和分散化倾向。</li>
+</ul>
+<p>这不是简单换一组被解释变量，而是研究对象发生了变化。</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>政策理解方式</th>
+<th>可能结果变量</th>
+<th>研究层级</th>
+<th>主要识别风险</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>一般风险投资工具</td>
+<td>创新、融资、产出、成长性</td>
+<td>被投企业</td>
+<td>被投企业本来就更有潜力</td>
+</tr>
+<tr class="even">
+<td>政府产业政策工具</td>
+<td>产业链协同、上下游配套、供应链韧性</td>
+<td>供应商—客户关系或产业链网络</td>
+<td>政策作用对象与结果变量层级不一致</td>
+</tr>
+<tr class="odd">
+<td>地方发展工具</td>
+<td>地方优势产业培育、招商引资、产业集群</td>
+<td>地区—行业</td>
+<td>地方政府选择产业方向并非随机</td>
+</tr>
+</tbody>
+</table>
+<p>这个例子说明，研究问题不是从数据中自动出现的。数据只是入口，真正决定研究问题的是政策属性、制度目标和执行过程。只有理解政府为什么设立这类基金、基金如何筛选产业、地方政府如何表达政策目标，研究者才可能判断应该看企业创新、融资表现，还是进一步看产业链协同和地方产业发展。</p>
+<p>这也解释了为什么政策评估需要访谈和事实调查。政策文件告诉我们制度设计，行业人士的经验告诉我们政策在现实中如何被理解、如何被使用、哪里存在摩擦。对政府引导基金而言，不同从业者可能有完全不同的看法：有人认为这类资金程序复杂、约束很多、使用效率有限；也有人认为它在特定地区和特定产业中具有很强的引导作用。研究者不能把这些看法直接当成结论，但这些信息会帮助我们提出更准确的问题。</p>
+</section>
+<section id="政策背景不是铺垫而是研究设计的起点" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="政策背景不是铺垫而是研究设计的起点"><span class="header-section-number">1.3</span> 政策背景不是铺垫，而是研究设计的起点</h2>
+<p>很多论文的政策背景部分写得很长，但读完以后仍然看不清研究设计。原因在于，政策背景只是被当成故事，而没有被用来回答识别问题。</p>
+<p>政策背景真正应该回答的是下面五类问题：</p>
+<ol type="1">
+<li><p><strong>政策为什么出台？</strong><br>
+它回应的是产业升级、环境污染、融资约束、供应链安全、民生压力，还是地方竞争？</p></li>
+<li><p><strong>政策作用于谁？</strong><br>
+是地区、行业、产品、企业、金融机构、学校、医院、药品目录，还是产业链关系？</p></li>
+<li><p><strong>政策通过什么工具发挥作用？</strong><br>
+是财政补贴、税收优惠、信贷支持、土地供给、政府采购、监管约束，还是信息披露？</p></li>
+<li><p><strong>政策希望改变什么结果？</strong><br>
+是创新、融资、就业、产出、价格、污染、生产率，还是供应链韧性？</p></li>
+<li><p><strong>政策如何执行？</strong><br>
+是一次性铺开，还是分批试点？是中央指定，还是地方申报？是否存在扩围、退出、滞后和预期？</p></li>
+</ol>
+<p>这些问题一旦回答清楚，后面的实证分析就会变得具体。反之，如果这些问题没有说清楚，模型写得再复杂，也很难说服读者。</p>
+<p>一项政策能否进入政策评估研究，至少要经过四个初步判断：</p>
+<ul>
+<li><strong>政策事实是否清楚</strong>：政策是否真实发生，是否有文件、名单、执行节点或其他证据可以核验；</li>
+<li><strong>处理边界是否清楚</strong>：谁受到政策影响，谁没有受到政策影响，边界是否来自政策规则；</li>
+<li><strong>冲击时间是否清楚</strong>：政策从什么时候开始改变主体面临的约束；</li>
+<li><strong>数据合并键是否清楚</strong>：政策对象如何映射到研究样本。</li>
+</ul>
+<p>这四点只是必要条件，不是充分条件。即使四点都清楚，研究者仍然要进一步讨论处理对象选择、反事实可比性、预期效应、溢出效应、并发政策和估计量选择。但如果这四点都说不清，政策就很难成为可信的识别依据。</p>
+<div class="callout callout-style-default callout-warning callout-titled" title="常见误区">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+常见误区
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>政策重要，不等于政策适合做准自然实验。政策背景部分不能只证明政策重要，还要证明政策能够被变量化、能够与数据合并，并且能够形成可辩护的比较。</p>
+</div>
+</div>
+<p>因此，政策背景部分不应只是介绍政策文件，而应当帮助读者看清：</p>
+<ul>
+<li><code>Y</code> 为什么这样定义；</li>
+<li><code>Treat</code> 为什么这样定义；</li>
+<li><code>Post</code> 为什么这样定义；</li>
+<li>对照组为什么有资格代表反事实；</li>
+<li>哪些识别威胁需要在后文处理。</li>
+</ul>
+</section>
+<section id="政策目标决定结果变量" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="政策目标决定结果变量"><span class="header-section-number">1.4</span> 政策目标决定结果变量</h2>
+<p>政策目标决定被解释变量。这个判断看似简单，但很多政策评估论文恰恰在这里出问题。</p>
+<p>同一政策可以有多个目标。以产业政策为例，政策目标可能包括技术升级、就业稳定、出口扩张、供应链安全、地方税收、区域平衡和生产率提升。如果研究者不先判断政策最核心的目标是什么，就很容易在数据库中寻找一组容易获得的结果变量，然后把显著结果包装成政策效果。</p>
+<p>这会带来两个问题。</p>
+<p>第一，结果变量可能偏离政策目标。比如一项政策本意是增强供应链安全，论文却只看被投企业专利数量；这并非不能研究，但需要解释为什么专利是供应链安全的关键中间结果。否则，研究问题就会变窄。</p>
+<p>第二，多个结果变量可能缺少结构。比如同一篇文章同时看创新、融资、产出、就业、出口和污染，但没有说明这些变量之间的机制关系。结果看起来很丰富，实际上只是结果罗列。</p>
+<p>更好的做法是先把政策目标拆成若干层次：</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>政策目标</th>
+<th>可观察结果变量</th>
+<th>可能机制</th>
+<th>需要注意的问题</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>缓解融资约束</td>
+<td>融资成本、贷款可得性、债务期限</td>
+<td>降低外部融资摩擦</td>
+<td>融资改善可能来自选择进入</td>
+</tr>
+<tr class="even">
+<td>促进创新</td>
+<td>专利、研发投入、新产品收入</td>
+<td>增加研发资源和风险承担</td>
+<td>专利质量和数量要区分</td>
+</tr>
+<tr class="odd">
+<td>推动产业升级</td>
+<td>产出、TFP、出口 RCA</td>
+<td>学习效应和规模扩张</td>
+<td>需要区分短期扩张和长期效率</td>
+</tr>
+<tr class="even">
+<td>增强供应链韧性</td>
+<td>订单波动、交付稳定、上下游协同</td>
+<td>降低链上摩擦和局部冲击放大</td>
+<td>需要网络或配对层面数据</td>
+</tr>
+</tbody>
+</table>
+<p>Lane (2025) 的研究中，政策目标并不是笼统地让韩国经济增长，而是集中支持特定战略产业。因此，结果变量也集中在产业层面的产出、就业、出口比较优势、TFP、价格，以及通过投入产出网络产生的下游前向溢出。政策目标决定了结果变量的范围，也决定了结果解释的边界。</p>
+<p>政府引导基金也是同样道理。如果把它理解成风险投资工具，创新和融资是自然结果变量；如果把它理解成地方产业政策工具，产业链协同、供应链稳定和链上企业关系就更贴近政策目标。研究者不能等模型跑完以后再决定政策故事，而应在政策背景阶段就说明为什么选择这些结果变量。</p>
+</section>
+<section id="政策对象决定处理组" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="政策对象决定处理组"><span class="header-section-number">1.5</span> 政策对象决定处理组</h2>
+<p>处理组不是政策名称，也不是研究者觉得「可能受影响」的样本。处理组必须来自政策对象和数据单位之间的清楚映射。</p>
+<p>这也是政策评估中最容易出错的地方。政策对象可能是产品、药品、城市、行业、学校、银行或产业园区，但研究数据可能是企业、个人、城市面板、上市公司或行业面板。二者不一致时，不能直接把政策名称写成 <code>Treat</code>。</p>
+<p>例如：</p>
+<ul>
+<li>药品集采直接作用于特定通用名、规格和中选结果，不是所有医药企业；</li>
+<li>中美关税直接作用于产品和税目，不是所有外贸企业；</li>
+<li>环保督察直接作用于被督察地区，但企业受到的压力可能取决于污染强度、行业属性和监管暴露；</li>
+<li>产业政策可能作用于城市—行业层面，而企业只是政策影响的承载单位。</li>
+</ul>
+<p>当政策对象和研究样本不在同一层级时，常见做法是构造政策暴露度：</p>
+<p><span id="eq-cipolicy-background-exposure"><span class="math display">\[
+\operatorname{Exposure}_{i}=\sum_{k}s_{ik,0}\operatorname{Shock}_{k}
+\tag{1.1}\]</span></span></p>
+<p><a href="#eq-cipolicy-background-exposure" class="quarto-xref">式&nbsp;<span>1.1</span></a> 中，<span class="math inline">\(k\)</span> 可以是产品、市场、行业、药品、银行或地区；<span class="math inline">\(s_{ik,0}\)</span> 是政策前权重；<span class="math inline">\(\operatorname{Shock}_{k}\)</span> 是政策在对象 <span class="math inline">\(k\)</span> 上的强度。使用政策前权重，是为了避免政策后调整行为反过来影响处理变量。</p>
+<p>这类暴露度构造在很多政策研究中都会出现：</p>
+<ul>
+<li>中美关税可以通过政策前出口产品结构构造企业关税暴露度；</li>
+<li>药品集采可以通过企业政策前相关药品收入占比构造企业暴露度；</li>
+<li>资管新规可以通过企业政策前非标融资依赖度构造暴露度；</li>
+<li>数据安全政策可以通过企业政策前数据密集度构造暴露度。</li>
+</ul>
+<p>这一步不是数据处理细节，而是研究设计本身。处理变量如何构造，决定了估计系数到底代表什么。</p>
+</section>
+<section id="政策工具决定作用机制" class="level2" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="政策工具决定作用机制"><span class="header-section-number">1.6</span> 政策工具决定作用机制</h2>
+<p>复杂政策很少只通过一个工具发挥作用。产业政策尤其如此。</p>
+<p>同样是「支持新能源汽车产业」，政策工具可能包括财政补贴、税收优惠、信贷支持、产业基金、政府采购、土地供给、研发资助、人才政策、充电基础设施、产业园区和供应链配套。不同地区可能使用不同工具；同一地区在产业早期和成熟期也可能使用不同工具。若只用一个虚拟变量表示「有政策」，就很难解释政策到底通过什么机制发挥作用。</p>
+<p>近年来，政策文本量化研究开始把复杂政策拆成结构化变量。例如，研究者可以从政府文件中识别发布政府、目标产业、政策目标、政策工具、政策强度、资格条件、执行机制和监督机制等字段。这样处理以后，产业政策不再只是一个 0/1 变量，而是一套包含多种工具的治理系统。</p>
+<p>另一种思路是从资源配置角度拆解政策工具。产业政策可能表现为现金补贴、税收优惠、低息信贷、低价供地、政府采购或市场准入保护。不同工具改变的是企业面对的不同约束：现金补贴改善现金流，税收优惠降低税负，低息信贷降低融资成本，低价供地降低要素成本，政府采购提供需求保障，产业链配套降低上下游协同成本。</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>政策工具</th>
+<th>直接改变什么</th>
+<th>可能结果变量</th>
+<th>识别风险</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>财政补贴</td>
+<td>企业现金流和项目成本</td>
+<td>投资、研发、产出</td>
+<td>补贴对象可能被筛选</td>
+</tr>
+<tr class="even">
+<td>税收优惠</td>
+<td>实际税负</td>
+<td>利润、投资、创新</td>
+<td>税负差异可能反映企业盈利结构</td>
+</tr>
+<tr class="odd">
+<td>低息信贷</td>
+<td>融资成本</td>
+<td>债务结构、资本开支</td>
+<td>信贷支持与企业信用质量相关</td>
+</tr>
+<tr class="even">
+<td>低价供地</td>
+<td>土地要素成本</td>
+<td>固定资产投资、产能扩张</td>
+<td>地块位置和地方招商策略影响估计</td>
+</tr>
+<tr class="odd">
+<td>政府采购</td>
+<td>需求保障</td>
+<td>销售收入、进入概率</td>
+<td>采购对象选择可能非随机</td>
+</tr>
+<tr class="even">
+<td>产业链配套</td>
+<td>上下游协同</td>
+<td>交付稳定、订单波动</td>
+<td>需要网络数据支持</td>
+</tr>
+</tbody>
+</table>
+<p>因此，研究者不能简单地把复杂政策压成一个虚拟变量。虚拟变量当然可以作为起点，但正文必须说明这个虚拟变量背后到底代表什么政策工具。否则，即使估计出显著系数，也很难解释政策为什么有效。</p>
+</section>
+<section id="分批试点不是技术细节" class="level2" data-number="1.7">
+<h2 data-number="1.7" class="anchored" data-anchor-id="分批试点不是技术细节"><span class="header-section-number">1.7</span> 分批试点不是技术细节</h2>
+<p>很多中国政策不是一次性铺开，而是分批试点、逐步扩围。分批实施看起来只是政策过程中的时间安排，但对识别设计非常关键。</p>
+<p>研究者至少要追问七个问题：</p>
+<ol type="1">
+<li><p><strong>谁决定试点名单？</strong><br>
+是中央指定、省级推荐、地方申报，还是多方协商？</p></li>
+<li><p><strong>第一批试点为什么先入选？</strong><br>
+是因为基础更好、问题更严重、政治激励更强，还是具备更好的执行能力？</p></li>
+<li><p><strong>后续批次是否与第一批系统不同？</strong><br>
+扩围可能把不同类型地区纳入政策，导致不同批次处理效应不可比。</p></li>
+<li><p><strong>是否存在地方主动申报？</strong><br>
+如果地方主动争取试点资格，试点选择就可能反映地方治理能力、产业基础或发展意愿。</p></li>
+<li><p><strong>政策是否存在预期效应？</strong><br>
+市场主体可能在正式实施前就开始调整行为。</p></li>
+<li><p><strong>政策是否存在溢出效应？</strong><br>
+邻近地区、上下游企业和同行业竞争者可能受到间接影响。</p></li>
+<li><p><strong>同期是否存在并发政策？</strong><br>
+如果多个政策同时推进，单一政策效应可能被混合。</p></li>
+</ol>
+<p>这些问题直接决定后续方法选择。</p>
+<p>如果第一批试点明显不是随机产生的，研究者就要讨论处理组选择机制。这个问题会在第 3 章进入样本选择、自选择和 Heckman 思维。</p>
+<p>如果政策分批进入，传统双向固定效应 (TWFE) 未必总是合适。不同单位处理时间不同、处理效应又可能动态变化时，估计量可能混入不同批次和不同时间的效应。这个问题会在第 5 章讨论 DID、事件研究和交错处理时展开。</p>
+<p>如果政策存在外溢效应，简单把未试点地区当作对照组也会有问题。因为对照组可能已经受到政策间接影响。这个问题会影响反事实构造，也会影响合成控制、DDD 和空间溢出分析的适用性。</p>
+<div class="callout callout-style-default callout-warning callout-titled" title="分批试点的核心风险">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+分批试点的核心风险
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>分批试点不是天然适合 DID。试点顺序本身可能包含政策选择、地方能力、产业基础和预期反应。研究者必须先解释进入顺序，再讨论估计方法。</p>
+</div>
+</div>
+</section>
+<section id="政策时间不是文件发布日期" class="level2" data-number="1.8">
+<h2 data-number="1.8" class="anchored" data-anchor-id="政策时间不是文件发布日期"><span class="header-section-number">1.8</span> 政策时间不是文件发布日期</h2>
+<p>政策时间也不是一个简单日期。很多政策至少有几个时间节点：</p>
+<ul>
+<li>政策酝酿时间；</li>
+<li>文件发布日期；</li>
+<li>名单公布时间；</li>
+<li>正式实施时间；</li>
+<li>地方执行时间；</li>
+<li>企业进入名单时间；</li>
+<li>市场开始反应时间；</li>
+<li>政策扩围、退出或调整时间。</li>
+</ul>
+<p>不同时间节点对应不同研究问题。研究政策预期效应，可能需要关注消息释放或名单公布；研究实际执行效果，可能更应关注政策落地时间；研究市场反应，可能需要关注公告日；研究长期产业影响，则需要把政策退出和持续效应纳入分析。</p>
+<p>如果文件发布时间、实施时间、名单公布时间和市场反应时间不一致，<code>Post</code> 就不能简单等于文件发布日期。它必须根据政策对象、执行时间、数据层级和识别逻辑重新定义。</p>
+<p>Lane (2025) 也提供了类似启发。HCI drive 的政策启动、政策执行和政策自由化具有相对清楚的时间结构，因此可以讨论政策期与政策后持续效应，而不是只估计一个静态平均效应。</p>
+<p>政策时间定义不清，会直接影响事件研究图。看似平行趋势不成立，可能是时间点定义错误；看似政策前已有反应，可能是市场早已预期；看似政策后效果滞后，可能是执行时间晚于文件发布日期。</p>
+<p>所以，研究者在设定 <code>Post</code> 前，需要先写清楚：</p>
+<ol type="1">
+<li>哪个时间点真正改变了主体面临的约束；</li>
+<li>为什么这个时间点比文件发布日期更合适；</li>
+<li>是否存在提前预期或滞后执行；</li>
+<li>是否需要区分政策期、扩围期和退出期。</li>
+</ol>
+</section>
+<section id="数据可得性会改变论文能回答的问题" class="level2" data-number="1.9">
+<h2 data-number="1.9" class="anchored" data-anchor-id="数据可得性会改变论文能回答的问题"><span class="header-section-number">1.9</span> 数据可得性会改变论文能回答的问题</h2>
+<p>政策可能直接作用于微观企业或个人，但研究者未必能获得相应数据。最终使用的数据可能是城市、行业、上市公司、地区年度面板或公开统计数据。</p>
+<p>这不是一个简单的数据缺陷，而是会改变论文能回答的问题。</p>
+<p>例如，某项产业政策的直接对象是企业，但研究者只能获得城市层面数据。此时，论文很难回答政策对不同类型企业的异质性影响，更可能回答政策对城市综合经济结果的影响。又如，政策对象是产品清单，但研究者只有企业年度面板，就必须用企业政策前产品结构构造暴露度。再如，药品集采直接作用于药品和中选结果，如果研究者只用医药上市公司数据，就要说明公司层面暴露度如何从药品层面映射而来。</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 20%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>政策对象</th>
+<th>可得数据</th>
+<th>可能研究层级</th>
+<th>主要局限</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>企业</td>
+<td>城市面板</td>
+<td>城市</td>
+<td>难以识别企业异质性</td>
+</tr>
+<tr class="even">
+<td>产品</td>
+<td>企业面板</td>
+<td>企业</td>
+<td>需要政策前产品结构权重</td>
+</tr>
+<tr class="odd">
+<td>药品目录</td>
+<td>上市公司</td>
+<td>公司</td>
+<td>处理变量可能较粗</td>
+</tr>
+<tr class="even">
+<td>学校建设</td>
+<td>个人调查</td>
+<td>个人</td>
+<td>需要地区、出生队列和入学年龄匹配</td>
+</tr>
+<tr class="odd">
+<td>金融机构</td>
+<td>借款企业</td>
+<td>企业</td>
+<td>需要银企关系或地区金融供给映射</td>
+</tr>
+</tbody>
+</table>
+<p>数据颗粒度还会影响结果解释。用城市数据研究企业政策，估计结果可能是综合治理效应，而不是企业层面的直接处理效应；用上市公司数据研究产业政策，结论未必能推广到全部企业；用行业数据研究政策效果，可能看不到企业内部异质性。</p>
+<p>因此，政策背景部分必须说明数据可得性和研究边界。不能只写「由于数据限制，本文使用城市面板」，还要进一步解释：使用城市面板以后，论文识别的政策效果是什么，无法识别什么，如何通过稳健性检验或补充分析缓解这些限制。</p>
+</section>
+<section id="为什么需要政策文件事实调查和访谈" class="level2" data-number="1.10">
+<h2 data-number="1.10" class="anchored" data-anchor-id="为什么需要政策文件事实调查和访谈"><span class="header-section-number">1.10</span> 为什么需要政策文件、事实调查和访谈</h2>
+<p>好的政策评估需要模型，也需要事实调查。</p>
+<p>政策文件可以告诉我们制度设计，但不一定告诉我们执行过程。中央文件往往较抽象，地方细则更接近执行；政策办法会写明申报条件、目标对象、资金安排和考核要求；试点名单和公告可以帮助确定处理组和冲击时间；行业访谈和实地调查则可能揭示文件中没有写清楚的执行逻辑。</p>
+<p>在政策评估中，事实调查至少包括：</p>
+<ul>
+<li>中央政策文件；</li>
+<li>地方配套细则；</li>
+<li>试点名单；</li>
+<li>实施时间线；</li>
+<li>申报条件；</li>
+<li>名单公布方式；</li>
+<li>监管公告；</li>
+<li>行业协会材料；</li>
+<li>企业公告和年报；</li>
+<li>访谈记录；</li>
+<li>数据口径说明。</li>
+</ul>
+<p>这些材料不是为了把背景写得更热闹，而是为了确认研究设计中的关键判断：</p>
+<ul>
+<li>处理组是否来自政策规则；</li>
+<li>政策时间是否对应真实约束变化；</li>
+<li>地方是否存在主动申报或筛选；</li>
+<li>样本是否因为数据可得性而发生选择；</li>
+<li>对照组是否可能受到外溢影响；</li>
+<li>结果变量是否真正对应政策目标。</li>
+</ul>
+<p>政府引导基金例子正说明了这一点。只有继续阅读地方文件和与从业者交流，研究者才可能意识到，这项政策不一定只适合从一般风险投资角度研究，也可以从地方产业链治理和供应链安全角度重新定义研究问题。</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="政策事实调查清单">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+政策事实调查清单
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>面对一项政策，至少先整理：</p>
+<ol type="1">
+<li>政策文件和实施细则；</li>
+<li>政策目标、工具和对象；</li>
+<li>试点名单、进入规则和批次；</li>
+<li>政策实施、扩围和退出时间；</li>
+<li>政策对象与研究数据之间的合并键；</li>
+<li>可能的主动申报、筛选、预期效应和溢出效应；</li>
+<li>结果变量与政策目标之间的对应关系。</li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="延伸案例：China Policy Shocks">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+延伸案例：China Policy Shocks
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>本章提出的四个初步判断–政策事实、处理边界、冲击时间和数据合并键是否清楚–也构成 <a href="https://lianxhcn.github.io/china-policy-shocks/">China Policy Shocks</a> 整理中国政策冲击的基本框架。该网站不只是政策名称清单；读者可以先从 <a href="https://lianxhcn.github.io/china-policy-shocks/appendix_policy_list.html">中国政策冲击汇编</a> 寻找与研究主题相关的候选政策，再检查其处理组如何定义、何时真正改变主体约束、能否与数据匹配，以及是否存在选择性进入、预期效应或外溢风险。</p>
+<p>政策汇编只能提供研究设计的起点，不能替代政策文件、事实调查和对反事实的实质判断。面对一个看似合适的政策，仍应沿着本章的逻辑追问：它是否足以支持一个可辩护的比较？</p>
+</div>
+</div>
+</section>
+<section id="从本章走向后续章节" class="level2" data-number="1.11">
+<h2 data-number="1.11" class="anchored" data-anchor-id="从本章走向后续章节"><span class="header-section-number">1.11</span> 从本章走向后续章节</h2>
+<p>本章的目的，是把政策评估的入口从模型选择拉回政策本身。</p>
+<p>后续各章都会沿着这一逻辑展开：</p>
+<ul>
+<li><p><strong>政策对象与数据单位如何映射</strong><br>
+第 2 章讨论处理组、对照组、政策时点、数据合并键和政策暴露度。</p></li>
+<li><p><strong>谁进入样本，谁被我们观察到</strong><br>
+第 3 章讨论样本选择、自选择、结果变量只在部分样本中可观测，以及 Heckman 思维。</p></li>
+<li><p><strong>有哪些不可观测差异需要控制</strong><br>
+第 4 章讨论控制变量、固定效应、HDFE 和交互固定效应如何改变比较范围。</p></li>
+<li><p><strong>如何构造反事实</strong><br>
+第 5 章讨论 DID、DDD、事件研究和合成控制法如何在不同政策结构下构造比较对象。</p></li>
+<li><p><strong>控制关系不再简单线性时怎么办</strong><br>
+第 6 章从 FWL 出发，讨论 DDML 如何处理高维控制变量和非线性设定。</p></li>
+</ul>
+<p>从这个角度看，方法不是研究的起点，而是政策事实、数据结构和识别威胁逐步逼出来的结果。</p>
+<p>好的政策评估论文，应该让读者看见这条链条：政策为什么发生，政策作用于谁，数据中如何看见它，反事实从哪里来，方法为什么适合这个问题。</p>
+<p>这就是从政策背景到研究设计。</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/lianxhcn\.github\.io\/ci-policy\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../settings.html" class="pagination-link" aria-label="🚀课前准备：环境配置">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">🚀课前准备：环境配置</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../lectures/02_policy_to_data.html" class="pagination-link" aria-label="政策如何进入数据">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">政策如何进入数据</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p><a href="https://www.lianxh.cn">lianxh.cn</a></p>
+</div>
+    <div class="nav-footer-right">
+<p>基于 <a href="https://quarto.org/">Quarto</a> 构建</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

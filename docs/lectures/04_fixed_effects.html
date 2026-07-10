@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>4&nbsp; 固定效应：控制了什么 – 因果推断：政策评估中的识别思维与实证设计</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../lectures/05_counterfactuals.html" rel="next">
+<link href="../lectures/03_sample_selection.html" rel="prev">
+<link href="../images/book-logo.png" rel="icon" type="image/png">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e8fb9d25728d58bfeac61b497e4a6629.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-57a92833092fd6dc0d7710b6bdfff9c5.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-7ef202e96c563d31d9e5226e4d6cabf9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-490ba4e843cb1303a232ed0c676384f2.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/01_policy_to_design.html"><strong>讲义</strong></a></li><li class="breadcrumb-item"><a href="../lectures/04_fixed_effects.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">固定效应：控制了什么</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="https://lianxhcn.github.io/ci-policy/" class="sidebar-logo-link">
+      <img src="../images/book-logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Causal Inference</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/lianxhcn/ci-policy" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
+    <a href="https://www.lianxh.cn" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-house-fill"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🏠 前言</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../syllabus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📌讲授计划</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../settings.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🚀课前准备：环境配置</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text"><strong>讲义</strong></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/01_policy_to_design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">从政策背景到研究设计</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/02_policy_to_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">政策如何进入数据</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/03_sample_selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">样本选择偏误</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/04_fixed_effects.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">固定效应：控制了什么</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/05_counterfactuals.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">反事实构造</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/06_did_design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">双重差分：从 TWFE 到 CSDID</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/07_ddml.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">双重机器学习：DDML</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/08_ai_agent_workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">AI Agent 辅助实证研究</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/09_reading_list.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">阅读清单</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">附录</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/appendix/A02_government_guidance_fund.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">政府引导基金政策梳理笔记</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/appendix/A03_heckman_selection_literature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Heckman 模型扩展阅读</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch03_heckman/heckman_practical_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Heckman 实操笔记</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch04_fixed_effects/fixed_effects_practical_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">固定效应实操笔记</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch05_counterfactuals/A05_counterfactual_replication.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">加州禁烟：SCM/RCM/SDID</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch06_did/A06_did_method_selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">F</span>&nbsp; <span class="chapter-title">DID 方法与 Stata 实操</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch07_ddml/A07_fwl_ddml.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">G</span>&nbsp; <span class="chapter-title">双重机器学习 Stata 实操</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exercises/exercise_overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">练习概览</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#一切从一张图开始三家公司的辛普森悖论" id="toc-一切从一张图开始三家公司的辛普森悖论" class="nav-link active" data-scroll-target="#一切从一张图开始三家公司的辛普森悖论"><span class="header-section-number">4.1</span> 一切从一张图开始：三家公司的辛普森悖论</a></li>
+  <li><a href="#dgp-视角三类变量与三个下标" id="toc-dgp-视角三类变量与三个下标" class="nav-link" data-scroll-target="#dgp-视角三类变量与三个下标"><span class="header-section-number">4.2</span> DGP 视角：三类变量与三个下标</a></li>
+  <li><a href="#twfe-及其扩展同质冲击假设与三条降维路径" id="toc-twfe-及其扩展同质冲击假设与三条降维路径" class="nav-link" data-scroll-target="#twfe-及其扩展同质冲击假设与三条降维路径"><span class="header-section-number">4.3</span> TWFE 及其扩展：同质冲击假设与三条降维路径</a></li>
+  <li><a href="#每加一组固定效应就换一次比较对象" id="toc-每加一组固定效应就换一次比较对象" class="nav-link" data-scroll-target="#每加一组固定效应就换一次比较对象"><span class="header-section-number">4.4</span> 每加一组固定效应，就换一次比较对象</a></li>
+  <li><a href="#hdfe当虚拟变量多到装不下" id="toc-hdfe当虚拟变量多到装不下" class="nav-link" data-scroll-target="#hdfe当虚拟变量多到装不下"><span class="header-section-number">4.5</span> HDFE：当虚拟变量多到装不下</a></li>
+  <li><a href="#混频难题与交互固定效应" id="toc-混频难题与交互固定效应" class="nav-link" data-scroll-target="#混频难题与交互固定效应"><span class="header-section-number">4.6</span> 混频难题与交互固定效应</a>
+  <ul class="collapse">
+  <li><a href="#两种估计思路" id="toc-两种估计思路" class="nav-link" data-scroll-target="#两种估计思路"><span class="header-section-number">4.6.1</span> 两种估计思路</a></li>
+  <li><a href="#stata-实现" id="toc-stata-实现" class="nav-link" data-scroll-target="#stata-实现"><span class="header-section-number">4.6.2</span> Stata 实现</a></li>
+  </ul></li>
+  <li><a href="#控制的代价慢变量的识别与建模" id="toc-控制的代价慢变量的识别与建模" class="nav-link" data-scroll-target="#控制的代价慢变量的识别与建模"><span class="header-section-number">4.7</span> 控制的代价：慢变量的识别与建模</a></li>
+  <li><a href="#顶级期刊如何用固定效应实现识别" id="toc-顶级期刊如何用固定效应实现识别" class="nav-link" data-scroll-target="#顶级期刊如何用固定效应实现识别"><span class="header-section-number">4.8</span> 顶级期刊如何用固定效应实现识别</a>
+  <ul class="collapse">
+  <li><a href="#吸收结构声明比较对象lane-2025" id="toc-吸收结构声明比较对象lane-2025" class="nav-link" data-scroll-target="#吸收结构声明比较对象lane-2025"><span class="header-section-number">4.8.1</span> 吸收结构声明比较对象：Lane (2025)</a></li>
+  <li><a href="#交互固定效应分离供给与需求khwaja-and-mian-2008" id="toc-交互固定效应分离供给与需求khwaja-and-mian-2008" class="nav-link" data-scroll-target="#交互固定效应分离供给与需求khwaja-and-mian-2008"><span class="header-section-number">4.8.2</span> 交互固定效应分离供给与需求：Khwaja and Mian (2008)</a></li>
+  <li><a href="#固定效应本身成为研究对象bonhomme-et-al.-2023" id="toc-固定效应本身成为研究对象bonhomme-et-al.-2023" class="nav-link" data-scroll-target="#固定效应本身成为研究对象bonhomme-et-al.-2023"><span class="header-section-number">4.8.3</span> 固定效应本身成为研究对象：Bonhomme et al.&nbsp;(2023)</a></li>
+  <li><a href="#一个预告从控制到反事实" id="toc-一个预告从控制到反事实" class="nav-link" data-scroll-target="#一个预告从控制到反事实"><span class="header-section-number">4.8.4</span> 一个预告：从控制到反事实</a></li>
+  </ul></li>
+  <li><a href="#扩展阅读" id="toc-扩展阅读" class="nav-link" data-scroll-target="#扩展阅读"><span class="header-section-number">4.9</span> 扩展阅读</a></li>
+  <li><a href="#附录慢变量与非时变变量的方法工具箱" id="toc-附录慢变量与非时变变量的方法工具箱" class="nav-link" data-scroll-target="#附录慢变量与非时变变量的方法工具箱"><span class="header-section-number">4.10</span> 附录：慢变量与非时变变量的方法工具箱</a></li>
+  <li><a href="#从本章走向第五章" id="toc-从本章走向第五章" class="nav-link" data-scroll-target="#从本章走向第五章"><span class="header-section-number">4.11</span> 从本章走向第五章</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/01_policy_to_design.html"><strong>讲义</strong></a></li><li class="breadcrumb-item"><a href="../lectures/04_fixed_effects.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">固定效应：控制了什么</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">固定效应：控制了什么</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+本章核心判断
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>固定效应不是回归表格底部的装饰行。每加一组固定效应，研究者都在做两件事：把一类不可观测的混淆因素从干扰项中拿走，同时把一部分识别变异也一起拿走。好的固定效应设定，是在「控制得足够干净」和「留下的变异足够多、足够外生」之间做权衡。</p>
+</div>
+</div>
+<p>第三章讨论了谁进入样本、谁被我们观察到。样本确定以后，下一个问题随之而来：处理组和对照组之间，仍然存在大量我们看不见的差异——公司文化、个人能力、地区禀赋、宏观冲击。它们不出现在数据里，却和我们关心的解释变量纠缠在一起。</p>
+<p>本章要传达的核心信息是：<strong>不需要观测到这些变量，也可以控制它们</strong>。只要能对它们的变动方式做出假设——不随时间变、不随个体变、或者沿着某些共同因子变——组内去心、双向固定效应、高维固定效应和交互固定效应就可以依次登场。与此同时，读者还要建立另一个意识：每加一组固定效应，都是在换一次比较对象。固定效应设定，本质上是研究者在向读者声明「我在拿谁和谁比」。</p>
+<section id="一切从一张图开始三家公司的辛普森悖论" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="一切从一张图开始三家公司的辛普森悖论"><span class="header-section-number">4.1</span> 一切从一张图开始：三家公司的辛普森悖论</h2>
+<p>先看一个我上课时常用的例子。横轴是公司规模（<span class="math inline">\(Size = \ln(\text{Total Assets})\)</span>），纵轴是总资产回报率（ROA）。图 <a href="#fig-cipolicy-fe-simpson" class="quarto-xref">图&nbsp;<span>4.1</span></a> 上半部分有三家公司：左上角那家初创时规模小，ROA 相对较高；右下角那家初创时规模就很大，ROA 相对较低。这种截面上的差异，与公司所处行业、所有权属性有关——它们基本不随时间变化。</p>
+<p>我们想研究的问题是：随着一家公司规模变大，它的 ROA 怎么变。但如果无视三家公司之间的截面差异，把所有点混在一起回归，得到的结论会是「规模越大，ROA 越低」。图的下半部分给出组内去心（de-mean）之后的结果：截面差异被减掉以后，三家公司内部的正向关系显露出来，斜率翻正。</p>
+<div id="fig-cipolicy-fe-simpson" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-fe-simpson-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/Fig_OLS_FE_01.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-fe-simpson-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;4.1: 辛普森悖论：混合回归与组内去心
+</figcaption>
+</figure>
+</div>
+<p>简单的解释是：混合回归回答的是「大公司是不是比小公司 ROA 低」，固定效应回答的是「同一家公司变大以后 ROA 怎么变」。此一时，彼一时。两个问题都可以研究，但它们不是同一个问题；把前者的答案当成后者的答案，就是遗漏变量偏误。</p>
+<p>这个例子可以用几行代码复现。数据生成过程中真实的 <span class="math inline">\(\beta = 0.5\)</span>，但三家公司的个体效应与初始规模负相关：</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>*----------------- 模拟：辛普森悖论与组内去心</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">clear</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> <span class="dv">seed</span> 20260706</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> <span class="kw">obs</span> 3</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> id    = <span class="dt">_n</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> a_i   = 12 - 3*id            <span class="co">// 个体效应：9, 6, 3，与规模负相关</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> size0 = 2  + 3*id            <span class="co">// 初创规模：5, 8, 11</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>expand 100</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> x = size0 + runiform(0, 4)          <span class="co">// Size</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> <span class="fu">y</span> = a_i + 0.5*x + rnormal(0, 0.8)   <span class="co">// DGP：beta = 0.5</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="kw">reg</span>  <span class="fu">y</span> x                     <span class="co">// 混合回归：斜率为负</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="kw">areg</span> <span class="fu">y</span> x, absorb(id)         <span class="co">// 固定效应：斜率约 0.5</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>*----------------- 绘图（需 <span class="kw">ssc</span> install binscatter2）</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>binscatter2 <span class="fu">y</span> x, n(60) <span class="kw">by</span>(id)              <span class="co">// 上图：原始数据</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>binscatter2 <span class="fu">y</span> x, n(60) <span class="kw">by</span>(id) absorb(id)   <span class="co">// 下图：组内去心</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>混合回归的斜率为负，<code>areg</code> 的斜率回到 0.5 附近。差别不在数据，而在比较对象：前者把公司之间的差异也算进了「规模的效应」，后者只使用每家公司内部的变化。</p>
+</section>
+<section id="dgp-视角三类变量与三个下标" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="dgp-视角三类变量与三个下标"><span class="header-section-number">4.2</span> DGP 视角：三类变量与三个下标</h2>
+<p>把这个小例子引申到数据生成过程（DGP）的视角上来。我的观点是：所有我们研究的 <span class="math inline">\(y\)</span> 都有一个潜在的数据生成过程。对面板数据而言，影响 <span class="math inline">\(y_{it}\)</span> 的变量至少包含三类：</p>
+<ul>
+<li>不随时间改变的变量 <span class="math inline">\(x_i\)</span>：公司文化、个人性格、国家的资源禀赋、地理位置；</li>
+<li>不随个体改变的变量 <span class="math inline">\(x_t\)</span>：宏观冲击、货币政策、经济政策不确定性；</li>
+<li>既随时间又随个体改变的变量 <span class="math inline">\(x_{it}\)</span>：规模、杠杆、投资、研发。</li>
+</ul>
+<p>三类变量在模型设定中体现为下标的差别。麻烦在于，<span class="math inline">\(x_i\)</span> 和 <span class="math inline">\(x_t\)</span> 中有大量成员是观测不到的，而它们往往又与 <span class="math inline">\(x_{it}\)</span> 相关。以杠杆率为例，假设真实模型中所有权属性 <span class="math inline">\(SOE_i\)</span> 影响杠杆，但我们观测不到它（或懒得放它）：</p>
+<p><span id="eq-cipolicy-fe-omitted"><span class="math display">\[
+\text{True: }\; Lev_{it} = \alpha + SOE_{i} + Size_{it}\beta + \varepsilon_{it}, \qquad
+\text{Estimate: }\; Lev_{it} = \alpha + Size_{it}\theta + u_{it}
+\tag{4.1}\]</span></span></p>
+<p>只要 <span class="math inline">\(Corr(SOE_i, Size_{it}) \neq 0\)</span>，<span class="math inline">\(\hat{\theta}\)</span> 就是有偏的——国企普遍规模更大、杠杆更高，<span class="math inline">\(\hat{\theta}\)</span> 里混着所有权的贡献。</p>
+<p>固定效应模型的处理办法直接而优雅。把所有不随时间变化的因素（无论能否观测）打包进 <span class="math inline">\(\alpha_i\)</span>：</p>
+<p><span id="eq-cipolicy-fe-demean"><span class="math display">\[
+\begin{aligned}
+y_{it} &amp;= \alpha_i + x_{it}\beta + \varepsilon_{it} \\
+\bar{y}_{i} &amp;= \alpha_i + \bar{x}_{i}\beta + \bar{\varepsilon}_{i} \\
+y_{it} - \bar{y}_{i} &amp;= (x_{it} - \bar{x}_{i})\beta + ({\color{red}{\alpha_i - \alpha_i}}) + (\varepsilon_{it} - \bar{\varepsilon}_{i})
+\end{aligned}
+\tag{4.2}\]</span></span></p>
+<p>第三行中 <span class="math inline">\(\alpha_i - \alpha_i = 0\)</span>，这一步就是「不用观测也能控制」的全部秘密：我们没有测量 <span class="math inline">\(SOE_i\)</span>、公司文化或者管理层风格，但只要它们不随时间变，组内去心就把它们连同 <span class="math inline">\(\alpha_i\)</span> 一起减掉了。对去心后的数据做 OLS，得到的 <span class="math inline">\(\hat{\beta}\)</span> 与直接在模型里放 <span class="math inline">\(N\)</span> 个公司虚拟变量完全等价——这是 FWL 定理的一个典型应用。FWL 的一句话版本是「先剔除、再回归」与「一起回归」等价，正式表述和部分回归图留到第 6 章展开。</p>
+<p>Stata 中至少有四种等价写法。前三种是现成命令，第四种手动去心，可以帮助确认自己真的理解了组内变换在做什么：</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>xtset id <span class="fu">year</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">xtreg</span>   <span class="fu">y</span> x, <span class="kw">fe</span> <span class="kw">vce</span>(<span class="kw">cluster</span> id)                <span class="co">//  [1]</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">areg</span>    <span class="fu">y</span> x, absorb(id) <span class="kw">vce</span>(<span class="kw">cluster</span> id)        <span class="co">//  [2]</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>reghdfe <span class="fu">y</span> x, absorb(id) <span class="kw">vce</span>(<span class="kw">cluster</span> id)        <span class="co">//  [3]</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="kw">bysort</span> id: <span class="bn">center</span> <span class="fu">y</span> x, <span class="kw">prefix</span>(c_)              <span class="co">//  [4] 手动去心</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="kw">reg</span> c_y c_x, <span class="kw">vce</span>(<span class="kw">cluster</span> id)                   <span class="co">//      系数同上，标准误需调整</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="kw">xtreg</span>   <span class="fu">y</span> x, <span class="kw">be</span>                                <span class="co">//  对照：组间关系长什么样</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>四种方法的 <span class="math inline">\(\hat{\beta}\)</span> 完全相同。顺手跑一个 <code>xtreg, be</code>，可以看到组间（between）关系——在辛普森悖论的例子里，它就是那条为负的混合斜率的主要来源。</p>
+</section>
+<section id="twfe-及其扩展同质冲击假设与三条降维路径" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="twfe-及其扩展同质冲击假设与三条降维路径"><span class="header-section-number">4.3</span> TWFE 及其扩展：同质冲击假设与三条降维路径</h2>
+<p>在 <span class="math inline">\(\alpha_i\)</span> 之外加入年份效应 <span class="math inline">\(\lambda_t\)</span>，就得到实证中应用最广的双向固定效应模型（TWFE）：</p>
+<p><span id="eq-cipolicy-fe-twfe"><span class="math display">\[
+Y_{it} = \mathbf{x}_{it}'\beta + \alpha_i + \lambda_t + \varepsilon_{it}
+\tag{4.3}\]</span></span></p>
+<p>为便于理解，把它写成虚拟变量的形式：</p>
+<p><span id="eq-cipolicy-fe-twfe-dummy"><span class="math display">\[
+Y_{it} = \mathbf{x}_{it}'\beta + \sum_{i=1}^N \alpha_i A_i + \sum_{t=1}^T \lambda_t B_t + \varepsilon_{it}
+\tag{4.4}\]</span></span></p>
+<p>其中 <span class="math inline">\(A_i\)</span> 是 <span class="math inline">\(N\)</span> 个个体虚拟变量，<span class="math inline">\(B_t\)</span> 是 <span class="math inline">\(T\)</span> 个年份虚拟变量。这个写法暴露出 TWFE 隐含的一条关键假设：<strong>第</strong> <span class="math inline">\(t\)</span> 年的宏观冲击 <span class="math inline">\(B_t\)</span> 对所有个体的影响都相同，均为 <span class="math inline">\(\lambda_t\)</span>。同一次央行加息、同一次石油涨价，被假设为对每家公司施加同样的效应。这显然有点牵强——高杠杆公司和现金充裕公司对加息的反应本就不同。</p>
+<p>如果要放开这条假设，允许宏观冲击对不同个体有异质影响，就得加入个体与时间的交互项：</p>
+<p><span id="eq-cipolicy-fe-twfe-interact"><span class="math display">\[
+Y_{it} = \mathbf{x}_{it}'\beta + \alpha_i + \lambda_t + \alpha_i\lambda_t + \varepsilon_{it}
+\tag{4.5}\]</span></span></p>
+<p>但这个模型的参数个数超过了样本量 <span class="math inline">\(N \times T\)</span>，无法识别。出路是施加约束、给参数降维。实证中常见三条路径。</p>
+<p><strong>路径 A：变系数模型——让异质性停在更高层级。</strong> 假设宏观冲击的异质影响只存在于比个体更高的层级（如行业），把 <span class="math inline">\(\sum_i\sum_t \theta_{it}A_iB_t\)</span> 换成 <span class="math inline">\(\sum_j\sum_t \theta_{jt}S_jB_t\)</span>，其中 <span class="math inline">\(S_j\)</span> 是行业虚拟变量：</p>
+<p><span id="eq-cipolicy-fe-industry-year"><span class="math display">\[
+Y_{it} = \mathbf{x}_{it}'\beta + \alpha_i + \mathbf{g}_j\lambda_t + \varepsilon_{it}
+\tag{4.6}\]</span></span></p>
+<p>这就是「行业 × 年份固定效应」，允许每个行业每年有自己的共同冲击。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>reghdfe <span class="fu">y</span> x, absorb(id industry#year) <span class="kw">vce</span>(<span class="kw">cluster</span> id)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>路径 B：个体异质趋势——让每个个体走自己的时间线。</strong> 把宏观冲击设定为个体特有的线性趋势 <span class="math inline">\(\theta_i \cdot t\)</span>，即每个个体有自己的斜率：</p>
+<p><span id="eq-cipolicy-fe-hetero-trend"><span class="math display">\[
+Y_{it} = \mathbf{x}_{it}'\beta + \alpha_i + \lambda_t + \alpha_i t + \varepsilon_{it}
+\tag{4.7}\]</span></span></p>
+<p>这里 <code>c.year</code> 表示把年份当作连续变量处理。该设定在 DID 的稳健性检验中极常见，用来吸收处理组和对照组政策前的不同趋势。</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>reghdfe <span class="fu">y</span> x, absorb(id <span class="fu">year</span> id#c.<span class="fu">year</span>) <span class="kw">vce</span>(<span class="kw">cluster</span> id)   <span class="co">// 推荐，如上市公司数据</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>* 也可对模型做一阶差分，此时 alpha_i*t 差分后变为常数 alpha_i</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">xtreg</span> D.<span class="fu">y</span> D.x D.(i.<span class="fu">year</span>), <span class="kw">fe</span> <span class="kw">robust</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>路径 C：用可观测宏观变量替代</strong> <span class="math inline">\(\lambda_t\)</span>。 很多时候我们关心的核心解释变量本身就是宏观变量 <span class="math inline">\(\mathbf{z}_t\)</span>（人均 GDP、货币增速、经济政策不确定性 EPU）。此时 <span class="math inline">\(\mathbf{z}_t\)</span> 与 <span class="math inline">\(\lambda_t\)</span> 完全共线，必须删掉 <span class="math inline">\(\lambda_t\)</span>：</p>
+<p><span id="eq-cipolicy-fe-macro"><span class="math display">\[
+Y_{it} = \alpha_i + \mathbf{x}_{it}'\beta + {\color{red}{\mathbf{z}_t'\gamma}} + v_{it}
+\tag{4.8}\]</span></span></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">xtreg</span> <span class="fu">y</span> x z1 z2, <span class="kw">fe</span> <span class="kw">vce</span>(<span class="kw">cluster</span> id)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>问题在于，即使 <span class="math inline">\(\mathbf{z}_t\)</span> 里放了三五个宏观变量，仍会遗漏一些重要却难测量的因素——央行的口头沟通、疫情演变。把年份效应拆成 <span class="math inline">\(\lambda_t = \mathbf{z}_t'\gamma + \mathbf{w}_t'\eta\)</span>，我们用 <span class="math inline">\(\mathbf{z}_t\)</span> 替代了 <span class="math inline">\(\lambda_t\)</span>，被漏掉的 <span class="math inline">\(\mathbf{w}_t'\eta\)</span> 就进了干扰项：<span class="math inline">\(v_{it} = \mathbf{w}_t'\eta + \varepsilon_{it}\)</span>。只要 <span class="math inline">\(Corr(\mathbf{w}_t, \mathbf{z}_t) \neq 0\)</span> 或 <span class="math inline">\(Corr(\mathbf{w}_t, \mathbf{x}_{it}) \neq 0\)</span>，估计就有偏；而且 <span class="math inline">\(\mathbf{w}_t\)</span> 是所有个体共同面对的，会造成干扰项的截面相关。</p>
+<p>路径 C 的困境——想控制的宏观因素和想估计的宏观变量撞在同一维度——正是交互固定效应要解决的问题。这条线索我们放到本章后面专门展开。</p>
+</section>
+<section id="每加一组固定效应就换一次比较对象" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="每加一组固定效应就换一次比较对象"><span class="header-section-number">4.4</span> 每加一组固定效应，就换一次比较对象</h2>
+<p>上一节的三条路径已经透露出一个规律：固定效应不是越多越好，也不是随手加的。每往模型里放一组，被控制的混淆更多，剩下的识别变异也更少。关键是每一步都要能回答同一个问题：<strong>剩下的变异是什么，系数在回答什么问题</strong>。</p>
+<div id="tbl-cipolicy-fe-ladder" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-cipolicy-fe-ladder-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;4.1: 固定效应设定与比较对象的递进
+</figcaption>
+<div aria-describedby="tbl-cipolicy-fe-ladder-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>设定</th>
+<th><code>absorb()</code></th>
+<th>被吸收的混淆</th>
+<th>剩余识别变异</th>
+<th>系数回答的问题</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>POLS</td>
+<td>无</td>
+<td>无</td>
+<td>全部变异</td>
+<td>公司间差异与公司内变化混在一起</td>
+</tr>
+<tr class="even">
+<td>FE</td>
+<td><code>id</code></td>
+<td>不随时间变的公司特征</td>
+<td>公司内部的时间变异</td>
+<td>同一公司变化时，<span class="math inline">\(y\)</span> 怎么变</td>
+</tr>
+<tr class="odd">
+<td>TWFE</td>
+<td><code>id year</code></td>
+<td>+ 同质的宏观冲击</td>
+<td>公司内、相对当年平均的变异</td>
+<td>相对同年其他公司，该公司的变化带来什么</td>
+</tr>
+<tr class="even">
+<td>行业 × 年份</td>
+<td><code>id ind#year</code></td>
+<td>+ 行业年度景气</td>
+<td>同行业同年份内部的差异</td>
+<td>相对同行业同年的公司，该公司的变化带来什么</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>表 <a href="#tbl-cipolicy-fe-ladder" class="quarto-xref">表&nbsp;<span>4.1</span></a> 是本章最重要的一张表。图 <a href="#fig-cipolicy-fe-ladder" class="quarto-xref">图&nbsp;<span>4.2</span></a> 用图形方式呈现同一逻辑：固定效应逐步细化，比较对象逐步收窄。</p>
+<div id="fig-cipolicy-fe-ladder" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-fe-ladder-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ci-policy-fe-05-%E9%80%90%E6%AD%A5%E7%BB%86%E5%8C%96%E7%9A%84%E5%9B%BA%E5%AE%9A%E6%95%88%E5%BA%94%E5%9B%BE%E8%A7%A3.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-fe-ladder-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;4.2: 逐步细化的固定效应：控制什么，比较什么
+</figcaption>
+</figure>
+</div>
+<p>回到本书的主线案例。Lane (2025) 的基准事件研究只用了 <span class="math inline">\(\alpha_i + \tau_t\)</span>：产业固定效应吸收各产业的长期水平差异，年份固定效应吸收韩国制造业整体的宏观波动，剩余的识别变异是「目标产业相对非目标产业、相对 1972 年基准的差异变化」。到了跨国三重差分（DDD），固定效应结构升级为产业 × 年份、国家 × 年份、国家 × 产业三组高维交互——每一组都对应排除一类竞争性解释。这个设定我们放到本章后面的文献解读中细讲。</p>
+<p>这里先点破一个常见误区：<strong>固定效应不能和处理变量处在同一变异层级</strong>。如果政策变量本身是「行业 × 年份」层面的（比如某行业某年是否受政策支持），再放行业 × 年份固定效应，处理变量就会被吸收殆尽——Stata 会直接把它 omit 掉，或者报告一个由残余噪声估出来的系数。这不是软件出错，而是研究者向数据要了一个自相矛盾的东西：既要控制行业 × 年份的一切共同变动，又要估计一个只在行业 × 年份层面变动的变量。</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>*----------------- 递进的固定效应：观察系数与比较对象一起变化</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>reghdfe <span class="fu">y</span> x, noabsorb                 <span class="kw">vce</span>(<span class="kw">cluster</span> id)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">est</span> <span class="kw">store</span> m1</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>reghdfe <span class="fu">y</span> x, absorb(id)               <span class="kw">vce</span>(<span class="kw">cluster</span> id)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="kw">est</span> <span class="kw">store</span> m2</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>reghdfe <span class="fu">y</span> x, absorb(id <span class="fu">year</span>)          <span class="kw">vce</span>(<span class="kw">cluster</span> id)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="kw">est</span> <span class="kw">store</span> m3</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>reghdfe <span class="fu">y</span> x, absorb(id ind#year)      <span class="kw">vce</span>(<span class="kw">cluster</span> id)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="kw">est</span> <span class="kw">store</span> m4</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>esttab m1 m2 m3 m4, nogap <span class="fu">s</span>(<span class="kw">N</span> r2_within)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>*----------------- 处理变量与固定效应同层级：被吸收</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>* d_jt 是行业 j 在年份 t 的政策虚拟变量</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>reghdfe <span class="fu">y</span> d_jt, absorb(id ind#year) <span class="kw">vce</span>(<span class="kw">cluster</span> ind)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>* 结果：d_jt omitted because <span class="kw">of</span> collinearity</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>这条规则在第 5 章讨论 DID 时还会反复出现：DID 的处理变量 <span class="math inline">\(Treat_i \times Post_t\)</span> 之所以能在 TWFE 下识别，正是因为它比 <span class="math inline">\(\alpha_i\)</span> 和 <span class="math inline">\(\lambda_t\)</span> 都「高一个层级」——它在个体 × 时间维度上变动。</p>
+</section>
+<section id="hdfe当虚拟变量多到装不下" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="hdfe当虚拟变量多到装不下"><span class="header-section-number">4.5</span> HDFE：当虚拟变量多到装不下</h2>
+<p>固定效应的组数和维度一旦上去，直接放虚拟变量在计算上就不可行了。两个典型场景：一是国际贸易的引力模型，出口国 × 年份、进口国 × 年份、国家对三组固定效应动辄数万个虚拟变量；二是劳动经济学的雇主—雇员匹配数据，自 Abowd, Kramarz and Margolis (1999) 以来，研究者需要同时估计百万级的工人效应和几十万个企业效应。<code>reg y x i.id i.firm i.year</code> 在内存和时间上都会崩溃。</p>
+<p><code>reghdfe</code> 的解决方案是交替去心：轮流对每一组固定效应做组内变换，迭代至收敛，原理仍然是 FWL 定理的反复应用。对使用者而言，只需要把固定效应写进 <code>absorb()</code>：</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>*----------------- 三维引力模型</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>reghdfe <span class="fu">y</span> x1 <span class="kw">x2</span>, absorb(exp#year imp#year exp#imp) <span class="co">///</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                 <span class="kw">vce</span>(<span class="kw">cluster</span> <span class="fu">exp</span> imp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>实操上有三件事需要说明。</p>
+<p>其一，<code>absorb()</code> 吸什么和 <code>vce(cluster )</code> 聚类到什么，是两个独立的决定。前者由混淆结构决定（哪些不可观测因素需要控制），后者由误差相关结构决定（残差在哪个维度上相关）。二者经常不同：吸收国家对固定效应，聚类却可能放在出口国和进口国两个维度上。</p>
+<p>其二，<code>reghdfe</code> 会自动剔除 singleton 观测（某组固定效应下只有一个观测的样本），因为它们对组内识别没有贡献、还会使标准误虚低。回归前后的样本量变化要在论文中交代清楚。</p>
+<p>其三，非负因变量（专利数、贸易额、补贴金额）不要先 <code>log(1+y)</code> 再跑 HDFE。<span class="math inline">\(\log(1+y)\)</span> 的系数没有清晰的弹性解释，且结果对 <span class="math inline">\(y\)</span> 的计量单位敏感；正确做法是改用泊松伪极大似然，<code>ppmlhdfe</code> 在高维固定效应下依然快速稳健：</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>*----------------- 非负因变量：ppmlhdfe 替代 <span class="fu">log</span>(1+<span class="fu">y</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>ppmlhdfe patents x1 <span class="kw">x2</span>, absorb(id <span class="fu">year</span>) <span class="kw">vce</span>(<span class="kw">cluster</span> id)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Lane (2025) 处理 RCA 等非负结果变量时用的正是 PPML。有关 <code>log(1+y)</code> 的陷阱和 <code>ppmlhdfe</code> 的系数解释，扩展阅读中有三篇推文可以对照学习。</p>
+</section>
+<section id="混频难题与交互固定效应" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="混频难题与交互固定效应"><span class="header-section-number">4.6</span> 混频难题与交互固定效应</h2>
+<p>现在回到路径 C 留下的困境，把它讲透。被解释变量是公司层面的投资支出或杠杆率，下标是 <span class="math inline">\(it\)</span>；但研究关心的核心解释变量是宏观层面的——经济政策不确定性（EPU）、货币政策——只有下标 <span class="math inline">\(t\)</span>。想控制的宏观因素和想估计的宏观变量撞在了同一个维度上：放完整的 <span class="math inline">\(\lambda_t\)</span>，<span class="math inline">\(z_t\)</span> 就被吸收；删掉 <span class="math inline">\(\lambda_t\)</span>，又会漏掉不可观测的 <span class="math inline">\(\mathbf{w}_t\)</span>。</p>
+<p>出路是承认 <span class="math inline">\(\mathbf{w}_t\)</span> 不可观测，但把它设定为若干共同因子的组合，让数据自己把因子估出来。这就是交互固定效应（interactive fixed effects, IntFE）。Bai (2009) 把复合干扰项设定为因子结构：</p>
+<p><span id="eq-cipolicy-fe-intfe"><span class="math display">\[
+Y_{it} = \mathbf{X}_{it}'\beta + u_{it}, \qquad u_{it} = \lambda_i'F_t + \varepsilon_{it}
+\tag{4.9}\]</span></span></p>
+<p>其中 <span class="math inline">\(F_t\)</span> 是一组不可观测的共同因子（各种宏观冲击的集合），<span class="math inline">\(\lambda_i\)</span> 是因子载荷，刻画共同冲击对不同个体的异质性影响。举个例子：央行突然宣布降准，这对所有上市公司是同一个冲击（共同因子 <span class="math inline">\(F_t\)</span>），但高杠杆公司和现金充裕公司的反应显然不同——<span class="math inline">\(\lambda_i\)</span> 就是在刻画「同一冲击、不同反应」，即 <span class="math inline">\(\partial Y_{it}/\partial F_t = \lambda_i\)</span>。</p>
+<p>理解 IntFE 的最好方式，是看清 TWFE 只是它的特例。设两个因子：</p>
+<p><span id="eq-cipolicy-fe-twfe-special"><span class="math display">\[
+F_t = \begin{bmatrix} 1 \\ \xi_t \end{bmatrix}, \quad
+\lambda_i = \begin{bmatrix} \alpha_i \\ 1 \end{bmatrix}
+\;\;\Longrightarrow\;\;
+\lambda_i'F_t = \alpha_i + \xi_t
+\tag{4.10}\]</span></span></p>
+<p>第一个因子恒为 1，载荷是 <span class="math inline">\(\alpha_i\)</span>，这就是个体效应；第二个因子是宏观冲击 <span class="math inline">\(\xi_t\)</span>，载荷恒为 1——即假设冲击对所有个体的影响相同。简言之，TWFE 隐含了「宏观冲击同质」这条假设；IntFE 只是把那个「1」换成了 <span class="math inline">\(\lambda_i\)</span>。图 <a href="#fig-cipolicy-fe-twfe-intfe" class="quarto-xref">图&nbsp;<span>4.3</span></a> 直观对比了两种设定：左侧 <span class="math inline">\(\lambda_t\)</span> 把所有个体平移同一段距离，右侧 <span class="math inline">\(\lambda_i'F_t\)</span> 按各自载荷伸缩。</p>
+<div id="fig-cipolicy-fe-twfe-intfe" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-fe-twfe-intfe-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ci-policy-fe-04-twfe-regife-%E5%8F%8C%E5%90%91%E5%9B%BA%E5%AE%9A%E6%95%88%E5%BA%94%E4%B8%8E%E4%BA%A4%E4%BA%92%E5%9B%BA%E5%AE%9A%E6%95%88%E5%BA%94%E5%AF%B9%E6%AF%94.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-fe-twfe-intfe-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;4.3: 双向固定效应与交互固定效应
+</figcaption>
+</figure>
+</div>
+<p>回到混频问题，可观测的宏观变量作为解释变量、不可观测的宏观因素交给因子结构兜底，模型设定为：</p>
+<p><span id="eq-cipolicy-fe-epu"><span class="math display">\[
+Y_{it} = \alpha_i + \mathbf{X}_{it}'\beta + \gamma\, epu_t + \mathbf{z}_t'\theta + \lambda_i'F_t + \varepsilon_{it}
+\tag{4.11}\]</span></span></p>
+<p>这样既估计了我们关心的 <span class="math inline">\(epu_t\)</span>，又通过 <span class="math inline">\(\lambda_i'F_t\)</span> 控制住其余不可观测的共同冲击，最大限度地缓解了遗漏变量偏误。</p>
+<section id="两种估计思路" class="level3" data-number="4.6.1">
+<h3 data-number="4.6.1" class="anchored" data-anchor-id="两种估计思路"><span class="header-section-number">4.6.1</span> 两种估计思路</h3>
+<p>由于 <span class="math inline">\(\lambda_i\)</span> 与 <span class="math inline">\(F_t\)</span> 都不可观测且以乘积形式进入模型，组内去心、一阶差分、LSDV 这些传统办法一般都得不到一致估计（Bai, 2009, p.1230）。文献中有两条主流思路。</p>
+<p><strong>主成分两步法（Coakley et al., 2002）。</strong> 先假设共同因子与解释变量不相关，直接对 <span class="math inline">\(Y_{it} = \mathbf{X}_{it}'\beta + u_{it}\)</span> 做混合 OLS，得到残差 <span class="math inline">\(\hat{u}_{it}\)</span>；再对残差做主成分分析，提取得分最高的 <span class="math inline">\(r\)</span> 个主成分作为因子估计 <span class="math inline">\(\hat{F}_t\)</span>；最后把 <span class="math inline">\(\hat{F}_t\)</span> 当控制变量代回：</p>
+<p><span id="eq-cipolicy-fe-two-step"><span class="math display">\[
+Y_{it} = \mathbf{X}_{it}'\beta + \lambda_i'\hat{F}_t + \varepsilon_{it}
+\tag{4.12}\]</span></span></p>
+<p><strong>主成分迭代法（Bai, 2009）。</strong> Pesaran (2006) 指出，当共同因子与解释变量相关时（实际应用中非常普遍），两步法不一致。Bai (2009) 的办法是施加识别约束后，把上述两步来回迭代直至收敛，最终得到一致估计量。代价是要求面板为「大 <span class="math inline">\(N\)</span> 大 <span class="math inline">\(T\)</span>」结构；Bai (2009, p.1262) 的蒙特卡洛模拟表明，<span class="math inline">\(N\)</span> 较小时估计量不一致——中国省级面板（<span class="math inline">\(N = 31\)</span>）要谨慎。此外，因子个数 <span class="math inline">\(r\)</span> 的选择本身是设定问题，实证中建议报告不同 <span class="math inline">\(r\)</span> 下的结果。</p>
+</section>
+<section id="stata-实现" class="level3" data-number="4.6.2">
+<h3 data-number="4.6.2" class="anchored" data-anchor-id="stata-实现"><span class="header-section-number">4.6.2</span> Stata 实现</h3>
+<p>Bai (2009) 的模型在 Stata 中用 <code>regife</code> 命令估计（依赖 <code>reghdfe</code> 和 <code>hdfe</code>，需一并安装）。用自带的 <code>nlswork</code> 数据可以直观感受 FE、TWFE、IntFE 三种设定的差别：</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">ssc</span> install regife, <span class="kw">replace</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">webuse</span> <span class="st">"nlswork.dta"</span>, <span class="kw">clear</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="kw">keep</span> <span class="kw">if</span> idcode &lt;= 100</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="kw">qui</span> <span class="kw">xtreg</span> ln_w tenure, <span class="kw">fe</span>                       <span class="co">// FE</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="kw">est</span> <span class="kw">store</span> idfe</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="kw">qui</span> <span class="kw">xtreg</span> ln_w tenure i.<span class="fu">year</span>, <span class="kw">fe</span>                <span class="co">// TWFE</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="kw">est</span> <span class="kw">store</span> idyearfe</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>regife ln_w tenure, a(id <span class="fu">year</span>) f(id <span class="fu">year</span>, 1)    <span class="co">// TWFE + 一维交互固定效应</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="kw">est</span> <span class="kw">store</span> idyearinterfe</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>esttab idfe idyearfe idyearinterfe, <span class="kw">drop</span>(*.<span class="fu">year</span>) nogap</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>------------------------------------------------------------
+                      (1)             (2)             (3)
+                  ln_wage         ln_wage         ln_wage
+------------------------------------------------------------
+tenure             0.0394***       0.0258***       0.0118*
+                   (8.47)          (4.65)          (2.02)
+------------------------------------------------------------</code></pre>
+<p>看 <code>tenure</code> 的系数：0.039 → 0.026 → 0.012，控制的固定效应越多，系数越小、显著性越弱。解读是：此前的估计里混着共同冲击对不同个体的异质性反应；把它剥掉以后，工作年限本身的回报没有原来看上去那么大。</p>
+<p>需要说明的是，交互固定效应模型发展很快，除 <code>regife</code> 外，<code>xtdcce2</code>、<code>xtmg</code>、<code>xtivdfreg</code> 等命令还能允许斜率可变、加入滞后因变量或用 IV 处理内生性。有兴趣的读者可以在 Stata 中 <code>findit interactive fixed</code> 进一步探索。</p>
+</section>
+</section>
+<section id="控制的代价慢变量的识别与建模" class="level2" data-number="4.7">
+<h2 data-number="4.7" class="anchored" data-anchor-id="控制的代价慢变量的识别与建模"><span class="header-section-number">4.7</span> 控制的代价：慢变量的识别与建模</h2>
+<p>到这里为止，本章一直在讲固定效应的好处。现在要算代价，而且这笔代价专门砸向一类变量：制度、文化、语言、法律传统、社会信任这些随时间变化极慢、甚至几乎不变的因素。</p>
+<p>问题的实质是，<strong>「制度水平差异」和「制度变化效应」是两个不同的 estimand，对应两个不同的问题</strong>。「制度 → 增长」这句话至少有两种读法。一种是横截面含义：制度更好的国家是不是更富？<span class="math inline">\(\log GDP_i = \alpha + \beta\, Institution_i + \gamma X_i + u_i\)</span>，<span class="math inline">\(\beta\)</span> 来自国家之间的长期差异。另一种是时间变化含义：同一个国家制度改善以后是不是更富？<span class="math inline">\(\log GDP_{it} = \beta\, Institution_{it} + \gamma X_{it} + \alpha_i + \lambda_t + \varepsilon_{it}\)</span>，<span class="math inline">\(\beta\)</span> 来自国家内部随时间的变化。制度、文化、语言这类变量高度持久，它们最主要的信息恰恰来自国家之间、族群之间的长期差异。加入国家固定效应后，模型用的是组内去心后的 <span class="math inline">\(Institution_{it} - \overline{Institution}_i\)</span>，长期差异 <span class="math inline">\(\overline{Institution}_i\)</span> 被 <span class="math inline">\(\alpha_i\)</span> 整个吸走，只剩下微弱的组内波动。</p>
+<p>所以，<strong>固定效应结果不显著，绝不等于制度没有作用</strong>。它可能只是说明模型把制度变量的大部分有效信息过滤掉了。判断的第一步永远是先看变异来自哪里：</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>xtset country <span class="fu">year</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="kw">xtsum</span> institution        <span class="co">// 比较 between 与 within 标准差</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>如果 <code>within</code> 标准差远小于 <code>between</code>，说明制度变量的信息主要在国家之间。此时硬套固定效应，等于自己掐断了识别来源。</p>
+<p>问题还不止于「变化慢」。慢变量往往和历史路径、地理条件一起形成，横截面差异并非随机分配（一国为何形成某种法律传统、宗教结构，受殖民史、地理、疾病环境影响）；制度改善与经济增长之间还可能反向因果；而制度指数多来自专家评分，其年度变化常被测量噪声主导——这正是对慢变量做一阶差分往往不是「更干净」而是「把信号变成噪声」的原因，长差分（如十年差分）通常更合适。</p>
+<p>出路的关键，是<strong>先问清楚要回答哪个 estimand，再选模型</strong>，而不是机械地多加几个固定效应。三条最常用的路线如下。</p>
+<p>其一，<strong>想回答长期水平差异，就用横截面或组间估计，并诚实面对内生性</strong>。<code>xtreg y institution x1 x2, be</code> 给出组间关系；若要谈因果，需要历史工具变量（如 Acemoglu, Johnson and Robinson (2001) 用殖民者死亡率作为当代制度的工具，Tabellini (2010) 用 19 世纪识字率作为文化的工具）或机制化识别（如 Shapiro (2025) 用国家制度质量 × 行业制度依赖度的交互，让被国家固定效应吸收的制度主效应，通过行业异质性重新可识别）。</p>
+<p>其二，<strong>想回答制度变化效应，固定效应才和问题匹配，但慢变量宜用长差分而非一阶差分</strong>：</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>xtset country <span class="fu">year</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> d10_y    = <span class="fu">y</span> - L10.<span class="fu">y</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> d10_inst = institution - L10.institution</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="kw">reg</span> d10_y d10_inst i.<span class="fu">year</span>, <span class="kw">vce</span>(<span class="kw">cluster</span> country)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>其三，<strong>想同时看清两个 estimand，用 Mundlak / CRE 把组内效应和组间效应并排展示</strong>。Mundlak (1978) 的思路是在随机效应模型里加入解释变量的个体均值 <span class="math inline">\(\bar{x}_i\)</span>，得到两个系数：<span class="math inline">\(\beta_W\)</span>（同一国家制度改善时 <span class="math inline">\(y\)</span> 如何变）和 <span class="math inline">\(\beta_B\)</span>（长期制度水平更高的国家 <span class="math inline">\(y\)</span> 是否更高）。Stata 18 起 <code>xtreg, cre</code> 一行实现，并附带一个对异方差和组内相关稳健的 Mundlak 检验（可替代 Hausman 检验）：</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>xtset country <span class="fu">year</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="kw">xtreg</span> <span class="fu">y</span> institution x1 <span class="kw">x2</span> i.<span class="fu">year</span>, cre <span class="kw">vce</span>(<span class="kw">cluster</span> country)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="kw">estat</span> mundlak</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>除这三条外，还有几类更专门的工具：Hausman and Taylor (1981) 用外生时变变量的组内均值做非时变内生变量的工具（<code>xthtaylor</code>），Chatelain and Ralf (2021) 为其加了内部工具的预检；动态面板中同时含滞后因变量与非时变变量时可用 Kripfganz and Schwarz (2019) 的 <code>xtseqreg</code>；担心全球共同冲击造成截面相关时可用 Pesaran (2006) 的 CCE（<code>xtdcce2</code>）。这些命令的适用边界见本章附录与扩展阅读，此处不展开——需要强调的一点是，它们回答的是不同问题，不宜笼统地都称为「稳健性检验」。</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+三个容易踩的坑
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>estimand 不一致</strong>：固定效应不显著就断言「制度没用」。正确表述是「固定效应估计的是国家内部制度变化的影响，与横截面估计的长期水平差异是两回事」。</li>
+<li><strong>对慢变量做一阶差分</strong>：制度年度变化很小、噪声很大，差分会放大测量误差、衰减系数。长差分更稳。</li>
+<li><strong>把工具都叫稳健性检验</strong>：<code>xtreg, fe</code>、<code>xtreg, cre</code>、<code>xthtaylor</code>、<code>xtseqreg</code>、<code>xtdcce2</code> 解决的是不同问题，混为一谈反而模糊了识别对象。</li>
+</ul>
+</div>
+</div>
+<p>还有一类问题连长差分也解决不了：当共同冲击对各国的影响本身异质、且这种异质演化与「谁在何时改革」相关时，双向固定效应控不住。Kim and Oka (2014) 重估美国各州单边离婚法效应就是典型——他们用 Bai (2009) 的交互固定效应把州级不可观测异质性设为 <span class="math inline">\(\lambda_i'F_t\)</span>，让数据自己估计共同因子及各州载荷，而不是由研究者钦定州别趋势的函数形式，从而调和了 Friedberg (1998) 与 Wolfers (2006) 之间的长期分歧。他们的模拟还给出一条实用法则：该放交互固定效应而没放会造成偏误，不该放而放了只损失效率。简言之，当结论对「加不加州别趋势」高度敏感时，这往往不是稳健性问题，而是模型设定问题，交互固定效应是比钦定趋势更有原则的答案。</p>
+<p>最后交代固定效应的天花板：它只能控制「不变」或「沿共同因子变」的混淆。<strong>随时间变化的个体混淆</strong>——公司治理在样本期内改善、地方官员更替带来的政策环境变化——组内去心对它们无能为力。这正是第 5 章需要平行趋势假设、第 6 章需要 DDML 处理高维时变协变量的根本原因。</p>
+</section>
+<section id="顶级期刊如何用固定效应实现识别" class="level2" data-number="4.8">
+<h2 data-number="4.8" class="anchored" data-anchor-id="顶级期刊如何用固定效应实现识别"><span class="header-section-number">4.8</span> 顶级期刊如何用固定效应实现识别</h2>
+<p>读一篇论文的固定效应设定，要问三个问题：各类固定效应怎么进入模型？作者用它们在排除哪一类竞争性解释？剩下的识别变异是什么？下面三篇文献覆盖了固定效应的三种角色——吸收结构声明比较对象、交互固定效应分离供求、固定效应本身成为研究对象。</p>
+<section id="吸收结构声明比较对象lane-2025" class="level3" data-number="4.8.1">
+<h3 data-number="4.8.1" class="anchored" data-anchor-id="吸收结构声明比较对象lane-2025"><span class="header-section-number">4.8.1</span> 吸收结构声明比较对象：Lane (2025)</h3>
+<ul>
+<li>Lane, N. (2025). Manufacturing revolutions: Industrial policy and industrialization in South Korea. <em>The Quarterly Journal of Economics</em>, 140(3), 1683–1741. <a href="https://doi.org/10.1093/qje/qjaf025">Link</a>, <a href="https://doi.org/10.7910/DVN/VJECHN">Data</a>, <a href="https://scholar.google.com/scholar?q=Manufacturing+Revolutions+Industrial+Policy+and+Industrialization+in+South+Korea">Google</a></li>
+</ul>
+<p>第 1、2 章已经介绍了这篇论文的政策背景和数据构造，这里聚焦它的固定效应设计。基准事件研究只需要 <span class="math inline">\(\alpha_i + \tau_t\)</span>。但「目标产业增长更快」有一个显眼的竞争性解释：1970 年代重化工业在全球范围内本来就处于上升期，韩国目标产业的扩张可能只是搭了全球产业周期的便车。Lane 的回应是把比较搬到跨国面板上，做三重差分：</p>
+<p><span id="eq-cipolicy-fe-lane-ddd"><span class="math display">\[
+Y_{ict} = \alpha_{it} + \tau_{ct} + \sigma_{ci} + \sum_{j \neq 1972} \beta_{3j}\,(Korea_c \times HCI_i \times Year^j_t) + \varepsilon_{ict}
+\tag{4.13}\]</span></span></p>
+<p>严格设定中三组高维固定效应各司其职：产业 × 年份效应 <span class="math inline">\(\alpha_{it}\)</span> 吸收全球每个产业每年的共同走势（直接掐灭「全球产业周期」这个解释）；国家 × 年份效应 <span class="math inline">\(\tau_{ct}\)</span> 吸收韩国自身的宏观增长路径；国家 × 产业效应 <span class="math inline">\(\sigma_{ci}\)</span> 吸收每个国家每个产业的长期水平。三组固定效应放齐之后，所有低阶交互项都被吸收，唯一活下来的是三重交互项 <span class="math inline">\(\beta_{3j}\)</span>——它度量的是：韩国的目标产业，相对同年全球同产业、相对韩国自身宏观走势、相对该国该产业的长期水平，还剩下什么额外变化。固定效应结构在这里不是稳健性装饰，而是识别策略本身：吸收什么，就是在向读者声明排除了什么。</p>
+</section>
+<section id="交互固定效应分离供给与需求khwaja-and-mian-2008" class="level3" data-number="4.8.2">
+<h3 data-number="4.8.2" class="anchored" data-anchor-id="交互固定效应分离供给与需求khwaja-and-mian-2008"><span class="header-section-number">4.8.2</span> 交互固定效应分离供给与需求：Khwaja and Mian (2008)</h3>
+<ul>
+<li>Khwaja, A. I., &amp; Mian, A. (2008). Tracing the impact of bank liquidity shocks: Evidence from an emerging market. <em>American Economic Review</em>, 98(4), 1413–1442. <a href="https://doi.org/10.1257/aer.98.4.1413">Link</a>, <a href="https://scholar.google.com/scholar?q=Tracing+the+Impact+of+Bank+Liquidity+Shocks+Khwaja+Mian">Google</a></li>
+</ul>
+<p>银行信贷研究的老大难问题是供求不可分：观察到某银行对某企业的贷款下降，既可能是银行缺钱（供给），也可能是企业不想借（需求）。1998 年巴基斯坦核试验后美元存款被冻结，不同银行受到的流动性冲击差异巨大，这提供了供给侧的变异；但需求侧的混淆仍在。</p>
+<p>Khwaja and Mian 的解法是一行固定效应。利用「同一家企业同时向多家银行借款」的贷款层面数据，在贷款变化方程中放入企业固定效应（等价于水平方程中的企业 × 时间效应）：</p>
+<p><span id="eq-cipolicy-fe-km"><span class="math display">\[
+\Delta \ln L_{ib} = \eta_i + \beta\, \Delta Liquidity_b + \varepsilon_{ib}
+\tag{4.14}\]</span></span></p>
+<p><span class="math inline">\(\eta_i\)</span> 把企业层面的一切信贷需求变化——不管可观测还是不可观测——整个吸掉。剩余的识别变异是：<strong>同一家企业、同一时点、面对不同银行</strong>的贷款变化差异。既然企业是同一个，需求就是同一个，剩下的差异只能来自银行。他们发现受冲击更重的银行对同一企业的放贷收缩显著更多，且小企业无法从其他银行找到替代融资。这套「firm × time FE」设计后来成为银企贷款、供应商—客户、医生—患者等一切多对多匹配数据的标准识别模板，文献中直接以「Khwaja–Mian 设定」相称。</p>
+</section>
+<section id="固定效应本身成为研究对象bonhomme-et-al.-2023" class="level3" data-number="4.8.3">
+<h3 data-number="4.8.3" class="anchored" data-anchor-id="固定效应本身成为研究对象bonhomme-et-al.-2023"><span class="header-section-number">4.8.3</span> 固定效应本身成为研究对象：Bonhomme et al.&nbsp;(2023)</h3>
+<ul>
+<li>Bonhomme, S., Holzheu, K., Lamadon, T., Manresa, E., Mogstad, M., &amp; Setzler, B. (2023). How much should we trust estimates of firm effects and worker sorting? <em>Journal of Labor Economics</em>, 41(2), 291–322. <a href="https://doi.org/10.1086/720009">Link</a>, <a href="https://www.nber.org/papers/w27368">PDF</a>, <a href="https://scholar.google.com/scholar?q=How+Much+Should+We+Trust+Estimates+of+Firm+Effects+and+Worker+Sorting">Google</a></li>
+</ul>
+<p>在 AKM 传统中，固定效应完成了一次身份转换：<span class="math inline">\(\ln w_{it} = \theta_i + \psi_{J(i,t)} + \mathbf{x}_{it}'\beta + \varepsilon_{it}\)</span> 里的工人效应 <span class="math inline">\(\theta_i\)</span> 和企业效应 <span class="math inline">\(\psi_j\)</span> 不再是待消除的干扰，而是研究对象本身——用它们做方差分解，可以回答「工资不平等有多少来自企业间的支付差异、有多少来自工人与企业的匹配分选」。基于这一模型的两个著名结论是：企业效应约占对数工资方差的 20%；工人效应与企业效应的相关系数很小甚至为负，即高工资工人并没有向高薪企业集聚。</p>
+<p>Bonhomme 等人 2023 年的这篇论文对这两个结论做了系统的体检。问题出在识别来源上：企业效应的识别完全依赖工人在企业间的流动，而现实中流动有限（limited mobility）。当每家企业的流动工人很少时，<span class="math inline">\(\hat{\psi}_j\)</span> 噪声很大，其样本方差机械性偏大、与工人效应的相关系数机械性偏小——固定效应估出来了，不等于估准了。作者用美国和多个欧洲国家的雇主—雇员数据，比较固定效应偏误校正与随机效应分组两类方法，发现有限流动偏误相当严重：校正后，企业效应对工资方差的贡献大幅缩水（如挪威样本从近 20% 降至 10% 左右），而工人分选变为一致为正且通常很强。对本章的启发有两层：固定效应可以从「控制项」升格为「估计目标」；而一旦升格，它的抽样误差就不能再被忽略——这与我们平时只关心 <span class="math inline">\(\hat{\beta}\)</span>、把 <span class="math inline">\(\hat{\alpha}_i\)</span> 弃之不顾的场景，是完全不同的统计问题。作者提供了配套的 Stata 与 Python 校正程序包。</p>
+</section>
+<section id="一个预告从控制到反事实" class="level3" data-number="4.8.4">
+<h3 data-number="4.8.4" class="anchored" data-anchor-id="一个预告从控制到反事实"><span class="header-section-number">4.8.4</span> 一个预告：从控制到反事实</h3>
+<p>交互固定效应还有另一重身份。既然 <span class="math inline">\(\lambda_i'F_t\)</span> 能把处理组结果变量的「正常轨迹」拟合出来，它自然也能用来回答「没有政策会怎样」：用政策前数据估计因子结构，外推到政策后，就得到处理组的反事实路径。Hsiao, Ching and Wan (2012) 评估香港回归的回归控制法、Gobillon and Magnac (2016) 对法国企业区政策的评估、Xu (2017) 的广义合成控制法，以及 Arkhangelsky et al.&nbsp;(2021) 的合成 DID，都建立在这个思想上。从这个角度看，固定效应家族的演进，本质上是在设定越来越细致的条件期望——这与树模型、随机森林拟合条件期望的思路，在深层逻辑上是相通的。完整讨论放在第 5 章。</p>
+</section>
+</section>
+<section id="扩展阅读" class="level2" data-number="4.9">
+<h2 data-number="4.9" class="anchored" data-anchor-id="扩展阅读"><span class="header-section-number">4.9</span> 扩展阅读</h2>
+<p>以下推文按主题分组，供课后延伸。</p>
+<p><strong>固定效应基础</strong></p>
+<ul>
+<li>刘潍嘉, 2024, <a href="https://www.lianxh.cn/details/1406.html">辛普森悖论及模拟分析</a></li>
+<li>游万海, 连玉君, 2020, <a href="https://www.lianxh.cn/details/122.html">Stata: 面板数据模型一文读懂</a></li>
+<li>曹昊煜, 2022, <a href="https://www.lianxh.cn/details/1042.html">FE！FE！面板固定效应模型：你用对了吗</a></li>
+<li>连玉君, 2024, <a href="https://www.lianxh.cn/details/1343.html">多组成绩调整的简便方法：固定效应模型妙用</a></li>
+</ul>
+<p><strong>HDFE 与 PPML</strong></p>
+<ul>
+<li>左志勇, 2022, <a href="https://www.lianxh.cn/details/848.html">Stata：三维引力模型介绍与估计-ppmlhdfe-nbreg-reghdfe</a></li>
+<li>胡煊翊, 2022, <a href="https://www.lianxh.cn/details/1094.html">Stata：为什么计数类变量不宜采用log(1+y)的形式？-ppmlhdfe</a></li>
+<li>连小白, 2026, <a href="https://www.lianxh.cn/details/1807.html">ppmlhdfe 实证指南：系数解释、固定效应与聚类标准误</a></li>
+<li>连小白, 2026, <a href="https://www.lianxh.cn/details/1813.html">三维 PPML 引力模型的偏误校正：从 ppmlhdfe 到 ppml_fe_bias</a></li>
+<li>连小白, 2026, <a href="https://www.lianxh.cn/details/1809.html">非负因变量如何做 DID？从 log(1+y) 到 PPMLHDFE</a></li>
+<li>林芷涵, 2026, <a href="https://www.lianxh.cn/details/1755.html">PPML 估计 + 一般均衡求解？ge_gravity2 一套 Stata 命令全搞定</a></li>
+</ul>
+<p><strong>交互固定效应</strong></p>
+<ul>
+<li>王晓娟, 甘徐沁, 2021, <a href="https://www.lianxh.cn/details/42.html">regife：面板交互固定效应模型-Interactive Fixed Effect</a></li>
+</ul>
+<p><strong>慢变量与非时变变量的估计</strong></p>
+<ul>
+<li>吕可夫, 2021, <a href="https://www.lianxh.cn/details/827.html">Stata：如何估计包含非时变变量的动态面板模型-xtseqreg</a></li>
+<li>李姣, 2026, <a href="https://www.lianxh.cn/details/1759.html">xthbtest：面板固定效应模型斜率异质性偏差检验</a></li>
+</ul>
+<p><strong>诊断、检验与变量筛选</strong></p>
+<ul>
+<li>黄涵麟, 2021, <a href="https://www.lianxh.cn/details/530.html">ocmt：高维固定效应模型的变量筛选问题</a></li>
+<li>罗兰若, 2022, <a href="https://www.lianxh.cn/details/866.html">Stata论文复现：高维线性回归的变量筛选-baing-ocmt</a></li>
+<li>黄钊琳, 2021, <a href="https://www.lianxh.cn/details/503.html">locmtest：非线性模型的内生性检验</a></li>
+</ul>
+</section>
+<section id="附录慢变量与非时变变量的方法工具箱" class="level2" data-number="4.10">
+<h2 data-number="4.10" class="anchored" data-anchor-id="附录慢变量与非时变变量的方法工具箱"><span class="header-section-number">4.10</span> 附录：慢变量与非时变变量的方法工具箱</h2>
+<p>下表按 estimand 归纳常用方法及其 Stata 实现，供研究者对照选择。核心原则是：先判断要回答的是长期水平差异还是制度变化效应，再选方法；不同行回答的是不同问题，不能互相替代。</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>方法</th>
+<th>Stata</th>
+<th>回答的问题</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>横截面 OLS / 组间估计</td>
+<td><code>reg</code> / <code>xtreg, be</code></td>
+<td>长期制度水平差异</td>
+</tr>
+<tr class="even">
+<td>固定效应 / 长差分</td>
+<td><code>xtreg, fe</code> / <code>reghdfe</code>；手工 <code>L10.</code> 差分</td>
+<td>制度变化效应（长差分更适合慢变量）</td>
+</tr>
+<tr class="odd">
+<td>Mundlak / CRE</td>
+<td><code>xtreg, cre</code> + <code>estat mundlak</code></td>
+<td>同框展示组内效应 <span class="math inline">\(\beta_W\)</span> 与组间效应 <span class="math inline">\(\beta_B\)</span></td>
+</tr>
+<tr class="even">
+<td>Hausman–Taylor / 预检</td>
+<td><code>xthtaylor</code></td>
+<td>非时变内生变量与个体效应相关时的系数估计</td>
+</tr>
+<tr class="odd">
+<td>动态面板非时变变量</td>
+<td><code>xtseqreg</code></td>
+<td>滞后因变量 + 非时变解释变量</td>
+</tr>
+<tr class="even">
+<td>历史工具变量</td>
+<td><code>ivregress 2sls</code> / <code>ivreghdfe</code></td>
+<td>制度、文化长期形成的内生性</td>
+</tr>
+<tr class="odd">
+<td>DID / 事件研究</td>
+<td><code>xtdidregress</code> / <code>csdid</code></td>
+<td>明确的制度改革冲击</td>
+</tr>
+<tr class="even">
+<td>交互固定效应 / CCE</td>
+<td><code>regife</code> / <code>xtdcce2</code></td>
+<td>异质共同冲击、截面相关</td>
+</tr>
+</tbody>
+</table>
+<p>R 中对应 <code>plm</code>（<code>be</code>/<code>within</code>/<code>fd</code>/<code>pht</code>/<code>pcce</code>）与 <code>fixest</code>；Python 中对应 <code>linearmodels</code>。命令不是难点，问题定义才是难点。</p>
+</section>
+<section id="从本章走向第五章" class="level2" data-number="4.11">
+<h2 data-number="4.11" class="anchored" data-anchor-id="从本章走向第五章"><span class="header-section-number">4.11</span> 从本章走向第五章</h2>
+<p>本章控制的都是「不变」或「沿共同因子变动」的混淆：不随时间变的进 <span class="math inline">\(\alpha_i\)</span>，不随个体变的进 <span class="math inline">\(\lambda_t\)</span>，异质性宏观冲击进 <span class="math inline">\(\lambda_i'F_t\)</span>。这套工具的共同前提是，混淆的变动方式可以被某种结构性假设约束住。</p>
+<p>当政策有明确的时点和处理组、我们要回答的是「没有政策会怎样」时，问题就从「控制混淆」升级为「构造反事实」：处理前趋势是否平行？对照组应该如何加权？分批推进的政策会不会让 TWFE 做出坏的比较？这些是第 5 章 DID、DDD、事件研究与合成控制法的内容。</p>
+<p>最后回到本书反复强调的一个意识：并不是只有拿到完美数据，才能识别政策效应。很多不可观测的变量，只要能假设它们随时间变化很慢、或随个体基本不变，我们都有相应的手段去控制。估计政策效应本身就是一个设定条件期望的过程，多数估计量本来就是局部效应，没有人能承诺得到全局的、个体层面的政策效果。把这一点想明白，论文估计完成之后的讨论环节就可以清晰地界定结论边界——这也堵住了审稿人攻击我们的很多入口。</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/lianxhcn\.github\.io\/ci-policy\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../lectures/03_sample_selection.html" class="pagination-link" aria-label="样本选择偏误">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">样本选择偏误</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../lectures/05_counterfactuals.html" class="pagination-link" aria-label="反事实构造">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">反事实构造</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p><a href="https://www.lianxh.cn">lianxh.cn</a></p>
+</div>
+    <div class="nav-footer-right">
+<p>基于 <a href="https://quarto.org/">Quarto</a> 构建</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

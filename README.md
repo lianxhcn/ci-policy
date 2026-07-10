@@ -45,7 +45,7 @@ refers/          原始参考资料，不参与发布
 quarto render
 ```
 
-生成的网页位于 `docs/`。如果使用 GitHub Actions 自动构建，可以不把 `docs/` 提交到仓库；如果 GitHub Pages 直接从 `docs/` 发布，则需要保留构建结果。
+生成的网页位于 `docs/`。本项目采用静态发布：每次更新后，在本地完成渲染，并将源码和 `docs/` 一并提交到 `main` 分支。GitHub Pages 应设置为从 `main` 分支的 `/docs` 目录发布。
 
 ## 反馈
 

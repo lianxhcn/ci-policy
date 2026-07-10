@@ -36,8 +36,7 @@ temp-box/
 docs/temp-box/
 tmp/
 
-# GitHub Actions 会在构建过程中生成并上传 docs/，不提交构建产物
-docs/
+# `docs/` 是本地 Quarto 渲染后的 GitHub Pages 发布目录，需要提交。
 
 # 旧稿目录不参与 GitHub 提交和 Quarto 发布
 **/tobe-delete/

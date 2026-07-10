@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>8&nbsp; AI Agent 辅助实证研究 – 因果推断：政策评估中的识别思维与实证设计</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../lectures/09_reading_list.html" rel="next">
+<link href="../lectures/07_ddml.html" rel="prev">
+<link href="../images/book-logo.png" rel="icon" type="image/png">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e8fb9d25728d58bfeac61b497e4a6629.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-57a92833092fd6dc0d7710b6bdfff9c5.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-7ef202e96c563d31d9e5226e4d6cabf9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-490ba4e843cb1303a232ed0c676384f2.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/01_policy_to_design.html"><strong>讲义</strong></a></li><li class="breadcrumb-item"><a href="../lectures/08_ai_agent_workflow.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">AI Agent 辅助实证研究</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="https://lianxhcn.github.io/ci-policy/" class="sidebar-logo-link">
+      <img src="../images/book-logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Causal Inference</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/lianxhcn/ci-policy" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
+    <a href="https://www.lianxh.cn" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-house-fill"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🏠 前言</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../syllabus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📌讲授计划</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../settings.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🚀课前准备：环境配置</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text"><strong>讲义</strong></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/01_policy_to_design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">从政策背景到研究设计</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/02_policy_to_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">政策如何进入数据</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/03_sample_selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">样本选择偏误</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/04_fixed_effects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">固定效应：控制了什么</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/05_counterfactuals.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">反事实构造</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/06_did_design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">双重差分：从 TWFE 到 CSDID</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/07_ddml.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">双重机器学习：DDML</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/08_ai_agent_workflow.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">AI Agent 辅助实证研究</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/09_reading_list.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">阅读清单</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">附录</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/appendix/A02_government_guidance_fund.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">政府引导基金政策梳理笔记</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/appendix/A03_heckman_selection_literature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Heckman 模型扩展阅读</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch03_heckman/heckman_practical_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Heckman 实操笔记</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch04_fixed_effects/fixed_effects_practical_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">固定效应实操笔记</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch05_counterfactuals/A05_counterfactual_replication.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">加州禁烟：SCM/RCM/SDID</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch06_did/A06_did_method_selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">F</span>&nbsp; <span class="chapter-title">DID 方法与 Stata 实操</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch07_ddml/A07_fwl_ddml.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">G</span>&nbsp; <span class="chapter-title">双重机器学习 Stata 实操</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exercises/exercise_overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">练习概览</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-cipolicy-agent-task" id="toc-sec-cipolicy-agent-task" class="nav-link active" data-scroll-target="#sec-cipolicy-agent-task"><span class="header-section-number">8.1</span> Agent 开始之前，先把任务说清楚</a></li>
+  <li><a href="#sec-cipolicy-agent-division" id="toc-sec-cipolicy-agent-division" class="nav-link" data-scroll-target="#sec-cipolicy-agent-division"><span class="header-section-number">8.2</span> 研究者负责判断，Agent 负责执行</a></li>
+  <li><a href="#sec-cipolicy-agent-project" id="toc-sec-cipolicy-agent-project" class="nav-link" data-scroll-target="#sec-cipolicy-agent-project"><span class="header-section-number">8.3</span> 用自然语言搭建项目，而不是手工背目录</a></li>
+  <li><a href="#sec-cipolicy-agent-rules" id="toc-sec-cipolicy-agent-rules" class="nav-link" data-scroll-target="#sec-cipolicy-agent-rules"><span class="header-section-number">8.4</span> 把通用规则写给 Agent</a></li>
+  <li><a href="#sec-cipolicy-agent-replication-audit" id="toc-sec-cipolicy-agent-replication-audit" class="nav-link" data-scroll-target="#sec-cipolicy-agent-replication-audit"><span class="header-section-number">8.5</span> 复现包审计：先建立证据链</a></li>
+  <li><a href="#sec-cipolicy-agent-revision" id="toc-sec-cipolicy-agent-revision" class="nav-link" data-scroll-target="#sec-cipolicy-agent-revision"><span class="header-section-number">8.6</span> 返修、交接和 Git：把结果留在证据链里</a></li>
+  <li><a href="#sec-cipolicy-agent-a8-templates" id="toc-sec-cipolicy-agent-a8-templates" class="nav-link" data-scroll-target="#sec-cipolicy-agent-a8-templates"><span class="header-section-number">8.7</span> A8 模板包：把规则装进新项目</a></li>
+  <li><a href="#sec-cipolicy-agent-boundary" id="toc-sec-cipolicy-agent-boundary" class="nav-link" data-scroll-target="#sec-cipolicy-agent-boundary"><span class="header-section-number">8.8</span> Agent 扩大执行半径，研究者保留识别责任</a></li>
+  <li><a href="#延伸阅读" id="toc-延伸阅读" class="nav-link" data-scroll-target="#延伸阅读"><span class="header-section-number">8.9</span> 延伸阅读</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/01_policy_to_design.html"><strong>讲义</strong></a></li><li class="breadcrumb-item"><a href="../lectures/08_ai_agent_workflow.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">AI Agent 辅助实证研究</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">AI Agent 辅助实证研究</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-important callout-titled" title="本章核心判断">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+本章核心判断
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Agent 可以加快资料整理、代码执行、结果检查和文档撰写，但研究者必须先定义任务、划定资料边界，并对识别判断和最终结果负责。没有这些前提，Agent 只会更快地产生难以追溯的文件和结果。</p>
+</div>
+</div>
+<p>很多人第一次使用 Agent 时，期待它把一项任务一次做完：读论文、找数据、写代码、跑回归、生成表格，再写一段解释。实际经历往往更复杂。几轮对话以后，文件多了，代码多了，结果也多了，但研究者反而说不清最终样本来自哪里、哪张表对应哪一版设定、某个变量为什么被加入模型。</p>
+<p>问题通常不在于 Agent 没有执行，而在于任务本身没有被组织成可执行、可检查的研究流程。本章讨论的不是某一个 AI 工具，而是怎样让 Agent 进入实证研究后仍然保留研究者的判断、证据链和复现能力。</p>
+<section id="sec-cipolicy-agent-task" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="sec-cipolicy-agent-task"><span class="header-section-number">8.1</span> Agent 开始之前，先把任务说清楚</h2>
+<p>Agent 很难猜到研究者真正想要什么。你说「帮我复现这篇论文」，它可能会找一个替代数据源，写一份能运行的代码，再给出一组看似合理的结果。这个过程未必对应原文的样本、变量和识别策略。</p>
+<p>开始前，研究者至少要说清四件事：</p>
+<ol type="1">
+<li><strong>任务目标</strong>：是理解论文、整理数据、复现某张表，还是回应一条审稿意见？</li>
+<li><strong>已有材料</strong>：哪些论文、数据、代码、政策文件和说明文档可以使用？哪些材料质量较高、应优先使用？</li>
+<li><strong>交付内容</strong>：希望得到目录清单、清洗脚本、回归表、图形、复现说明，还是一份待人工判断的问题清单？</li>
+<li><strong>审查节点</strong>：哪些环节完成后必须停下来，由研究者检查再继续？</li>
+</ol>
+<p>如果项目已有高质量数据库、机构数据、公开 API 或已经取得的访问权限，也应在任务说明中写清名称、访问方式和优先级。没有授权或不在清单中的材料，Agent 可以列为候选，但不应自行用网页搜索结果替代既定数据来源。</p>
+<p>把大任务切成小任务很重要。例如，面对一条要求增加稳健性检验的审稿意见，第一步不应是「直接跑一遍」。更合适的顺序是：先确认审稿人质疑的识别问题，再检查现有数据能否支持该检验，随后写出脚本和日志，最后决定结果是否进入正文。</p>
+<div class="callout callout-style-default callout-warning callout-titled" title="常见误区">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+常见误区
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>不要把整篇论文、全部数据和一长串要求一次交给 Agent。任务越宽泛，Agent 越容易用平均化的方式补全空白；研究者越难发现它在哪一步替换了原本的研究判断。</p>
+</div>
+</div>
+</section>
+<section id="sec-cipolicy-agent-division" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="sec-cipolicy-agent-division"><span class="header-section-number">8.2</span> 研究者负责判断，Agent 负责执行</h2>
+<p>Agent 可以持续工作，也能生成一份看起来完整的材料。但政策背景、样本边界和识别策略并不存在唯一的平均答案。研究者需要在一开始明确核心观点：这篇文章是用公式给出简洁的论证，还是用案例解释制度机制？结果变量为什么代表政策目标？哪些数据源可信，哪些只能作为补充？</p>
+<p>下表给出一个实用分工。</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>研究者应当判断</th>
+<th>Agent 可以协助执行</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>政策是否构成可信冲击</td>
+<td>整理政策文件、时间线和对象名单</td>
+</tr>
+<tr class="even">
+<td>处理组、对照组和结果变量如何定义</td>
+<td>检查变量覆盖、缺失、重复值和合并键</td>
+</tr>
+<tr class="odd">
+<td>平行趋势、排除限制和样本选择机制是否可信</td>
+<td>按既定设定运行代码、汇总输出和报错</td>
+</tr>
+<tr class="even">
+<td>哪些结果进入主文，哪些只作稳健性检验</td>
+<td>生成表格、图形、数据说明和复现说明</td>
+</tr>
+<tr class="odd">
+<td>审稿意见应如何实质回应</td>
+<td>将意见拆成任务清单和待确认问题</td>
+</tr>
+</tbody>
+</table>
+<p>Agent 可以提醒你某个变量缺失很多，也可以指出某份脚本没有生成预期输出。它不能替你决定「这个冲击是否近似外生」「这个稳健性检验是否回应了核心质疑」「这组结果是否足以支持结论」。</p>
+</section>
+<section id="sec-cipolicy-agent-project" class="level2" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="sec-cipolicy-agent-project"><span class="header-section-number">8.3</span> 用自然语言搭建项目，而不是手工背目录</h2>
+<p>初学者不需要先背下一整套目录结构，再开始使用 Agent。更实用的做法是：用自然语言说明研究对象、已有材料、希望得到的结果和不能触碰的边界，让 Agent 先提出目录方案；研究者确认后，再创建文件夹和模板。</p>
+<p>下面是一段可直接改写的任务说明。</p>
+<pre class="text"><code>我准备研究 {政策或研究问题}。目前已有 {论文、数据、代码、政策文件}，其中 {材料名称} 是优先依据；{数据库或 API 名称} 可以使用。不在这份清单中的外部网页、数据或 API，只能列为候选，不能自行替代既定来源。
+
+请为我设计一个可复现的实证项目目录，并先用表格说明每个目录的用途、哪些文件允许修改、哪些文件必须保留原样。项目需要包含：原始数据、中间数据、分析脚本、结果表图、研究设计说明、运行日志和环境依赖。
+
+规则：
+1. 不修改原始数据；
+2. 所有中间数据必须由脚本生成；
+3. 每张表和每幅图都要能追溯到生成它的脚本；
+4. 不确定的数据来源、变量口径或识别设定必须单列为待确认问题；
+5. 记录数据的版本、获取日期或其他可识别的信息；
+6. 先给目录方案和 README 草稿，等我确认后再创建文件。</code></pre>
+<p>一个确认后的项目通常会包含类似结构：</p>
+<pre class="text"><code>project/
+  data/
+    raw/
+    processed/
+  scripts/
+  output/
+    tables/
+    figures/
+  docs/
+  logs/
+  env/
+  README.md
+  AGENTS.md</code></pre>
+<p>目录本身并不神秘。关键在于每类文件有固定去处：<code>data/raw/</code> 保存不能改动的原始资料；<code>scripts/</code> 保存可以重新运行的代码；<code>output/</code> 保存由代码生成的结果；<code>logs/</code> 记录运行、修改和待确认问题；<code>env/</code> 记录软件和依赖。这样换一个 Agent、换一位合作者，研究过程仍然能接得上。</p>
+</section>
+<section id="sec-cipolicy-agent-rules" class="level2" data-number="8.4">
+<h2 data-number="8.4" class="anchored" data-anchor-id="sec-cipolicy-agent-rules"><span class="header-section-number">8.4</span> 把通用规则写给 Agent</h2>
+<p>项目目录解决「文件放在哪里」；规则文件解决「Agent 在项目中可以做什么」。中文规则完全可以直接使用，不需要先翻译成复杂的技术术语。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># 项目规则</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">## 数据</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>不修改 <span class="in">`data/raw/`</span> 中的文件。</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>所有清洗结果都由 <span class="in">`scripts/`</span> 中的代码生成。</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>发现缺失、异常或口径问题时，记录到 <span class="in">`logs/data_issues.md`</span>，不要自行删除观测。</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>只从任务中列明的数据源、数据库或 API 获取数据；清单之外的来源需要先确认。</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">## 代码与输出</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>新代码保存到 <span class="in">`scripts/`</span>，不要只在对话窗口中给出代码。</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>每次运行都把命令、日期、输入数据和主要结果写入日志。</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>在日志中记录 Stata、Python 或 R 的版本、关键依赖和随机种子。</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>表格和图形保存到 <span class="in">`output/`</span>，并注明对应脚本。</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>不覆盖已有正式结果；需要替换时，保留旧版本或先请求确认。</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="fu">## 研究判断</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>不擅自改变样本、核心变量、固定效应或识别策略。</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>对不确定的政策事实、数据来源和文献链接，列入待确认问题。</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>需要覆盖文件、删除文件或安装新软件时，先请求确认。</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>这类规则可以保存为 <code>AGENTS.md</code>、<code>PROJECT_RULES.md</code> 或团队约定的其他文件。读者也可以从公开模板开始，再让 Agent 根据自己的研究主题改写为本地规则。记录软件版本、关键依赖、随机种子和输入数据版本，能避免“代码没有变，结果为什么不同”的无效排查。规则不是为了限制 Agent，而是让它在正确的边界内发挥作用。</p>
+<p>如果希望进一步了解 Agent 分工、数据收集和规则复用，可以阅读：</p>
+<ul>
+<li>丁星星 (2026), <a href="https://www.lianxh.cn/details/1856.html">从代码补全到 AI-Agent：Copilot、Claude Code、Codex 怎么选？</a>。</li>
+<li>丁星星 (2026), <a href="https://www.lianxh.cn/details/1816.html">用 AI Agent 收集数据：如何保证质量和可重复性？</a>。</li>
+<li>连小白 (2026), <a href="https://www.lianxh.cn/details/1790.html">从 Prompt 到 Skills：把论文复现、数据清洗和代码规范写进 AI</a>。</li>
+<li>艾米丽 (2026), <a href="https://www.lianxh.cn/details/1828.html">Codex 也有 Skills 了：安装、调用和定制科研工作流</a>。</li>
+</ul>
+</section>
+<section id="sec-cipolicy-agent-replication-audit" class="level2" data-number="8.5">
+<h2 data-number="8.5" class="anchored" data-anchor-id="sec-cipolicy-agent-replication-audit"><span class="header-section-number">8.5</span> 复现包审计：先建立证据链</h2>
+<p>本章不要求读者马上完整复现一篇大论文，但应学会审计复现包。审计的目标是弄清楚：数据从哪里来，脚本按什么顺序运行，哪一个文件生成哪张表，以及哪些地方需要人工判断。</p>
+<p>可以按五步推进：</p>
+<ol type="1">
+<li>读 <code>README</code>，找出作者说明的运行顺序、依赖和入口文件。</li>
+<li>找主脚本，确认哪些脚本会调用其他脚本。</li>
+<li>追踪数据流，记录原始数据如何变成分析数据。</li>
+<li>对照表格和图形，建立输出与脚本的对应关系。</li>
+<li>检查日志，区分代码报错、缺失依赖、数据不可得和结果差异。</li>
+</ol>
+<p>让 Agent 做审计时，不要只问「这份代码对不对」。更合适的要求是：输出文件清单、主脚本、数据流、依赖清单、表图映射、错误日志，以及需要研究者判断的问题。这样得到的是一份可以继续工作的复现说明，而不是一句笼统评价。</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="审计提示词">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+审计提示词
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>请读取这个复现包的 <code>README</code> 和目录结构，但不要运行任何代码。请输出：主脚本及调用关系、数据输入和输出、预计生成的表图、软件依赖，以及无法从文件中确认的问题。不要猜测缺失的路径、数据或变量含义。</p>
+</div>
+</div>
+</section>
+<section id="sec-cipolicy-agent-revision" class="level2" data-number="8.6">
+<h2 data-number="8.6" class="anchored" data-anchor-id="sec-cipolicy-agent-revision"><span class="header-section-number">8.6</span> 返修、交接和 Git：把结果留在证据链里</h2>
+<p>返修阶段最容易暴露 Agent 工作流的短板。研究者根据审稿意见补做分析，Agent 读取 Excel 数据、跑出一组新结果，表面上工作已经完成；等到准备提交时，却发现没有完整代码、没有运行日志，也说不清数据是怎样整理出来的。再次让 Agent 运行，结果可能因为随机种子、软件版本、数据处理细节或提示语变化而不同。</p>
+<p>这类情况的补救成本很高。更稳妥的规则是：从第一轮补充分析开始，就把原始数据、中间数据和最终数据分开保存；让 Agent 把每一步写成 Stata、Python 或 R 脚本；每次运行后记录输入、输出和报错；在一个阶段完成后提交 Git commit。这样即使后续换了 Agent、换了合作者，新的执行者也能从同一套文件和日志继续工作。</p>
+<p>下面这段规则适合放进返修任务说明。</p>
+<pre class="text"><code>本轮任务是回应审稿意见 {编号}。请先阅读现有研究设计、数据说明和主脚本，再提出执行计划。
+
+执行规则：
+1. 原始数据只读；中间数据和最终分析数据必须由脚本生成；
+2. 所有新增分析保存为可重复运行的 Stata、Python 或 R 脚本；
+3. 每张新增表图都注明脚本、输入数据和运行日期；
+4. 将数据问题、模型变化和未解决问题分别记录到日志；
+5. 不修改主结果或覆盖旧输出，除非我确认；
+6. 完成一个可检查阶段后，汇总变更文件、主要结果和下一步建议，等待确认。</code></pre>
+<p>Git 在这里不是额外负担。它提供的是版本边界：哪些修改属于一轮返修，哪些结果是在某个设定下生成，哪些文件可以回退。小项目至少应在「数据整理完成」「主结果生成」「返修分析完成」这类节点留下清楚的 commit 信息。</p>
+<div class="callout callout-style-default callout-note callout-titled" title="最小工作日志">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+最小工作日志
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>不需要一开始就建立复杂的项目管理系统。一份 <code>logs/work_log.md</code> 至少记录以下内容即可：</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">## 2026-07-10：处理缺失值</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>任务：检查并处理企业年龄变量的缺失记录。</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>文件：修改 <span class="in">`scripts/02_clean_data.do`</span>；输入为 <span class="in">`data/raw/firm.dta`</span>。</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>环境：Stata 19；随机种子不适用。</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>结果：保留原始缺失值，新增缺失标记变量；样本量没有变化。</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>待确认：缺失是否应进入基准回归，等待研究者确认。</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<p>对较长或较重要的任务，可以把“执行”和“复核”分开。执行 Agent 按已确认的计划修改文件、运行脚本和写日志；复核 Agent 只检查差异、日志、输出和未解决问题。研究者仍负责确认研究设计、变量口径和结果解释。这样做不必把一个小项目变成多层流程，但能把“做完了”和“做对了”区分开。</p>
+</section>
+<section id="sec-cipolicy-agent-a8-templates" class="level2" data-number="8.7">
+<h2 data-number="8.7" class="anchored" data-anchor-id="sec-cipolicy-agent-a8-templates"><span class="header-section-number">8.7</span> A8 模板包：把规则装进新项目</h2>
+<p>本项目配套提供了 <a href="https://github.com/lianxhcn/ci-policy/tree/master/resources/agent_workflow/A08_agent_workflow_templates">A8 Agent 工作流模板包</a>。它不预设某一种软件或研究方法，而是把最容易遗漏的边界整理成可直接改写的文件：</p>
+<ul>
+<li><code>AGENTS_template.md</code>：数据、代码、输出、研究判断和确认节点的通用规则；</li>
+<li><code>research_design_template.md</code>：研究问题、政策机制、样本、变量和识别风险的最小设计说明；</li>
+<li><code>work_log_template.md</code>、<code>data_issues_template.md</code>、<code>model_changes_template.md</code> 和 <code>decision_log_template.md</code>：把运行、数据问题、模型变动和研究判断分别留下记录；</li>
+<li><code>replication_audit_checklist.md</code>：不运行代码时审计复现包的检查清单；</li>
+<li><code>prompts/</code>：让读者自己的 Agent 创建新项目、从线上模板包安装文件，或组织审稿意见返修的提示词。</li>
+</ul>
+<p>使用时，可以先下载整个文件夹，再保留最需要的 3–5 个模板。新项目通常从 <code>README_template.md</code>、<code>AGENTS_template.md</code>、<code>research_design_template.md</code> 和 <code>work_log_template.md</code> 开始就够了；需要复现或返修时，再加入审计清单和专项日志。</p>
+<p>如果读者希望让自己的 Agent 协助安装模板，可以直接打开并复制 <a href="https://github.com/lianxhcn/ci-policy/blob/master/resources/agent_workflow/A08_agent_workflow_templates/prompts/01_create_project_from_local_templates.md">本地创建项目提示词</a>，让 Agent 先提出目录和文件清单，确认后再创建。如果模板包尚未下载到本机，则使用 <a href="https://github.com/lianxhcn/ci-policy/blob/master/resources/agent_workflow/A08_agent_workflow_templates/prompts/02_install_templates_from_github.md">线上安装提示词</a>。两份提示词都要求 Agent 不覆盖已有文件、不下载私有材料、不运行数据或代码，直到研究者确认。</p>
+</section>
+<section id="sec-cipolicy-agent-boundary" class="level2" data-number="8.8">
+<h2 data-number="8.8" class="anchored" data-anchor-id="sec-cipolicy-agent-boundary"><span class="header-section-number">8.8</span> Agent 扩大执行半径，研究者保留识别责任</h2>
+<p>本章最后只保留一个判断：Agent 可以把研究者从重复性工作中解放出来，但不能替代研究设计。</p>
+<p>它可以帮助整理文件、运行脚本、检查数据、生成表图、拆解复现包和草拟说明文档。它不能替你决定政策冲击是否可信、比较对象是否合适、识别假设是否站得住，或一组结果是否足以进入论文结论。</p>
+<p>对一天的课程而言，读者不需要立刻搭建复杂的多 Agent 系统。先做到三件事就够了：把任务说清楚，把代码和数据留在项目里，把每次重要修改记下来。这样使用 Agent，才会让后续研究更快，也更稳。</p>
+</section>
+<section id="延伸阅读" class="level2" data-number="8.9">
+<h2 data-number="8.9" class="anchored" data-anchor-id="延伸阅读"><span class="header-section-number">8.9</span> 延伸阅读</h2>
+<ul>
+<li>丁闪闪 (2026), <a href="https://www.lianxh.cn/details/1844.html">ChatGPT、Codex、Copilot、Claude Code：AI 工具如何分工协作？</a>。</li>
+<li>丁闪闪 (2026), <a href="https://www.lianxh.cn/details/1851.html">警惕 AI-Agent 泄密：三道闸门守住 API 密钥和账号信息</a>。</li>
+<li>林芷涵 (2026), <a href="https://www.lianxh.cn/details/1791.html">Claude Code Skills 写作指南：如何写好一个可复用的 SKILL.md</a>。</li>
+<li>雷诺 (2026), <a href="https://www.lianxh.cn/details/1820.html">AI-Researcher：从文献综述到论文写作，如何搭建 AI Agent 科研工作流？</a>。</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/lianxhcn\.github\.io\/ci-policy\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../lectures/07_ddml.html" class="pagination-link" aria-label="双重机器学习：DDML">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">双重机器学习：DDML</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../lectures/09_reading_list.html" class="pagination-link" aria-label="阅读清单">
+        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">阅读清单</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p><a href="https://www.lianxh.cn">lianxh.cn</a></p>
+</div>
+    <div class="nav-footer-right">
+<p>基于 <a href="https://quarto.org/">Quarto</a> 构建</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>5&nbsp; 反事实构造 – 因果推断：政策评估中的识别思维与实证设计</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../lectures/06_did_design.html" rel="next">
+<link href="../lectures/04_fixed_effects.html" rel="prev">
+<link href="../images/book-logo.png" rel="icon" type="image/png">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e8fb9d25728d58bfeac61b497e4a6629.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-57a92833092fd6dc0d7710b6bdfff9c5.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-7ef202e96c563d31d9e5226e4d6cabf9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-490ba4e843cb1303a232ed0c676384f2.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/01_policy_to_design.html"><strong>讲义</strong></a></li><li class="breadcrumb-item"><a href="../lectures/05_counterfactuals.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">反事实构造</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="https://lianxhcn.github.io/ci-policy/" class="sidebar-logo-link">
+      <img src="../images/book-logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Causal Inference</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/lianxhcn/ci-policy" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
+    <a href="https://www.lianxh.cn" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-house-fill"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🏠 前言</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../syllabus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📌讲授计划</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../settings.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🚀课前准备：环境配置</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text"><strong>讲义</strong></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/01_policy_to_design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">从政策背景到研究设计</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/02_policy_to_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">政策如何进入数据</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/03_sample_selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">样本选择偏误</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/04_fixed_effects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">固定效应：控制了什么</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/05_counterfactuals.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">反事实构造</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/06_did_design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">双重差分：从 TWFE 到 CSDID</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/07_ddml.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">双重机器学习：DDML</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/08_ai_agent_workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">AI Agent 辅助实证研究</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/09_reading_list.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">阅读清单</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">附录</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/appendix/A02_government_guidance_fund.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">政府引导基金政策梳理笔记</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/appendix/A03_heckman_selection_literature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Heckman 模型扩展阅读</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch03_heckman/heckman_practical_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Heckman 实操笔记</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch04_fixed_effects/fixed_effects_practical_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">固定效应实操笔记</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch05_counterfactuals/A05_counterfactual_replication.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">加州禁烟：SCM/RCM/SDID</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch06_did/A06_did_method_selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">F</span>&nbsp; <span class="chapter-title">DID 方法与 Stata 实操</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch07_ddml/A07_fwl_ddml.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">G</span>&nbsp; <span class="chapter-title">双重机器学习 Stata 实操</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exercises/exercise_overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">练习概览</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#政策效果是一个看不见的差" id="toc-政策效果是一个看不见的差" class="nav-link active" data-scroll-target="#政策效果是一个看不见的差"><span class="header-section-number">5.1</span> 政策效果是一个看不见的差</a></li>
+  <li><a href="#用自己的过去预测自己时间趋势外推" id="toc-用自己的过去预测自己时间趋势外推" class="nav-link" data-scroll-target="#用自己的过去预测自己时间趋势外推"><span class="header-section-number">5.2</span> 用自己的过去预测自己：时间趋势外推</a></li>
+  <li><a href="#用其他州的变化代表加州did-的反事实" id="toc-用其他州的变化代表加州did-的反事实" class="nav-link" data-scroll-target="#用其他州的变化代表加州did-的反事实"><span class="header-section-number">5.3</span> 用其他州的变化代表加州：DID 的反事实</a></li>
+  <li><a href="#插叙在门槛附近寻找反事实rdd-的局部比较" id="toc-插叙在门槛附近寻找反事实rdd-的局部比较" class="nav-link" data-scroll-target="#插叙在门槛附近寻找反事实rdd-的局部比较"><span class="header-section-number">5.4</span> 插叙：在门槛附近寻找反事实——RDD 的局部比较</a></li>
+  <li><a href="#从被动寻找对照到主动构造对照" id="toc-从被动寻找对照到主动构造对照" class="nav-link" data-scroll-target="#从被动寻找对照到主动构造对照"><span class="header-section-number">5.5</span> 从被动寻找对照到主动构造对照</a></li>
+  <li><a href="#用多个州拼出加州合成控制法" id="toc-用多个州拼出加州合成控制法" class="nav-link" data-scroll-target="#用多个州拼出加州合成控制法"><span class="header-section-number">5.6</span> 用多个州拼出加州：合成控制法</a></li>
+  <li><a href="#用因子结构预测反事实rcm-gsc" id="toc-用因子结构预测反事实rcm-gsc" class="nav-link" data-scroll-target="#用因子结构预测反事实rcm-gsc"><span class="header-section-number">5.7</span> 用因子结构预测反事实：RCM / GSC</a></li>
+  <li><a href="#同时给单位和时间加权sdid" id="toc-同时给单位和时间加权sdid" class="nav-link" data-scroll-target="#同时给单位和时间加权sdid"><span class="header-section-number">5.8</span> 同时给单位和时间加权：SDID</a></li>
+  <li><a href="#反事实构造没有免费的午餐" id="toc-反事实构造没有免费的午餐" class="nav-link" data-scroll-target="#反事实构造没有免费的午餐"><span class="header-section-number">5.9</span> 反事实构造没有免费的午餐</a></li>
+  <li><a href="#从本章走向第六章" id="toc-从本章走向第六章" class="nav-link" data-scroll-target="#从本章走向第六章"><span class="header-section-number">5.10</span> 从本章走向第六章</a></li>
+  <li><a href="#参考文献" id="toc-参考文献" class="nav-link" data-scroll-target="#参考文献"><span class="header-section-number">5.11</span> 参考文献</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/01_policy_to_design.html"><strong>讲义</strong></a></li><li class="breadcrumb-item"><a href="../lectures/05_counterfactuals.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">反事实构造</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">反事实构造</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+本章核心判断
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>政策评估的关键在于，为处理组构造一个可信的「没有政策时的结果」，即「反事实结果」。不同识别策略的差别，首先是反事实来源不同：时间中断分析用处理组自己的政策前趋势，DID 用对照组的变化，RDD 用门槛附近另一侧的局部单位，DDD 用另一个 DID 修正额外差异，合成控制法用多个控制单位的加权组合，RCM / GSC 用潜在因子结构预测，SDID 同时调整单位权重和时间权重。</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+实现代码
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>本章主要介绍各类反事实构造方法的基本思想，实现代码和细节参见本章 <a href="../notebooks/ch05_counterfactuals/A05_counterfactual_replication.html">附录 F</a>。</p>
+</div>
+</div>
+<p>在政策评估中，我们最容易看到的是政策发生之后处理组发生了什么。真正看不到的是：如果没有这项政策，处理组本来会怎样。</p>
+<p>本章围绕 Abadie et al.&nbsp;(2010) 文中的经典案例。加州于 1989 年通过 Proposition 99 法案大幅提高烟草税并资助控烟项目，此后加州人均香烟消费持续下降。但下降本身不是政策效果。政策效果是「真实的加州」与「没有这项政策的加州」之间的差距，而后者是看不见的。本章所有方法，都是在回答同一个问题：拿什么来代表这个看不见的加州？</p>
+<section id="政策效果是一个看不见的差" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="政策效果是一个看不见的差"><span class="header-section-number">5.1</span> 政策效果是一个看不见的差</h2>
+<p>先把问题写清楚。记处理组(加州)在政策后某期 <span class="math inline">\(t\)</span> 的两个潜在结果：<span class="math inline">\(Y_{1t}(1)\)</span> 是接受政策后的结果，<span class="math inline">\(Y_{1t}(0)\)</span> 是同一时点若没有政策的结果。政策效果为</p>
+<p><span id="eq-cipolicy-cf-att"><span class="math display">\[
+\tau_{1t} = Y_{1t}(1) - Y_{1t}(0)
+\tag{5.1}\]</span></span></p>
+<p>其中 <span class="math inline">\(Y_{1t}(1)\)</span> 可以观测到——它就是加州政策后实际观测到的香烟消费；<span class="math inline">\(Y_{1t}(0)\)</span> 看不见——加州只有一个，它要么接受政策、要么不接受，不可能同时观测到两种状态。这就是因果推断的根本困难：<strong>缺失的从来不是数据，而是反事实</strong>。</p>
+<p>图 <a href="#fig-cipolicy-cf-raw" class="quarto-xref">图&nbsp;<span>5.1</span></a> 把这个缺口画了出来。黑色粗线是加州；浅色细线是其他 38 个州(donor pool)；绿色线是 38 个州的平均值。这张图适合作为理解反事实的入口。政策发生以后，加州的香烟消费下降了。问题是：这个下降是不是 Proposition 99 的效果？</p>
+<div id="fig-cipolicy-cf-raw" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-cf-raw-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/scm-rcm-fig-01-raw-data-v2.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-cf-raw-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;5.1: 加州与其他 38 州的人均香烟消费：政策后加州的反事实无法直接观测
+</figcaption>
+</figure>
+</div>
+<p>仅仅看到加州政策后下降，还不能回答这个问题。因为加州的香烟消费即使没有政策，也可能因为全国控烟观念变化、烟草价格变化、人口结构变化或长期下降趋势而减少。我们需要知道的是：<strong>如果没有 Proposition 99，加州在 1989 年以后会沿着哪条路径走？</strong></p>
+<p>从这张图中，可以引出几种朴素的反事实构造方式。</p>
+<ul>
+<li><p>第一，可以用加州自己的政策前趋势外推政策后路径。这是时间中断分析的直觉。若政策前加州香烟消费一直沿着某条趋势下降，那么没有政策时，它可能继续沿着这条趋势变化。</p></li>
+<li><p>第二，可以用其他州的平均变化代表加州没有政策时的变化。如果只看 1975 年以后，加州和其他州均值的走势似乎比较接近，且二者之间的差异比较稳定。若没有 Proposition 99，加州与其他州之间的差异可能不太会发生明显变化，我们可以基于这种差异构造加州的反事实。这是 DID 的直觉。</p></li>
+<li><p>第三，如果其他州的简单平均不能代表加州，就可以从其他州中选择若干州，并给它们不同权重，拼出一个更像加州的「合成加州」。这是合成控制法的直觉。</p></li>
+</ul>
+</section>
+<section id="用自己的过去预测自己时间趋势外推" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="用自己的过去预测自己时间趋势外推"><span class="header-section-number">5.2</span> 用自己的过去预测自己：时间趋势外推</h2>
+<div id="fig-cipolicy-cf-abadie-ca-trend" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-cf-abadie-ca-trend-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/Abadie-2010-Fig01.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-cf-abadie-ca-trend-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;5.2: Abadie et al.&nbsp;(2010)：加州禁烟政策前后的香烟消费变化
+</figcaption>
+</figure>
+</div>
+<p>最朴素的想法是只看加州自己(图 <a href="#fig-cipolicy-cf-abadie-ca-trend" class="quarto-xref">图&nbsp;<span>5.2</span></a>)。如果没有政策，加州香烟消费大概会沿着政策前的趋势继续走。于是用 1970–1988 年的数据拟合一条趋势线，外推到 1989 年以后，就得到一条「无政策的加州」路径；真实路径与外推路径之间的差，就是估计的政策效果。这就是中断时间序列分析(interrupted time series analysis, ITSA)与趋势外推的直觉。</p>
+<p>这个方法的可信度完全押在一个假设上：<strong>政策前的趋势，若没有政策会原样延续到政策后</strong>。它的脆弱性也在这里。趋势用线性还是二次、政策前窗口取多长、政策前后有没有其他同步冲击(比如全国性的烟草诉讼、经济周期)，都会改变外推路径。更微妙的是，如果政策在正式生效前已被预期(商家提前调价、消费者提前囤货)，政策前趋势本身就被污染了，外推的基准不再干净。</p>
+<p>ITSA 的价值在于它极其透明地暴露了反事实构造的本质：我们必须为「没有政策会怎样」写下一个明确的模型。它的局限也很直白：只用了处理组自己的信息，一旦政策期恰好赶上别的变化，就无从分辨。自然地，我们会想到借助外部信息——其他没有实施政策的州。</p>
+</section>
+<section id="用其他州的变化代表加州did-的反事实" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="用其他州的变化代表加州did-的反事实"><span class="header-section-number">5.3</span> 用其他州的变化代表加州：DID 的反事实</h2>
+<p>双重差分(DID)换了一个思路：不用加州自己的过去，而用其他州的同期变化，来代表加州「没有政策时本会发生的变化」。逻辑是：其他州没有 Proposition 99，如果加州没有政策，它的消费变化应该和其他州差不多。于是用加州的政策前水平，加上其他州从政策前到政策后的平均变化，拼出加州的反事实：</p>
+<p><span id="eq-cipolicy-cf-did-y0"><span class="math display">\[
+\widehat{Y}_{CA,t}(0) = Y_{CA,t_0} + \left(\overline{Y}_{Other,t} - \overline{Y}_{Other,t_0}\right)
+\tag{5.2}\]</span></span></p>
+<p>相应的 DID 估计量是</p>
+<p><span id="eq-cipolicy-cf-did"><span class="math display">\[
+\widehat{\tau}^{DID} = \left(Y_{CA,t} - Y_{CA,t_0}\right) - \left(\overline{Y}_{Other,t} - \overline{Y}_{Other,t_0}\right)
+\tag{5.3}\]</span></span></p>
+<p>这里有一个值得点破的连接：<a href="#eq-cipolicy-cf-did-y0" class="quarto-xref">式&nbsp;<span>5.2</span></a> 减掉的那一项 <span class="math inline">\(\overline{Y}_{Other,t} - \overline{Y}_{Other,t_0}\)</span>，正是第四章的年份效应 <span class="math inline">\(\lambda_t\)</span> 的经验对应物。DID 的全部内容，就是<strong>假设这个</strong> <span class="math inline">\(\lambda_t\)</span> 对处理组和对照组是同一个——也就是平行趋势假设：两组的时变混淆以相同方式演化。换句话说，DID 允许两组有第四章意义上的固定水平差异 <span class="math inline">\(\alpha_i\)</span>(加州本来就和别的州不一样)，但要求它们的时间变化路径平行。DID 就是「TWFE 加上一个识别假设」，而不是一个全新的东西。</p>
+<p>DID 在加州案例里暴露出两个关键局限：</p>
+<p><strong>第一，平行趋势不是抽象假设，它和样本窗口深度绑定。</strong> 如果只看 1975 年以后，加州和其他州的趋势看起来比较接近；但若从 1970 年一直看到 1988 年，两者的长期趋势并不平行。同一批数据，换一个政策前窗口，平行趋势的可信度就变了。这提醒我们：平行趋势的「检验」在很大程度上取决于你选择让读者看多长的历史。</p>
+<p><strong>第二，只有一个处理对象时，传统的大样本推断很困难。</strong> 加州案例里处理组只有一个州。即便能算出一个 DID 点估计，也没有「许多处理单位」让我们依赖传统渐近理论去构造标准误和做假设检验。后面要讲的合成控制法之所以要用安慰剂检验、置换检验来做推断，根源就在这里。</p>
+<p>DID 的反事实靠「找到一个趋势可比的对照组」。但其他州的简单平均未必像加州——加州人口结构、收入、烟价都和蒙大拿、内华达不同。能不能不满足于「找现成的对照组」，而主动去「拼一个更像加州的对照」？这是本章的转折点。在转过去之前，先插一段不同维度的反事实——RDD。</p>
+</section>
+<section id="插叙在门槛附近寻找反事实rdd-的局部比较" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="插叙在门槛附近寻找反事实rdd-的局部比较"><span class="header-section-number">5.4</span> 插叙：在门槛附近寻找反事实——RDD 的局部比较</h2>
+<p>前面的方法都在时间维度上构造反事实：用过去，或用别人的同期变化。断点回归(RDD)提供了另一种维度的反事实——<strong>截面近邻</strong>。</p>
+<p>先顺着加州案例做一个「可能但不理想」的设想。假如我们有微观、高频数据(比如每天的烟草零售记录)，就可以把 1989 年 1 月 1 日政策生效当作一个门槛，比较生效日前后很短窗口内的消费。生效前 5 天和后 5 天的市场状况几乎相同，唯一的区别是政策有没有生效——这接近断点的思路。</p>
+<p>但马上就能看出为什么加州年度州级数据不适合这么做：年度数据太粗，政策若提前公布会引发提前调整，生效日附近还夹杂季节性、价格波动、替代品转移。RDD 需要的是<strong>运行变量上足够密集、且门槛无法被精确操纵</strong>的数据。这个反差恰好点明了 RDD 的特征：它既不靠长期时间趋势，也不靠寻找远处的对照组，而是在门槛(cutoff)附近，用<strong>刚好没跨过门槛的一侧，代表刚好跨过门槛的一侧的反事实</strong>。</p>
+<p>形式上，设运行变量 <span class="math inline">\(R_i\)</span>，处理由是否越过门槛 <span class="math inline">\(c\)</span> 决定：</p>
+<p><span id="eq-cipolicy-cf-rdd"><span class="math display">\[
+D_i = \mathbf{1}\{R_i \ge c\}, \qquad
+\tau_{RDD} = \lim_{r \downarrow c} E[Y_i \mid R_i = r] - \lim_{r \uparrow c} E[Y_i \mid R_i = r]
+\tag{5.4}\]</span></span></p>
+<p>门槛两侧的单位在其他方面近似可比，唯一系统差异是处理状态，因此门槛处结果的跳跃就是局部处理效应。真正适合 RDD 的是那些「规则制造了处理强度跳跃」的场景，两个经典例子：Angrist and Lavy (1999) 利用以色列的 Maimonides 规则——班级人数一旦超过 40 人就必须拆班，于是班级规模在阈值处不连续跳变，用来识别班级规模对学生成绩的影响；Lee (2008) 利用美国众议院选举中「刚好险胜」与「刚好惜败」的候选人在门槛附近近似随机分配，识别在位优势对下届选举的影响。</p>
+<p>必须强调，RDD 识别的是<strong>门槛附近的局部效应</strong>，不能外推到远离门槛的人群；它的实操还涉及带宽选择、局部多项式、密度操纵检验、协变量连续性等一整套技术，这些放在第七章的扩展阅读与本章附录中，此处不展开。RDD 的反事实来自截面近邻。现在回到面板，继续追问那个转折性的问题：能不能主动构造一个更像加州的对照组？</p>
+</section>
+<section id="从被动寻找对照到主动构造对照" class="level2" data-number="5.5">
+<h2 data-number="5.5" class="anchored" data-anchor-id="从被动寻找对照到主动构造对照"><span class="header-section-number">5.5</span> 从被动寻找对照到主动构造对照</h2>
+<p>到这里，可以把前面的方法归拢一下。ITSA 的反事实来自处理组自己的过去；DID 来自对照组的同期变化；RDD 来自门槛另一侧的近邻。它们有一个共同点——都比较<strong>被动</strong>：研究者要么依赖处理组自身的趋势稳定，要么依赖恰好存在一个趋势可比的对照组或一个可用的门槛。</p>
+<p>接下来的三种方法转向<strong>主动构造</strong>反事实：合成控制法(SCM)用 donor pool 中若干控制单位的加权组合，拼出一个更像处理组的合成对象；广义合成控制/回归控制法(RCM/GSC)用因子结构预测处理组的无政策路径；合成 DID(SDID)则同时在单位和时间两个维度上加权。</p>
+<p>这个转折背后是一条贯穿全书的暗线，值得在这里点破。第四章到本章前半段，我们做的都是<strong>减法</strong>：FWL 和固定效应把混淆减掉，DID 把共同的年份效应 <span class="math inline">\(\lambda_t\)</span> 减掉。而从 SCM 开始，思路转向<strong>预测</strong>：不再满足于减去一个现成的对照，而是主动用模型把 <span class="math inline">\(Y(0)\)</span> 预测出来。减法依赖「有一个干净的东西可减」，预测依赖「有一个可信的模型能外推」。第七章的 DDML 会把这条预测线推到极致——用机器学习预测处理和结果的条件期望。<strong>遗漏变量、反事实、双重机器学习，本质上都是在估计条件期望，区别只在于用减法还是用预测。</strong> 把这条暗线记住，后面的方法就不是零散的工具，而是同一种思维的不同实现。</p>
+<p>主动构造更灵活，但天下没有免费的午餐：越精巧的构造，通常越依赖额外的假设、数据质量或模型结构。下面逐一来看。</p>
+</section>
+<section id="用多个州拼出加州合成控制法" class="level2" data-number="5.6">
+<h2 data-number="5.6" class="anchored" data-anchor-id="用多个州拼出加州合成控制法"><span class="header-section-number">5.6</span> 用多个州拼出加州：合成控制法</h2>
+<p>DID 用其他州的简单平均，问题是「平均」未必像加州。合成控制法(Abadie et al., 2010)不让每个州等权，而是给 donor pool 里的州分配权重，让加权组合出来的「合成加州」在政策前尽量贴近真实加州。</p>
+<p>设处理组为 <span class="math inline">\(j=1\)</span>，donor pool 为 <span class="math inline">\(j=2,\ldots,J+1\)</span>，权重为 <span class="math inline">\(W=(w_2,\ldots,w_{J+1})'\)</span>。合成控制法用：</p>
+<p><span id="eq-cipolicy-cf-scm-y0"><span class="math display">\[
+\widehat{Y}_{1t}(0)=\sum_{j=2}^{J+1}w_jY_{jt}, \qquad w_j \ge 0, \quad \sum_{j \in Donor} w_j = 1
+\tag{5.5}\]</span></span></p>
+<p>估计处理组没有政策时的结果。政策效果为：</p>
+<p><span id="eq-cipolicy-cf-scm-effect"><span class="math display">\[
+\widehat{\tau}_{1t}=Y_{1t}-\widehat{Y}_{1t}(0)
+\tag{5.6}\]</span></span></p>
+<p>政策前让合成加州逼近真实加州(在结果变量和若干预测变量上都尽量匹配)，政策后二者的差距就解释为政策效果。</p>
+<p>Stata 实现代码如下：</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> https:<span class="co">//github.com/scunning1975/mixtape/raw/master/smoking.dta, clear</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>xtset state <span class="fu">year</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>synth2 cigsale lnincome age15to24 retprice beer(1984(1)1988) <span class="co">///</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    cigsale(1988) cigsale(1980) cigsale(1975), <span class="co">///</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    trunit(3) trperiod(1989) xperiod(1980(1)1988) <span class="co">///</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    fig nested allopt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>在加州案例中，合成控制法从 38 个州里挑出 5 个、分配了非零权重：犹他 0.334、内华达 0.235、蒙大拿 0.202、科罗拉多 0.161、康涅狄格 0.068，其余 33 个州权重为零。图 <a href="#fig-cipolicy-cf-scm-basic-idea" class="quarto-xref">图&nbsp;<span>5.3</span></a> 把这 5 个州高亮出来——所谓「合成加州」，就是这几条线按上述权重的加权平均。这张图是理解 SCM 的关键：抽象的「凸组合权重」在这里变成了「三分之一个犹他加四分之一个内华达……」这样具体的配方。</p>
+<div id="fig-cipolicy-cf-scm-basic-idea" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-cf-scm-basic-idea-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/c8d49fec8595f3074067a1f803f4fc53.jpg" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-cf-scm-basic-idea-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;5.3: 合成控制法的基本思想：用多个控制组单位的加权组合构造处理组的反事实
+</figcaption>
+</figure>
+</div>
+<p>图 <a href="#fig-cipolicy-cf-scm-basic-idea" class="quarto-xref">图&nbsp;<span>5.3</span></a> 里两个权重约束——非负、且加总为一——不只是为了求解方便，它们有实质含义：合成对象被限制在 donor pool 的<strong>凸包</strong>内，这提升了可解释性、避免了危险的外推(合成加州不会是某个州的数倍或负数)。代价是牺牲了拟合的灵活性：如果真实的反事实加州根本不在这些州的凸组合能覆盖的范围内，政策前就会拟合不好。而政策前拟合的好坏，是 SCM 可信度的生命线——拟合不好，政策后的差距就无法归因于政策。</p>
+<p>SCM 把识别的压力从 DID 的「平行趋势」转移到了三处：donor pool 的构成(对照州本身不能受类似政策污染)、权重与预测变量的选择(结果对此敏感)、以及政策前拟合的质量。推断上，因为只有一个处理单位，SCM 依赖安慰剂/置换检验：把每个对照州轮流当作「假处理组」跑一遍，看真实加州的政策后差距是否显著大于这些安慰剂。合成控制法完整的加州复现——<code>synth2</code> 命令、预测变量平衡表、合成加州拟合图与处理效应图——放在本章<a href="../notebooks/ch05_counterfactuals/A05_counterfactual_replication.html">附录 F</a>。</p>
+</section>
+<section id="用因子结构预测反事实rcm-gsc" class="level2" data-number="5.7">
+<h2 data-number="5.7" class="anchored" data-anchor-id="用因子结构预测反事实rcm-gsc"><span class="header-section-number">5.7</span> 用因子结构预测反事实：RCM / GSC</h2>
+<p>合成控制法在 donor pool 里找<strong>权重</strong>。回归控制法与广义合成控制(RCM/GSC)换了一条路：它们不找权重，而是用未处理样本学习一个<strong>因子结构</strong>，再用这个结构预测处理组的无政策路径。这里正好接上第四章的交互固定效应。</p>
+<p>还记得第四章的 <span class="math inline">\(\lambda_i'F_t\)</span> 吗？在那里我们用它吸收异质的共同冲击(同一次降准，高杠杆和低杠杆公司反应不同)；在这里，我们用<strong>同一个结构</strong>预测反事实：</p>
+<p><span id="eq-cipolicy-cf-rcm"><span class="math display">\[
+Y_{it}(0) = \alpha_i + \lambda_t + \Gamma_i'F_t + \varepsilon_{it}
+\tag{5.7}\]</span></span></p>
+<p><span class="math inline">\(F_t\)</span> 是驱动所有州香烟消费的共同因子(全国控烟舆论、经济周期、代际偏好变迁),<span class="math inline">\(\Gamma_i\)</span> 是各州对这些因子的暴露程度。政策前，用未处理的州学习出 <span class="math inline">\(F_t\)</span> 和各单位的载荷；政策后，用加州自己的载荷乘以估计出的因子，预测「没有政策的加州」。<strong>控制与反事实，是一体两面</strong>：第四章把 <span class="math inline">\(\lambda_i'F_t\)</span> 当作要清除的干扰，本章把它当作要利用的预测结构。</p>
+<p>RCM 与 SCM 的差别，恰好又是第四章那个「约束 vs 灵活」的权衡在另一个层面的再现。SCM 要求权重非负且加总为一(凸组合);RCM 放开了这个约束——它可以给某个州负载荷，可以带截距，预测目标是拟合优度而非凸包内的相似性，还可以借助 Lasso 等正则化在众多潜在预测单位中做筛选、防止过拟合。放开约束换来了更强的拟合与外推能力，代价是可解释性下降(负权重不好讲故事)，以及对模型结构设定的依赖更重。</p>
+<p>一个直观的例证：在加州数据上，合成控制法(凸组合)选出犹他、内华达、蒙大拿、科罗拉多、康涅狄格；而 Lasso 型的方法在放开约束后，选出的州与之部分重叠(同样偏爱蒙大拿、内华达、犹他)、但不完全相同，而且允许出现负系数和一个非零截距。同一份数据、同一个处理组，约束松一档，反事实的配方就换了一副面孔。这不是谁对谁错，而是两种构造哲学的取舍。RCM 的加州复现、Lasso 型合成控制与选参数细节，同样放在附录 F。</p>
+</section>
+<section id="同时给单位和时间加权sdid" class="level2" data-number="5.8">
+<h2 data-number="5.8" class="anchored" data-anchor-id="同时给单位和时间加权sdid"><span class="header-section-number">5.8</span> 同时给单位和时间加权：SDID</h2>
+<p>走到这里，SCM 解决了「哪些控制单位更像加州」。但还有一个维度没被利用：政策前的每一年，并不同等重要。距离政策发生更近的年份，对预测政策后的反事实往往更有信息；而 1970 年的加州和 1988 年的加州，对「1989 年若无政策会怎样」的参考价值显然不同。合成 DID(SDID, Arkhangelsky et al., 2021)把这个维度也纳进来：<strong>同时给单位和时间加权</strong>。</p>
+<p>用一个统一的目标函数最能看清 DID、SC、SDID 三者的关系(推导与权重求解见附录 F):</p>
+<p><span id="eq-cipolicy-cf-sdid"><span class="math display">\[
+\widehat{\tau}^{sdid} = \underset{\tau,\mu,\alpha,\beta}{\arg\min} \left\{ \sum_{i=1}^{N} \sum_{t=1}^{T} \left(Y_{it} - \mu - \alpha_i - \beta_t - W_{it}\tau\right)^2 \, {\color{red}{\widehat{\omega}_i}} \, {\color{blue}{\widehat{\lambda}_t}} \right\}
+\tag{5.8}\]</span></span></p>
+<p>三种方法就是这一个式子的不同特例：</p>
+<ul>
+<li><strong>传统 DID</strong> 把 <span class="math inline">\(\widehat\omega_i\)</span> 和 <span class="math inline">\(\widehat\lambda_t\)</span> 都设为常数——所有对照单位等权、所有时期等权，于是需要平行趋势假设，用简单平均估计 ATT;</li>
+<li><strong>SC</strong> 只有单位权重 <span class="math inline">\(\widehat\omega_i\)</span>、没有时间权重，且不含个体效应 <span class="math inline">\(\alpha_i\)</span>——它在截面上让合成对象贴近处理组，从而绕开平行趋势；</li>
+<li><strong>SDID</strong> 两个权重都有，同时保留双向固定效应 <span class="math inline">\(\alpha_i + \beta_t\)</span>——它让 DID 的固定效应变得更「局部」：把更多权重放在与加州更像的州，以及与政策期更相关的年份上。</li>
+</ul>
+<p>关于时间权重有一个容易讲错的地方，这里说准确：<span class="math inline">\(\widehat\lambda_t\)</span> <strong>通常</strong>会让与处理期更相关的政策前时期获得更高权重，但它不是机械地「离政策越近权重越大」，权重由数据在最小化政策前拟合误差时决定。</p>
+<p>三种方法在加州数据上给出的处理效应数值并不相同——这恰恰是本章最想让学生体会的一点。DID 约 −27、SC 约 −20、SDID 约 −16(单位为每人每年包数，口径和推断细节见附录 F)。数值差异不是「谁算错了」，而是三种反事实构造方式的直接后果：DID 用等权平均，受长期趋势不平行的拖累最大；SC 用截面加权贴近；SDID 再叠加时间加权。图 <a href="#fig-cipolicy-cf-sdid" class="quarto-xref">图&nbsp;<span>5.4</span></a> 展示了 SDID 的输出——上半部分是真实加州与合成加州的走势对比，底部的柱状则显示各政策前年份被分配的时间权重，直观呈现「哪些年份更有信息」。</p>
+<div id="fig-cipolicy-cf-sdid" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-cf-sdid-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/SDID_cig_002trends1989.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-cf-sdid-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;5.4: SDID 的双重加权：合成加州拟合(上)与政策前各年份的时间权重(下)
+</figcaption>
+</figure>
+</div>
+<p>SDID 把 DID 的固定效应、SC 的单位加权、以及时间加权熔于一炉，在许多场景下兼顾了稳健与精度。但它同样不是万能钥匙：它仍然依赖足够的政策前时期、质量过关的对照组、以及面板结构本身。当处理组极少、政策前太短、或对照组普遍受政策污染时，再精巧的加权也救不回来。</p>
+<p>下图直观地反映了 SDID 的估计思路：</p>
+<p><img src="https://synth-inference.github.io/synthdid/articles/more-plotting_files/figure-html/unnamed-chunk-6-.gif" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p>Source: <a href="https://synth-inference.github.io/synthdid/articles/more-plotting.html">synth-inference.github.io/synthdid</a></p>
+</blockquote>
+<p><img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/20240114223752.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p>Source: <a href="https://synth-inference.github.io/synthdid/articles/synthdid.html">synth-inference.github.io/synthdid</a></p>
+</blockquote>
+</section>
+<section id="反事实构造没有免费的午餐" class="level2" data-number="5.9">
+<h2 data-number="5.9" class="anchored" data-anchor-id="反事实构造没有免费的午餐"><span class="header-section-number">5.9</span> 反事实构造没有免费的午餐</h2>
+<p>把六种方法放在一起，可以清楚看到它们其实是沿着「反事实从哪里来」这一个问题分布的光谱，各自把识别的压力放在不同的假设上。</p>
+<div id="tbl-cipolicy-cf-summary" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-cipolicy-cf-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;5.1: 六种反事实构造方式及其代价
+</figcaption>
+<div aria-describedby="tbl-cipolicy-cf-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>方法</th>
+<th>反事实来源</th>
+<th>主要优势</th>
+<th>主要代价(压力所在)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ITSA</td>
+<td>处理组自身政策前趋势</td>
+<td>不需要外部对照组</td>
+<td>趋势设定、政策前窗口、同期冲击、提前反应</td>
+</tr>
+<tr class="even">
+<td>DID</td>
+<td>对照组同期变化</td>
+<td>直观、易解释</td>
+<td>平行趋势、对照组选择、单一处理组的推断</td>
+</tr>
+<tr class="odd">
+<td>RDD</td>
+<td>门槛另一侧的截面近邻</td>
+<td>门槛附近可比性强</td>
+<td>仅识别局部效应、门槛不可被精确操纵</td>
+</tr>
+<tr class="even">
+<td>SCM</td>
+<td>donor pool 加权组合</td>
+<td>主动构造相似反事实、防外推</td>
+<td>donor pool 纯净性、权重与预测变量、政策前拟合</td>
+</tr>
+<tr class="odd">
+<td>RCM/GSC</td>
+<td>潜在因子结构预测</td>
+<td>更灵活、可处理异质共同冲击</td>
+<td>模型结构设定、过拟合、可解释性</td>
+</tr>
+<tr class="even">
+<td>SDID</td>
+<td>单位权重 + 时间权重</td>
+<td>融合 DID 与 SC、兼顾稳健与精度</td>
+<td>政策前长度、对照组质量、面板结构</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p><a href="#tbl-cipolicy-cf-summary" class="quarto-xref">表&nbsp;<span>5.1</span></a> 是本章的落点，它给出一个明确的方法选择原则：</p>
+<blockquote class="blockquote">
+<p>DID 把压力放在平行趋势上；RDD 把压力放在门槛附近的连续性与不可操纵性上；SCM 把压力放在 donor pool 与政策前拟合上；RCM 把压力放在因子结构上；SDID 把压力放在单位权重、时间权重与面板结构上。<strong>方法选择不能看哪个估计结果更显著，而要看这些假设在你的具体政策背景中是否站得住。</strong></p>
+</blockquote>
+<p>这一原则与第四章一脉相承。第四章说，每加一组固定效应都是在声明「我在拿谁和谁比」；本章说，每选一种反事实构造，都是在声明「我用什么代表看不见的 <span class="math inline">\(Y(0)\)</span>」，以及「我愿意为此背负哪一个假设」。两章合起来，构成了政策评估的两个基本自问。</p>
+</section>
+<section id="从本章走向第六章" class="level2" data-number="5.10">
+<h2 data-number="5.10" class="anchored" data-anchor-id="从本章走向第六章"><span class="header-section-number">5.10</span> 从本章走向第六章</h2>
+<p>本章只回答了「反事实是什么、可以怎样构造」，刻意没有展开一个问题：当研究设计确定为 DID 之后，具体该用哪一个 DID 估计量？现实中的政策往往不是加州这样「一个州、一个时点」的干净情形，而是不同地区在不同年份陆续实施(交错处理)，且处理效应在个体间、时间上都不同质。此时传统的双向固定效应 DID 会遭遇「坏比较」——用已处理单位充当尚未处理单位的对照，产生带负权重的污染。</p>
+<p>Goodman-Bacon 分解揭示了这个问题之后，一批新估计量应运而生：Callaway–Sant’Anna 的 <code>csdid</code>、Sun–Abraham、Borusyak–Jaravel–Spiess 的插补法、<code>did2s</code>、<code>did_multiplegt_dyn</code> 等。第六章要回答的就是：在你自己的研究场景里，到底该选哪一种？能否综合使用两三种相互印证？不同方法结果不一致时又该如何解读？那里也会把三重差分(DDD)作为一种识别设计系统展开——第四章我们已经见过它在 Lane (2025) 里的高维固定效应吸收结构，本章见过它作为「用一个 DID 修正另一个 DID」的反事实直觉，第六章则讲它的估计量选择。</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+配套复现
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>本章所有方法在加州禁烟数据上的完整 Stata 复现(SCM 的 <code>synth2</code>、Lasso 型合成控制、RCM 的 <code>rcm</code>、SDID 的 <code>sdid</code>，含命令、输出解读与全部图形代码)见 <a href="../notebooks/ch05_counterfactuals/A05_counterfactual_replication.html">附录 F</a>。附录提供 <code>.ipynb</code>(可在 VS Code 中借助 nbstata 或 Stata-MCP 执行) 与简化版 <a href="../notebooks/ch05_counterfactuals/A05_counterfactual_replication.do">dofile</a> 两种格式。</p>
+</div>
+</div>
+</section>
+<section id="参考文献" class="level2" data-number="5.11">
+<h2 data-number="5.11" class="anchored" data-anchor-id="参考文献"><span class="header-section-number">5.11</span> 参考文献</h2>
+<ul>
+<li><p>Abadie, A., Diamond, A., &amp; Hainmueller, J. (2010). Synthetic control methods for comparative case studies: Estimating the effect of California’s tobacco control program. <em>Journal of the American Statistical Association</em>, 105(490), 493–505. <a href="https://doi.org/10.1198/jasa.2009.ap08746">Link</a>, <a href="https://economics.mit.edu/sites/default/files/publications/Synthetic%20Control%20Methods.pdf">PDF</a>, <a href="https://scholar.google.com/scholar?q=Synthetic+control+methods+for+comparative+case+studies+Estimating+the+effect+of+California%27s+tobacco+control+program">Google</a>.</p></li>
+<li><p>Arkhangelsky, D., Athey, S., Hirshberg, D. A., Imbens, G. W., &amp; Wager, S. (2021). Synthetic difference-in-differences. <em>American Economic Review</em>, 111(12), 4088–4118. <a href="https://doi.org/10.1257/aer.20190159">Link</a>, <a href="https://www.nber.org/system/files/working_papers/w25532/w25532.pdf">PDF</a>, <a href="https://scholar.google.com/scholar?q=Synthetic+difference-in-differences+Arkhangelsky+Athey+Hirshberg+Imbens+Wager">Google</a>.</p></li>
+<li><p>Angrist, J. D., &amp; Lavy, V. (1999). Using Maimonides’ rule to estimate the effect of class size on scholastic achievement. <em>The Quarterly Journal of Economics</em>, 114(2), 533–575. <a href="https://doi.org/10.1162/003355399556061">Link</a>, <a href="https://piketty.pse.ens.fr/files/AngristLavy1999.pdf">PDF</a>, <a href="https://scholar.google.com/scholar?q=Using+Maimonides+rule+to+estimate+the+effect+of+class+size+on+scholastic+achievement">Google</a>.</p></li>
+<li><p>Ciccia, D. (2024). A short note on event-study synthetic difference-in-differences estimators. <em>arXiv:2407.09565</em>. <a href="https://doi.org/10.48550/arXiv.2407.09565">Link</a>, <a href="https://arxiv.org/pdf/2407.09565.pdf">PDF</a>, <a href="https://scholar.google.com/scholar?q=A+short+note+on+event-study+synthetic+difference-in-differences+estimators">Google</a>.</p></li>
+<li><p>Clarke, D., Pailañir, D., Athey, S., &amp; Imbens, G. (2024). On synthetic difference-in-differences and related estimation methods in Stata. <em>The Stata Journal</em>, 24(4), 557–598. <a href="https://doi.org/10.1177/1536867X241297914">Link</a>, <a href="https://journals.sagepub.com/doi/pdf/10.1177/1536867X241297914">PDF</a>, <a href="https://scholar.google.com/scholar?q=On+synthetic+difference-in-differences+and+related+estimation+methods+in+Stata">Google</a>. <a href="https://github.com/Daniel-Pailanir/sdid">github</a></p></li>
+<li><p>Lee, D. S. (2008). Randomized experiments from non-random selection in U.S. House elections. <em>Journal of Econometrics</em>, 142(2), 675–697. <a href="https://doi.org/10.1016/j.jeconom.2007.05.004">Link</a>, <a href="https://www.princeton.edu/~davidlee/wp/RDrand.pdf">PDF</a>, <a href="https://scholar.google.com/scholar?q=Randomized+experiments+from+non-random+selection+in+U.S.+House+elections">Google</a>.</p></li>
+<li><p>Yan, G., &amp; Chen, Q. (2022). rcm: A command for the regression control method. <em>The Stata Journal</em>, 22(4), 842–883. <a href="https://doi.org/10.1177/1536867X221140960">Link</a>, <a href="https://journals.sagepub.com/doi/pdf/10.1177/1536867X221140960">PDF</a>, <a href="https://scholar.google.com/scholar?q=rcm+A+command+for+the+regression+control+method">Google</a>.</p></li>
+<li><p>Yan, G., &amp; Chen, Q. (2023). synth2: Synthetic control method with placebo tests, robustness test, and visualization. <em>The Stata Journal</em>, 23(3), 597–624. <a href="https://doi.org/10.1177/1536867X231195278">Link</a>, <a href="https://journals.sagepub.com/doi/pdf/10.1177/1536867X231195278">PDF</a>, <a href="https://scholar.google.com/scholar?q=synth2+Synthetic+control+method+with+placebo+tests+robustness+test+and+visualization">Google</a>.</p></li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/lianxhcn\.github\.io\/ci-policy\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../lectures/04_fixed_effects.html" class="pagination-link" aria-label="固定效应：控制了什么">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">固定效应：控制了什么</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../lectures/06_did_design.html" class="pagination-link" aria-label="双重差分：从 TWFE 到 CSDID">
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">双重差分：从 TWFE 到 CSDID</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p><a href="https://www.lianxh.cn">lianxh.cn</a></p>
+</div>
+    <div class="nav-footer-right">
+<p>基于 <a href="https://quarto.org/">Quarto</a> 构建</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

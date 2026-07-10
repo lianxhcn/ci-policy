@@ -1,0 +1,1825 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>附录 D — 固定效应实操笔记 – 因果推断：政策评估中的识别思维与实证设计</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../notebooks/ch05_counterfactuals/A05_counterfactual_replication.html" rel="next">
+<link href="../../notebooks/ch03_heckman/heckman_practical_notes.html" rel="prev">
+<link href="../../images/book-logo.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-e8fb9d25728d58bfeac61b497e4a6629.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-57a92833092fd6dc0d7710b6bdfff9c5.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-7ef202e96c563d31d9e5226e4d6cabf9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-490ba4e843cb1303a232ed0c676384f2.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../lectures/appendix/A02_government_guidance_fund.html">附录</a></li><li class="breadcrumb-item"><a href="../../notebooks/ch04_fixed_effects/fixed_effects_practical_notes.html"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">固定效应实操笔记</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="https://lianxhcn.github.io/ci-policy/" class="sidebar-logo-link">
+      <img src="../../images/book-logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../../">Causal Inference</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/lianxhcn/ci-policy" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
+    <a href="https://www.lianxh.cn" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-house-fill"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🏠 前言</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../syllabus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📌讲授计划</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../settings.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🚀课前准备：环境配置</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text"><strong>讲义</strong></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lectures/01_policy_to_design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">从政策背景到研究设计</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lectures/02_policy_to_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">政策如何进入数据</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lectures/03_sample_selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">样本选择偏误</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lectures/04_fixed_effects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">固定效应：控制了什么</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lectures/05_counterfactuals.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">反事实构造</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lectures/06_did_design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">双重差分：从 TWFE 到 CSDID</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lectures/07_ddml.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">双重机器学习：DDML</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lectures/08_ai_agent_workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">AI Agent 辅助实证研究</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lectures/09_reading_list.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">阅读清单</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">附录</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lectures/appendix/A02_government_guidance_fund.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">政府引导基金政策梳理笔记</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lectures/appendix/A03_heckman_selection_literature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Heckman 模型扩展阅读</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notebooks/ch03_heckman/heckman_practical_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Heckman 实操笔记</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notebooks/ch04_fixed_effects/fixed_effects_practical_notes.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">固定效应实操笔记</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notebooks/ch05_counterfactuals/A05_counterfactual_replication.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">加州禁烟：SCM/RCM/SDID</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notebooks/ch06_did/A06_did_method_selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">F</span>&nbsp; <span class="chapter-title">DID 方法与 Stata 实操</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notebooks/ch07_ddml/A07_fwl_ddml.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">G</span>&nbsp; <span class="chapter-title">双重机器学习 Stata 实操</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/exercise_overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">练习概览</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#模块一好的控制变量" id="toc-模块一好的控制变量" class="nav-link active" data-scroll-target="#模块一好的控制变量"><span class="header-section-number">D.1</span> 模块一：好的控制变量</a></li>
+  <li><a href="#模块二坏控制m-偏误-collider" id="toc-模块二坏控制m-偏误-collider" class="nav-link" data-scroll-target="#模块二坏控制m-偏误-collider"><span class="header-section-number">D.2</span> 模块二：坏控制：M 偏误 / collider</a></li>
+  <li><a href="#模块三中介控制改变估计对象" id="toc-模块三中介控制改变估计对象" class="nav-link" data-scroll-target="#模块三中介控制改变估计对象"><span class="header-section-number">D.3</span> 模块三：中介控制改变估计对象</a></li>
+  <li><a href="#模块四xtreg手动去心和固定效应" id="toc-模块四xtreg手动去心和固定效应" class="nav-link" data-scroll-target="#模块四xtreg手动去心和固定效应"><span class="header-section-number">D.4</span> 模块四：<code>xtreg</code>、手动去心和固定效应</a></li>
+  <li><a href="#模块五递进-absorb-和比较范围" id="toc-模块五递进-absorb-和比较范围" class="nav-link" data-scroll-target="#模块五递进-absorb-和比较范围"><span class="header-section-number">D.5</span> 模块五：递进 <code>absorb()</code> 和比较范围</a></li>
+  <li><a href="#模块六处理变量被同层级固定效应吸收" id="toc-模块六处理变量被同层级固定效应吸收" class="nav-link" data-scroll-target="#模块六处理变量被同层级固定效应吸收"><span class="header-section-number">D.6</span> 模块六：处理变量被同层级固定效应吸收</a></li>
+  <li><a href="#模块七log1y-与-ppmlhdfe" id="toc-模块七log1y-与-ppmlhdfe" class="nav-link" data-scroll-target="#模块七log1y-与-ppmlhdfe"><span class="header-section-number">D.7</span> 模块七：<code>log(1+y)</code> 与 <code>ppmlhdfe</code></a></li>
+  <li><a href="#模块八慢变量和组内变异缩水" id="toc-模块八慢变量和组内变异缩水" class="nav-link" data-scroll-target="#模块八慢变量和组内变异缩水"><span class="header-section-number">D.8</span> 模块八：慢变量和组内变异缩水</a></li>
+  <li><a href="#模块九mundlak-cre-思路" id="toc-模块九mundlak-cre-思路" class="nav-link" data-scroll-target="#模块九mundlak-cre-思路"><span class="header-section-number">D.9</span> 模块九：Mundlak / CRE 思路</a></li>
+  <li><a href="#模块十regife-交互固定效应" id="toc-模块十regife-交互固定效应" class="nav-link" data-scroll-target="#模块十regife-交互固定效应"><span class="header-section-number">D.10</span> 模块十：<code>regife</code> 交互固定效应</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../lectures/appendix/A02_government_guidance_fund.html">附录</a></li><li class="breadcrumb-item"><a href="../../notebooks/ch04_fixed_effects/fixed_effects_practical_notes.html"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">固定效应实操笔记</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">附录 D — 固定效应实操笔记</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>本 Notebook 配合第四章「看见之后，如何比较：固定效应在控制什么」使用。代码使用 nbstata 执行 Stata，目标是为讲义生成可复现的回归结果和图形。</p>
+<p>核心模块包括：</p>
+<ul>
+<li>好控制、坏控制和中介控制；</li>
+<li><code>xtreg</code>、手动 de-mean 与 <code>reghdfe</code>；</li>
+<li>递进 <code>absorb()</code> 如何改变比较范围；</li>
+<li>处理变量被同层级固定效应吸收；</li>
+<li><code>log(1+y)</code> 与 <code>ppmlhdfe</code> 的对照；</li>
+<li>组内变异缩水；</li>
+<li><code>regife</code> 交互固定效应。</li>
+</ul>
+<section id="模块一好的控制变量" class="level2" data-number="D.1">
+<h2 data-number="D.1" class="anchored" data-anchor-id="模块一好的控制变量"><span class="header-section-number">D.1</span> 模块一：好的控制变量</h2>
+<div id="6e91d690" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2026-07-06T16:11:04.039833Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-06T16:11:04.039833Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-06T16:11:08.548589Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-06T16:11:08.547574Z&quot;}">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">clear</span> <span class="ot">all</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> <span class="kw">more</span> <span class="kw">off</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> <span class="dv">seed</span> 135</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> <span class="kw">obs</span> 30</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> Z = <span class="dt">_n</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> X = 1*Z + rnormal()</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> Y = 1*X + 1*Z + 0.1*rnormal()</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>eststo <span class="kw">clear</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="kw">qui</span> eststo m1: <span class="kw">reg</span> Y X</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="kw">qui</span> eststo m2: <span class="kw">reg</span> Y Z</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="kw">qui</span> eststo m3: <span class="kw">reg</span> Y X Z</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>esttab m1 m2 m3, nogap <span class="kw">compress</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Running D:\stata19/profile.do ...
+
+
+
+
+Number of observations (_N) was 0, now 30.
+
+
+
+
+
+
+
+
+
+-------------------------------------------------
+                 (1)          (2)          (3)   
+                   Y            Y            Y   
+-------------------------------------------------
+X              1.985***                  1.008***
+             (79.98)                   (69.57)   
+Z                           1.995***     0.990***
+                          (78.20)      (68.02)   
+_cons          0.309       0.0109       0.0245   
+              (0.70)       (0.02)       (0.71)   
+-------------------------------------------------
+N                 30           30           30   
+-------------------------------------------------
+t statistics in parentheses
+* p&lt;0.05, ** p&lt;0.01, *** p&lt;0.001
+
+</code></pre>
+</div>
+</div>
+</section>
+<section id="模块二坏控制m-偏误-collider" class="level2" data-number="D.2">
+<h2 data-number="D.2" class="anchored" data-anchor-id="模块二坏控制m-偏误-collider"><span class="header-section-number">D.2</span> 模块二：坏控制：M 偏误 / collider</h2>
+<div id="60fb506c" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2026-07-06T16:11:08.553590Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-06T16:11:08.553590Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-06T16:11:11.226896Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-06T16:11:11.225890Z&quot;}" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">clear</span> <span class="ot">all</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> <span class="kw">more</span> <span class="kw">off</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> <span class="dv">seed</span> 135</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> <span class="kw">obs</span> 1000</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> X = rnormal()</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> U1 = rnormal()</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> U2 = rnormal()</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> Z = 0.7*X + 0.7*U2 + rnormal()</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> Y = 1*U2 + rnormal()</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>eststo <span class="kw">clear</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="kw">qui</span> eststo m1: <span class="kw">reg</span> Y X</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="kw">qui</span> eststo m2: <span class="kw">reg</span> Y X Z</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>esttab m1 m2, nogap <span class="kw">compress</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+
+
+
+Number of observations (_N) was 0, now 1,000.
+
+
+
+
+
+
+
+
+
+
+------------------------------------
+                 (1)          (2)   
+                   Y            Y   
+------------------------------------
+X            -0.0381       -0.414***
+             (-0.87)      (-9.06)   
+Z                           0.521***
+                          (16.04)   
+_cons        -0.0567      -0.0406   
+             (-1.28)      (-1.02)   
+------------------------------------
+N               1000         1000   
+------------------------------------
+t statistics in parentheses
+* p&lt;0.05, ** p&lt;0.01, *** p&lt;0.001
+
+</code></pre>
+</div>
+</div>
+</section>
+<section id="模块三中介控制改变估计对象" class="level2" data-number="D.3">
+<h2 data-number="D.3" class="anchored" data-anchor-id="模块三中介控制改变估计对象"><span class="header-section-number">D.3</span> 模块三：中介控制改变估计对象</h2>
+<div id="ea90aa4b" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2026-07-06T16:11:11.229898Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-06T16:11:11.229898Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-06T16:11:13.613040Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-06T16:11:13.612033Z&quot;}" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">clear</span> <span class="ot">all</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> <span class="dv">seed</span> 20260706</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> <span class="kw">obs</span> 1000</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> X = rnormal()</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> M = 0.8*X + rnormal()</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> Y = 1*X + 1*M + rnormal()</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>eststo <span class="kw">clear</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>eststo <span class="kw">total</span>: <span class="kw">reg</span> Y X</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>eststo direct: <span class="kw">reg</span> Y X M</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>esttab <span class="kw">total</span> direct, se nogap</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of observations (_N) was 0, now 1,000.
+
+      Source |       SS           df       MS      Number of obs   =     1,000
+-------------+----------------------------------   F(1, 998)       =   1524.20
+       Model |   3345.8102         1   3345.8102   Prob &gt; F        =    0.0000
+    Residual |  2190.73017       998  2.19512041   R-squared       =    0.6043
+-------------+----------------------------------   Adj R-squared   =    0.6039
+       Total |  5536.54037       999  5.54208246   Root MSE        =    1.4816
+
+------------------------------------------------------------------------------
+           Y | Coefficient  Std. err.      t    P&gt;|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           X |      1.793      0.046    39.04   0.000        1.702       1.883
+       _cons |     -0.010      0.047    -0.22   0.823       -0.102       0.082
+------------------------------------------------------------------------------
+
+      Source |       SS           df       MS      Number of obs   =     1,000
+-------------+----------------------------------   F(2, 997)       =   2039.25
+       Model |  4448.97698         2  2224.48849   Prob &gt; F        =    0.0000
+    Residual |  1087.56339       997   1.0908359   R-squared       =    0.8036
+-------------+----------------------------------   Adj R-squared   =    0.8032
+       Total |  5536.54037       999  5.54208246   Root MSE        =    1.0444
+
+------------------------------------------------------------------------------
+           Y | Coefficient  Std. err.      t    P&gt;|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           X |      0.985      0.041    23.95   0.000        0.905       1.066
+           M |      1.053      0.033    31.80   0.000        0.988       1.118
+       _cons |     -0.002      0.033    -0.06   0.949       -0.067       0.063
+------------------------------------------------------------------------------
+
+--------------------------------------------
+                      (1)             (2)   
+                        Y               Y   
+--------------------------------------------
+X                   1.793***        0.985***
+                 (0.0459)        (0.0411)   
+M                                   1.053***
+                                 (0.0331)   
+_cons             -0.0105        -0.00211   
+                 (0.0469)        (0.0331)   
+--------------------------------------------
+N                    1000            1000   
+--------------------------------------------
+Standard errors in parentheses
+* p&lt;0.05, ** p&lt;0.01, *** p&lt;0.001</code></pre>
+</div>
+</div>
+</section>
+<section id="模块四xtreg手动去心和固定效应" class="level2" data-number="D.4">
+<h2 data-number="D.4" class="anchored" data-anchor-id="模块四xtreg手动去心和固定效应"><span class="header-section-number">D.4</span> 模块四：<code>xtreg</code>、手动去心和固定效应</h2>
+<div id="6ef866e8" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2026-07-06T16:11:13.616038Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-06T16:11:13.615042Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-06T16:11:16.867104Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-06T16:11:16.866095Z&quot;}" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">webuse</span> nlswork, <span class="kw">clear</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>xtset idcode <span class="fu">year</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">keep</span> <span class="kw">if</span> !<span class="fu">missing</span>(ln_wage, tenure, age, grade, idcode, <span class="fu">year</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>eststo <span class="kw">clear</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="kw">qui</span> eststo pooled: <span class="kw">reg</span> ln_wage tenure age grade</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="kw">qui</span> eststo <span class="kw">fe</span>:   <span class="kw">xtreg</span> ln_wage tenure age grade, <span class="kw">fe</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="kw">qui</span> eststo re:   <span class="kw">xtreg</span> ln_wage tenure age grade, re</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="kw">qui</span> eststo twfe: <span class="kw">xtreg</span> ln_wage tenure age i.<span class="fu">year</span>, <span class="kw">fe</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="kw">local</span> <span class="fu">m</span> <span class="st">"pooled fe re twfe"</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>esttab <span class="ot">`m'</span>, t(2) mtitle(<span class="ot">`m'</span>) nogap <span class="kw">drop</span>(*.<span class="fu">year</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+(National Longitudinal Survey of Young Women, 14-24 years old in 1968)
+
+
+Panel variable: idcode (unbalanced)
+ Time variable: year, 68 to 88, but with gaps
+         Delta: 1 unit
+
+(435 observations deleted)
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------
+                      (1)             (2)             (3)             (4)   
+                   pooled              fe              re            twfe   
+----------------------------------------------------------------------------
+tenure             0.0348***       0.0211***       0.0254***       0.0211***
+                  (48.71)         (26.37)         (34.62)         (26.24)   
+age               0.00622***       0.0122***       0.0103***       0.0113   
+                  (15.45)         (29.52)         (27.14)          (1.11)   
+grade              0.0784***            0          0.0784***                
+                  (74.57)             (.)         (41.91)                   
+_cons               0.405***        1.256***        0.296***        1.224***
+                  (25.46)        (114.44)         (11.65)          (6.33)   
+----------------------------------------------------------------------------
+N                   28099           28099           28099           28099   
+----------------------------------------------------------------------------
+t statistics in parentheses
+* p&lt;0.05, ** p&lt;0.01, *** p&lt;0.001
+
+</code></pre>
+</div>
+</div>
+<div id="4c0f9983" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2026-07-06T16:11:16.870132Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-06T16:11:16.869103Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-06T16:11:19.403556Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-06T16:11:19.402548Z&quot;}">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">webuse</span> nlswork, <span class="kw">clear</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>xtset idcode <span class="fu">year</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="kw">keep</span> <span class="kw">if</span> !<span class="fu">missing</span>(ln_wage, tenure, idcode)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="kw">bysort</span> idcode: <span class="kw">egen</span> mean_lnwage = <span class="kw">mean</span>(ln_wage)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="kw">bysort</span> idcode: <span class="kw">egen</span> mean_tenure = <span class="kw">mean</span>(tenure)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> dm_lnwage = ln_wage - mean_lnwage</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> dm_tenure = tenure - mean_tenure</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>eststo <span class="kw">clear</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="kw">qui</span> eststo demean: <span class="kw">reg</span> dm_lnwage dm_tenure, <span class="kw">nocons</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="kw">qui</span> eststo xtfe: <span class="kw">xtreg</span> ln_wage tenure, <span class="kw">fe</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>esttab demean xtfe, t(2) nogap</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(National Longitudinal Survey of Young Women, 14-24 years old in 1968)
+
+Panel variable: idcode (unbalanced)
+ Time variable: year, 68 to 88, but with gaps
+         Delta: 1 unit
+(433 observations deleted)
+
+      Source |       SS           df       MS      Number of obs   =    28,101
+-------------+----------------------------------   F(1, 28100)     =   3026.21
+       Model |  232.253496         1  232.253496   Prob &gt; F        =    0.0000
+    Residual |  2156.60137    28,100   .07674738   R-squared       =    0.0972
+-------------+----------------------------------   Adj R-squared   =    0.0972
+       Total |  2388.85487    28,101  .085009604   Root MSE        =    .27703
+
+------------------------------------------------------------------------------
+   dm_lnwage | Coefficient  Std. err.      t    P&gt;|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   dm_tenure |      0.034      0.001    55.01   0.000        0.033       0.035
+------------------------------------------------------------------------------
+
+Fixed-effects (within) regression               Number of obs     =     28,101
+Group variable: idcode                          Number of groups  =      4,699
+
+R-squared:                                      Obs per group:
+     Within  = 0.0972                                         min =          1
+     Between = 0.1966                                         avg =        6.0
+     Overall = 0.1373                                         max =         15
+
+                                                F(1, 23401)       =    2520.15
+corr(u_i, Xb) = 0.1395                          Prob &gt; F          =     0.0000
+
+------------------------------------------------------------------------------
+     ln_wage | Coefficient  Std. err.      t    P&gt;|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+      tenure |      0.034      0.001    50.20   0.000        0.033       0.036
+       _cons |      1.570      0.003   562.14   0.000        1.565       1.576
+-------------+----------------------------------------------------------------
+     sigma_u |  .39172445
+     sigma_e |  .30357621
+         rho |  .62477177   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+F test that all u_i=0: F(4698, 23401) = 7.80                 Prob &gt; F = 0.0000
+
+--------------------------------------------
+                      (1)             (2)   
+                dm_lnwage         ln_wage   
+--------------------------------------------
+dm_tenure          0.0342***                
+               (0.000621)                   
+tenure                             0.0342***
+                               (0.000681)   
+_cons                               1.570***
+                                (0.00279)   
+--------------------------------------------
+N                   28101           28101   
+--------------------------------------------
+Standard errors in parentheses
+* p&lt;0.05, ** p&lt;0.01, *** p&lt;0.001</code></pre>
+</div>
+</div>
+</section>
+<section id="模块五递进-absorb-和比较范围" class="level2" data-number="D.5">
+<h2 data-number="D.5" class="anchored" data-anchor-id="模块五递进-absorb-和比较范围"><span class="header-section-number">D.5</span> 模块五：递进 <code>absorb()</code> 和比较范围</h2>
+<div id="f1e00a4b" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2026-07-06T16:11:19.406557Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-06T16:11:19.405557Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-06T16:11:22.320997Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-06T16:11:22.319992Z&quot;}">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>cap which reghdfe</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="dt">_rc</span> {</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">ssc</span> install ftools, <span class="kw">replace</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">ssc</span> install reghdfe, <span class="kw">replace</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="kw">qui</span>{</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">clear</span> <span class="ot">all</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span> <span class="dv">seed</span> 20260706</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">set</span> <span class="kw">obs</span> 3000</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">gen</span> firm = <span class="fu">ceil</span>(<span class="dt">_n</span>/10)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">bysort</span> firm: <span class="kw">gen</span> <span class="fu">year</span> = 2000 + <span class="dt">_n</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">gen</span> industry = <span class="fu">ceil</span>(firm/30)</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">gen</span> <span class="kw">alpha</span> = rnormal()</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">bysort</span> firm: <span class="kw">replace</span> <span class="kw">alpha</span> = <span class="kw">alpha</span>[1]</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">gen</span> lambda = 0.1*(<span class="fu">year</span>-2000)</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">gen</span> indshock = rnormal()</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">bysort</span> industry <span class="fu">year</span>: <span class="kw">replace</span> indshock = indshock[1]</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">gen</span> x = 0.5*<span class="kw">alpha</span> + 0.3*indshock + rnormal()</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>    <span class="kw">gen</span> <span class="fu">y</span> = 1*x + <span class="kw">alpha</span> + lambda + indshock + rnormal()</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>    eststo <span class="kw">clear</span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>    eststo pols: <span class="kw">reg</span>     <span class="fu">y</span> x</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>    eststo <span class="kw">fe</span>:   reghdfe <span class="fu">y</span> x, absorb(firm)</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>    eststo twfe: reghdfe <span class="fu">y</span> x, absorb(firm <span class="fu">year</span>)</span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>    eststo hdfe: reghdfe <span class="fu">y</span> x, absorb(firm <span class="fu">year</span> industry#year)</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a><span class="kw">local</span> <span class="fu">m</span> <span class="st">"pols fe twfe hdfe"</span></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>esttab <span class="ot">`m'</span>, mtitle(<span class="ot">`m'</span>) t(2) nogap</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+
+
+
+
+
+----------------------------------------------------------------------------
+                      (1)             (2)             (3)             (4)   
+                     pols              fe            twfe            hdfe   
+----------------------------------------------------------------------------
+x                   1.596***        1.306***        1.281***        0.987***
+                  (62.41)         (48.83)         (49.83)         (50.82)   
+_cons               0.671***        0.679***        0.680***        0.688***
+                  (22.67)         (25.44)         (26.64)         (37.77)   
+----------------------------------------------------------------------------
+N                    3000            3000            3000            3000   
+----------------------------------------------------------------------------
+t statistics in parentheses
+* p&lt;0.05, ** p&lt;0.01, *** p&lt;0.001
+
+</code></pre>
+</div>
+</div>
+</section>
+<section id="模块六处理变量被同层级固定效应吸收" class="level2" data-number="D.6">
+<h2 data-number="D.6" class="anchored" data-anchor-id="模块六处理变量被同层级固定效应吸收"><span class="header-section-number">D.6</span> 模块六：处理变量被同层级固定效应吸收</h2>
+<div id="a58f2bb7" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2026-07-06T16:11:22.324998Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-06T16:11:22.324001Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-06T16:11:25.165122Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-06T16:11:25.163108Z&quot;}" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">clear</span> <span class="ot">all</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> <span class="dv">seed</span> 20260706</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> <span class="kw">obs</span> 3000</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> firm = <span class="fu">ceil</span>(<span class="dt">_n</span>/10)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="kw">bysort</span> firm: <span class="kw">gen</span> <span class="fu">year</span> = 2000 + <span class="dt">_n</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> industry = <span class="fu">ceil</span>(firm/30)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> treat_ind_year = (industry &lt;= 10 &amp; <span class="fu">year</span> &gt;= 2005)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> <span class="fu">y</span> = 1*treat_ind_year + rnormal()</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>cap which reghdfe</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="dt">_rc</span> {</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">ssc</span> install ftools, <span class="kw">replace</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">ssc</span> install reghdfe, <span class="kw">replace</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>reghdfe <span class="fu">y</span> treat_ind_year, absorb(firm <span class="fu">year</span>)</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>reghdfe <span class="fu">y</span> treat_ind_year, absorb(firm <span class="fu">year</span> industry#year)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of observations (_N) was 0, now 3,000.
+(MWFE estimator converged in 2 iterations)
+note: treat_ind_year is probably collinear with the fixed effects (all partiall
+&gt; ed-out values are close to zero; tol = 1.0e-09)
+
+HDFE Linear regression                            Number of obs   =      3,000
+Absorbing 2 HDFE groups                           F(   0,   2691) =          .
+                                                  Prob &gt; F        =          .
+                                                  R-squared       =     0.2713
+                                                  Adj R-squared   =     0.1879
+                                                  Within R-sq.    =     0.0000
+                                                  Root MSE        =     1.0327
+
+------------------------------------------------------------------------------
+           y | Coefficient  Std. err.      t    P&gt;|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+treat_ind_~r |      0.000  (omitted)
+       _cons |      0.584      0.019    30.95   0.000        0.547       0.621
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+-----------------------------------------------------+
+ Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-------------+---------------------------------------|
+        firm |       300           0         300     |
+        year |        10           1           9     |
+-----------------------------------------------------+
+(MWFE estimator converged in 2 iterations)
+note: treat_ind_year is probably collinear with the fixed effects (all partiall
+&gt; ed-out values are close to zero; tol = 1.0e-09)
+
+HDFE Linear regression                            Number of obs   =      3,000
+Absorbing 3 HDFE groups                           F(   0,   2601) =          .
+                                                  Prob &gt; F        =          .
+                                                  R-squared       =     0.2927
+                                                  Adj R-squared   =     0.1845
+                                                  Within R-sq.    =     0.0000
+                                                  Root MSE        =     1.0349
+
+------------------------------------------------------------------------------
+           y | Coefficient  Std. err.      t    P&gt;|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+treat_ind_~r |      0.000  (omitted)
+       _cons |      0.584      0.019    30.89   0.000        0.546       0.621
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+---------------------------------------------------------+
+     Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-----------------+---------------------------------------|
+            firm |       300           0         300     |
+            year |        10           1           9     |
+   industry#year |       100          10          90    ?|
+---------------------------------------------------------+
+? = number of redundant parameters may be higher</code></pre>
+</div>
+</div>
+</section>
+<section id="模块七log1y-与-ppmlhdfe" class="level2" data-number="D.7">
+<h2 data-number="D.7" class="anchored" data-anchor-id="模块七log1y-与-ppmlhdfe"><span class="header-section-number">D.7</span> 模块七：<code>log(1+y)</code> 与 <code>ppmlhdfe</code></h2>
+<div id="a3843e05" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2026-07-06T16:11:25.169121Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-06T16:11:25.169121Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-06T16:11:28.342012Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-06T16:11:28.341001Z&quot;}" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>cap which ppmlhdfe</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="dt">_rc</span> {</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">ssc</span> install ppmlhdfe, <span class="kw">replace</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="kw">clear</span> <span class="ot">all</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> <span class="dv">seed</span> 20260706</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> <span class="kw">obs</span> 5000</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> firm = <span class="fu">ceil</span>(<span class="dt">_n</span>/10)</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="kw">bysort</span> firm: <span class="kw">gen</span> <span class="fu">year</span> = 2000 + <span class="dt">_n</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> <span class="kw">alpha</span> = rnormal()</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="kw">bysort</span> firm: <span class="kw">replace</span> <span class="kw">alpha</span> = <span class="kw">alpha</span>[1]</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> x = rnormal()</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> mu = <span class="fu">exp</span>(0.5*x + 0.5*<span class="kw">alpha</span>)</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> <span class="fu">y</span> = rpoisson(mu)</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="kw">replace</span> <span class="fu">y</span> = 0 <span class="kw">if</span> runiform() &lt; 0.35</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> ln1y = <span class="fu">ln</span>(1+<span class="fu">y</span>)</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>eststo <span class="kw">clear</span></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>eststo log1: reghdfe ln1y x, absorb(firm <span class="fu">year</span>) <span class="kw">vce</span>(<span class="kw">cluster</span> firm)</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>eststo ppml: ppmlhdfe <span class="fu">y</span> x, absorb(firm <span class="fu">year</span>) <span class="kw">vce</span>(<span class="kw">cluster</span> firm) <span class="kw">nolog</span></span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>esttab log1 ppml, se nogap</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+
+
+
+
+Number of observations (_N) was 0, now 5,000.
+
+
+
+
+(4500 real changes made)
+
+
+
+
+(1,152 real changes made)
+
+
+
+(MWFE estimator converged in 2 iterations)
+
+HDFE Linear regression                            Number of obs   =      5,000
+Absorbing 2 HDFE groups                           F(   1,    499) =     369.25
+Statistics robust to heteroskedasticity           Prob &gt; F        =     0.0000
+                                                  R-squared       =     0.2433
+                                                  Adj R-squared   =     0.1575
+                                                  Within R-sq.    =     0.0941
+Number of clusters (firm)    =        500         Root MSE        =     0.5091
+
+                                 (Std. err. adjusted for 500 clusters in firm)
+------------------------------------------------------------------------------
+             |               Robust
+        ln1y | Coefficient  std. err.      t    P&gt;|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           x |      0.163      0.008    19.22   0.000        0.146       0.180
+       _cons |      0.401      0.000  1.6e+04   0.000        0.401       0.402
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+-----------------------------------------------------+
+ Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-------------+---------------------------------------|
+        firm |       500         500           0    *|
+        year |        10           1           9     |
+-----------------------------------------------------+
+* = FE nested within cluster; treated as redundant for DoF computation
+
+(dropped 80 observations that are either singletons or separated by a fixed eff
+&gt; ect)
+Converged in 7 iterations and 17 HDFE sub-iterations (tol = 1.0e-08)
+
+HDFE PPML regression                              No. of obs      =      4,920
+Absorbing 2 HDFE groups                           Residual df     =        491
+Statistics robust to heteroskedasticity           Wald chi2(1)    =     529.17
+Deviance             =  6149.154578               Prob &gt; chi2     =     0.0000
+Log pseudolikelihood = -5505.171009               Pseudo R2       =     0.2067
+
+Number of clusters (firm)   =        492
+                                 (Std. err. adjusted for 492 clusters in firm)
+------------------------------------------------------------------------------
+             |               Robust
+           y | Coefficient  std. err.      z    P&gt;|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           x |      0.544      0.024    23.00   0.000        0.497       0.590
+       _cons |     -0.155      0.013   -11.68   0.000       -0.181      -0.129
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+-----------------------------------------------------+
+ Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-------------+---------------------------------------|
+        firm |       492         492           0    *|
+        year |        10           1           9     |
+-----------------------------------------------------+
+* = FE nested within cluster; treated as redundant for DoF computation
+
+
+--------------------------------------------
+                      (1)             (2)   
+                     ln1y               y   
+--------------------------------------------
+x                   0.163***        0.544***
+                (0.00849)        (0.0236)   
+_cons               0.401***       -0.155***
+              (0.0000250)        (0.0133)   
+--------------------------------------------
+N                    5000            4920   
+--------------------------------------------
+Standard errors in parentheses
+* p&lt;0.05, ** p&lt;0.01, *** p&lt;0.001
+
+</code></pre>
+</div>
+</div>
+</section>
+<section id="模块八慢变量和组内变异缩水" class="level2" data-number="D.8">
+<h2 data-number="D.8" class="anchored" data-anchor-id="模块八慢变量和组内变异缩水"><span class="header-section-number">D.8</span> 模块八：慢变量和组内变异缩水</h2>
+<div id="84be5c0e" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2026-07-06T16:11:28.345010Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-06T16:11:28.344009Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-06T16:11:38.401388Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-06T16:11:38.400391Z&quot;}" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">clear</span> <span class="ot">all</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> <span class="dv">seed</span> 20260706</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> <span class="kw">obs</span> 1000</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> id = <span class="fu">ceil</span>(<span class="dt">_n</span>/10)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="kw">bysort</span> id: <span class="kw">gen</span> <span class="fu">year</span> = 2000 + <span class="dt">_n</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> <span class="kw">alpha</span> = rnormal()</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="kw">bysort</span> id: <span class="kw">replace</span> <span class="kw">alpha</span> = <span class="kw">alpha</span>[1]</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> x_slow = <span class="kw">alpha</span> + 0.02*(<span class="fu">year</span>-2000) + rnormal()*0.05</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> <span class="fu">y</span> = 1*x_slow + <span class="kw">alpha</span> + rnormal()</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>xtset id <span class="fu">year</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="kw">xtsum</span> x_slow</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>eststo <span class="kw">clear</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>eststo pooled: <span class="kw">reg</span> <span class="fu">y</span> x_slow</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>eststo <span class="kw">fe</span>: <span class="kw">xtreg</span> <span class="fu">y</span> x_slow, <span class="kw">fe</span></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>esttab pooled <span class="kw">fe</span>, se nogap</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a><span class="kw">bysort</span> id: <span class="kw">egen</span> mx = <span class="kw">mean</span>(x_slow)</span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> dx = x_slow - mx</span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a><span class="kw">histogram</span> x_slow, <span class="bn">name</span>(rawx, <span class="kw">replace</span>) <span class="bn">title</span>(<span class="st">"Raw x_slow"</span>)</span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a><span class="kw">histogram</span> dx, <span class="bn">name</span>(dmx, <span class="kw">replace</span>) <span class="bn">title</span>(<span class="st">"Within-demeaned x_slow"</span>)</span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a><span class="kw">graph</span> <span class="bn">combine</span> rawx dmx, col(2)</span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a><span class="kw">graph</span> <span class="kw">export</span> <span class="st">"notebooks/ch04_fixed_effects/fig_within_variation_shrinkage.png"</span>, <span class="kw">width</span>(1200) <span class="kw">replace</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of observations (_N) was 0, now 1,000.
+(900 real changes made)
+
+Panel variable: id (strongly balanced)
+ Time variable: year, 2001 to 2010
+         Delta: 1 unit
+
+Variable         |      Mean   Std. dev.       Min        Max |    Observations
+-----------------+--------------------------------------------+----------------
+x_slow   overall |  .0474712   .9204853  -2.754302   1.984801 |     N =    1000
+         between |             .9214389  -2.590049   1.800181 |     n =     100
+         within  |             .0767637  -.2010264   .2491974 |     T =      10
+
+      Source |       SS           df       MS      Number of obs   =     1,000
+-------------+----------------------------------   F(1, 998)       =   2882.45
+       Model |   3155.0743         1   3155.0743   Prob &gt; F        =    0.0000
+    Residual |  1092.39108       998  1.09458024   R-squared       =    0.7428
+-------------+----------------------------------   Adj R-squared   =    0.7426
+       Total |  4247.46538       999   4.2517171   Root MSE        =    1.0462
+
+------------------------------------------------------------------------------
+           y | Coefficient  Std. err.      t    P&gt;|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+      x_slow |      1.931      0.036    53.69   0.000        1.860       2.001
+       _cons |     -0.110      0.033    -3.32   0.001       -0.175      -0.045
+------------------------------------------------------------------------------
+
+Fixed-effects (within) regression               Number of obs     =      1,000
+Group variable: id                              Number of groups  =        100
+
+R-squared:                                      Obs per group:
+     Within  = 0.0067                                         min =         10
+     Between = 0.9719                                         avg =       10.0
+     Overall = 0.7428                                         max =         10
+
+                                                F(1, 899)         =       6.05
+corr(u_i, Xb) = 0.9319                          Prob &gt; F          =     0.0141
+
+------------------------------------------------------------------------------
+           y | Coefficient  Std. err.      t    P&gt;|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+      x_slow |      1.067      0.434     2.46   0.014        0.215       1.919
+       _cons |     -0.069      0.039    -1.76   0.079       -0.146       0.008
+-------------+----------------------------------------------------------------
+     sigma_u |  .85689633
+     sigma_e |  1.0529647
+         rho |  .39840964   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+F test that all u_i=0: F(99, 899) = 0.87                     Prob &gt; F = 0.8057
+
+--------------------------------------------
+                      (1)             (2)   
+                        y               y   
+--------------------------------------------
+x_slow              1.931***        1.067*  
+                 (0.0360)         (0.434)   
+_cons              -0.110***      -0.0689   
+                 (0.0331)        (0.0392)   
+--------------------------------------------
+N                    1000            1000   
+--------------------------------------------
+Standard errors in parentheses
+* p&lt;0.05, ** p&lt;0.01, *** p&lt;0.001
+(bin=29, start=-2.7543017, width=.16341735)
+(bin=29, start=-.24849761, width=.01552496)
+(file notebooks/ch04_fixed_effects/fig_within_variation_s
+&gt; hrinkage.png not found)
+file notebooks/ch04_fixed_effects/fig_within_variation_sh
+&gt; rinkage.png written in PNG format</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="fixed_effects_practical_notes_files/figure-html/cell-10-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="fixed_effects_practical_notes_files/figure-html/cell-10-output-3.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="fixed_effects_practical_notes_files/figure-html/cell-10-output-4.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="模块九mundlak-cre-思路" class="level2" data-number="D.9">
+<h2 data-number="D.9" class="anchored" data-anchor-id="模块九mundlak-cre-思路"><span class="header-section-number">D.9</span> 模块九：Mundlak / CRE 思路</h2>
+<div id="00878bbe" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2026-07-06T16:11:38.407390Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-06T16:11:38.407390Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-06T16:11:41.537459Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-06T16:11:41.536459Z&quot;}" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">webuse</span> nlswork, <span class="kw">clear</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>xtset idcode <span class="fu">year</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="kw">keep</span> <span class="kw">if</span> !<span class="fu">missing</span>(ln_wage, tenure, age, grade, idcode)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="kw">bysort</span> idcode: <span class="kw">egen</span> mean_tenure = <span class="kw">mean</span>(tenure)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="kw">bysort</span> idcode: <span class="kw">egen</span> mean_age = <span class="kw">mean</span>(age)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="kw">xtreg</span> ln_wage tenure age mean_tenure mean_age grade, re <span class="kw">vce</span>(<span class="kw">cluster</span> idcode)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(National Longitudinal Survey of Young Women, 14-24 years old in 1968)
+
+Panel variable: idcode (unbalanced)
+ Time variable: year, 68 to 88, but with gaps
+         Delta: 1 unit
+(435 observations deleted)
+
+Random-effects GLS regression                   Number of obs     =     28,099
+Group variable: idcode                          Number of groups  =      4,697
+
+R-squared:                                      Obs per group:
+     Within  = 0.1296                                         min =          1
+     Between = 0.4073                                         avg =        6.0
+     Overall = 0.3016                                         max =         15
+
+                                                Wald chi2(5)      =    4064.86
+corr(u_i, X) = 0 (assumed)                      Prob &gt; chi2       =     0.0000
+
+                             (Std. err. adjusted for 4,697 clusters in idcode)
+------------------------------------------------------------------------------
+             |               Robust
+     ln_wage | Coefficient  std. err.      z    P&gt;|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+      tenure |      0.021      0.001    17.45   0.000        0.019       0.024
+         age |      0.012      0.001    16.45   0.000        0.011       0.014
+ mean_tenure |      0.025      0.002    11.24   0.000        0.021       0.029
+    mean_age |     -0.010      0.001    -8.42   0.000       -0.013      -0.008
+       grade |      0.078      0.002    35.46   0.000        0.074       0.082
+       _cons |      0.488      0.033    14.66   0.000        0.423       0.554
+-------------+----------------------------------------------------------------
+     sigma_u |  .28278414
+     sigma_e |  .29808194
+         rho |  .47368207   (fraction of variance due to u_i)
+------------------------------------------------------------------------------</code></pre>
+</div>
+</div>
+</section>
+<section id="模块十regife-交互固定效应" class="level2" data-number="D.10">
+<h2 data-number="D.10" class="anchored" data-anchor-id="模块十regife-交互固定效应"><span class="header-section-number">D.10</span> 模块十：<code>regife</code> 交互固定效应</h2>
+<div id="fa17796d" class="cell" data-execution="{&quot;iopub.execute_input&quot;:&quot;2026-07-06T16:11:41.540459Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-06T16:11:41.540459Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-06T16:11:44.857346Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-06T16:11:44.856360Z&quot;}" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>cap which regife</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="dt">_rc</span> {</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">di</span> <span class="kw">as</span> <span class="kw">error</span> <span class="st">"regife not installed. Please install or verify the command source before running this module."</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="kw">else</span> {</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">webuse</span> nlswork, <span class="kw">clear</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">keep</span> <span class="kw">if</span> idcode &lt;= 100</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    xtset idcode <span class="fu">year</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    eststo <span class="kw">clear</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    eststo <span class="kw">fe</span>: <span class="kw">xtreg</span> ln_wage tenure, <span class="kw">fe</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    eststo twfe: <span class="kw">xtreg</span> ln_wage tenure i.<span class="fu">year</span>, <span class="kw">fe</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>    regife ln_wage tenure, absorb(idcode <span class="fu">year</span>) ife(idcode <span class="fu">year</span>, 1)</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>    eststo intfe</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>    esttab <span class="kw">fe</span> twfe intfe, <span class="kw">drop</span>(*.<span class="fu">year</span>) nogap</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(National Longitudinal Survey of Young Women, 14-24 years old in 1968)
+(27,956 observations deleted)
+
+Panel variable: idcode (unbalanced)
+ Time variable: year, 68 to 88, but with gaps
+         Delta: 1 unit
+
+Fixed-effects (within) regression               Number of obs     =        570
+Group variable: idcode                          Number of groups  =         90
+
+R-squared:                                      Obs per group:
+     Within  = 0.1302                                         min =          1
+     Between = 0.1853                                         avg =        6.3
+     Overall = 0.1084                                         max =         15
+
+                                                F(1, 479)         =      71.71
+corr(u_i, Xb) = 0.0528                          Prob &gt; F          =     0.0000
+
+------------------------------------------------------------------------------
+     ln_wage | Coefficient  Std. err.      t    P&gt;|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+      tenure |      0.039      0.005     8.47   0.000        0.030       0.049
+       _cons |      1.755      0.018    99.41   0.000        1.720       1.790
+-------------+----------------------------------------------------------------
+     sigma_u |  .35796302
+     sigma_e |  .27590074
+         rho |  .62732945   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+F test that all u_i=0: F(89, 479) = 9.80                     Prob &gt; F = 0.0000
+
+Fixed-effects (within) regression               Number of obs     =        570
+Group variable: idcode                          Number of groups  =         90
+
+R-squared:                                      Obs per group:
+     Within  = 0.1959                                         min =          1
+     Between = 0.1574                                         avg =        6.3
+     Overall = 0.1493                                         max =         15
+
+                                                F(15, 465)        =       7.55
+corr(u_i, Xb) = 0.0845                          Prob &gt; F          =     0.0000
+
+------------------------------------------------------------------------------
+     ln_wage | Coefficient  Std. err.      t    P&gt;|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+      tenure |      0.026      0.006     4.65   0.000        0.015       0.037
+             |
+        year |
+         69  |      0.108      0.073     1.47   0.143       -0.037       0.252
+         70  |      0.080      0.067     1.19   0.233       -0.052       0.213
+         71  |      0.104      0.068     1.54   0.124       -0.029       0.237
+         72  |      0.043      0.070     0.62   0.536       -0.094       0.181
+         73  |      0.099      0.070     1.41   0.158       -0.039       0.237
+         75  |      0.137      0.070     1.96   0.050       -0.000       0.274
+         77  |      0.192      0.072     2.68   0.008        0.051       0.332
+         78  |      0.169      0.077     2.20   0.028        0.018       0.321
+         80  |      0.057      0.079     0.72   0.473       -0.099       0.213
+         82  |      0.125      0.077     1.63   0.104       -0.026       0.275
+         83  |      0.158      0.078     2.03   0.043        0.005       0.310
+         85  |      0.219      0.079     2.78   0.006        0.064       0.374
+         87  |      0.272      0.074     3.66   0.000        0.126       0.419
+         88  |      0.344      0.078     4.41   0.000        0.191       0.498
+             |
+       _cons |      1.649      0.054    30.68   0.000        1.543       1.755
+-------------+----------------------------------------------------------------
+     sigma_u |  .36000876
+     sigma_e |  .26923635
+         rho |  .64131531   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+F test that all u_i=0: F(89, 465) = 9.94                     Prob &gt; F = 0.0000
+
+REGIFE                                            Number of obs   =        561
+Panel structure: idcode, year                     F(   1,    369) =       4.08
+Factor dimension: 1                               Prob &gt; F        =     0.0441
+Converged: true                                   Root MSE        =     0.2194
+                                                  Iterations      =        254
+------------------------------------------------------------------------------
+     ln_wage | Coefficient  Std. err.      t    P&gt;|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+      tenure |      0.012      0.006     2.02   0.044        0.000       0.023
+       _cons |      1.837      0.019    94.79   0.000        1.798       1.875
+------------------------------------------------------------------------------
+
+------------------------------------------------------------
+                      (1)             (2)             (3)   
+                  ln_wage         ln_wage         ln_wage   
+------------------------------------------------------------
+tenure             0.0394***       0.0258***       0.0118*  
+                   (8.47)          (4.65)          (2.02)   
+_cons               1.755***        1.649***        1.837***
+                  (99.41)         (30.68)         (94.79)   
+------------------------------------------------------------
+N                     570             570             561   
+------------------------------------------------------------
+t statistics in parentheses
+* p&lt;0.05, ** p&lt;0.01, *** p&lt;0.001</code></pre>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/lianxhcn\.github\.io\/ci-policy\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../notebooks/ch03_heckman/heckman_practical_notes.html" class="pagination-link" aria-label="Heckman 实操笔记">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Heckman 实操笔记</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../notebooks/ch05_counterfactuals/A05_counterfactual_replication.html" class="pagination-link" aria-label="加州禁烟：SCM/RCM/SDID">
+        <span class="nav-page-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">加州禁烟：SCM/RCM/SDID</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p><a href="https://www.lianxh.cn">lianxh.cn</a></p>
+</div>
+    <div class="nav-footer-right">
+<p>基于 <a href="https://quarto.org/">Quarto</a> 构建</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

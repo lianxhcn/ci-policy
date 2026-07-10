@@ -1,0 +1,1886 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>附录 F — DID 方法与 Stata 实操 – 因果推断：政策评估中的识别思维与实证设计</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../notebooks/ch07_ddml/A07_fwl_ddml.html" rel="next">
+<link href="../../notebooks/ch05_counterfactuals/A05_counterfactual_replication.html" rel="prev">
+<link href="../../images/book-logo.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-e8fb9d25728d58bfeac61b497e4a6629.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-57a92833092fd6dc0d7710b6bdfff9c5.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-7ef202e96c563d31d9e5226e4d6cabf9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-490ba4e843cb1303a232ed0c676384f2.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../lectures/appendix/A02_government_guidance_fund.html">附录</a></li><li class="breadcrumb-item"><a href="../../notebooks/ch06_did/A06_did_method_selection.html"><span class="chapter-number">F</span>&nbsp; <span class="chapter-title">DID 方法与 Stata 实操</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="https://lianxhcn.github.io/ci-policy/" class="sidebar-logo-link">
+      <img src="../../images/book-logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../../">Causal Inference</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/lianxhcn/ci-policy" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
+    <a href="https://www.lianxh.cn" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-house-fill"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🏠 前言</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../syllabus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📌讲授计划</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../settings.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🚀课前准备：环境配置</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text"><strong>讲义</strong></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lectures/01_policy_to_design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">从政策背景到研究设计</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lectures/02_policy_to_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">政策如何进入数据</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lectures/03_sample_selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">样本选择偏误</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lectures/04_fixed_effects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">固定效应：控制了什么</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lectures/05_counterfactuals.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">反事实构造</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lectures/06_did_design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">双重差分：从 TWFE 到 CSDID</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lectures/07_ddml.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">双重机器学习：DDML</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lectures/08_ai_agent_workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">AI Agent 辅助实证研究</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lectures/09_reading_list.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">阅读清单</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">附录</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lectures/appendix/A02_government_guidance_fund.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">政府引导基金政策梳理笔记</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lectures/appendix/A03_heckman_selection_literature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Heckman 模型扩展阅读</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notebooks/ch03_heckman/heckman_practical_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Heckman 实操笔记</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notebooks/ch04_fixed_effects/fixed_effects_practical_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">固定效应实操笔记</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notebooks/ch05_counterfactuals/A05_counterfactual_replication.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">加州禁烟：SCM/RCM/SDID</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notebooks/ch06_did/A06_did_method_selection.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">F</span>&nbsp; <span class="chapter-title">DID 方法与 Stata 实操</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notebooks/ch07_ddml/A07_fwl_ddml.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">G</span>&nbsp; <span class="chapter-title">双重机器学习 Stata 实操</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../exercises/exercise_overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">练习概览</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#环境准备" id="toc-环境准备" class="nav-link active" data-scroll-target="#环境准备"><span class="header-section-number">F.1</span> 环境准备</a></li>
+  <li><a href="#did四个均值与一个交互项" id="toc-did四个均值与一个交互项" class="nav-link" data-scroll-target="#did四个均值与一个交互项"><span class="header-section-number">F.2</span> 2×2 DID：四个均值与一个交互项</a></li>
+  <li><a href="#bacon-分解三单位最小例子与权重手算" id="toc-bacon-分解三单位最小例子与权重手算" class="nav-link" data-scroll-target="#bacon-分解三单位最小例子与权重手算"><span class="header-section-number">F.3</span> Bacon 分解：三单位最小例子与权重手算</a></li>
+  <li><a href="#数据与处理时点结构" id="toc-数据与处理时点结构" class="nav-link" data-scroll-target="#数据与处理时点结构"><span class="header-section-number">F.4</span> 数据与处理时点结构</a></li>
+  <li><a href="#twfe-基准与-bacon-分解诊断" id="toc-twfe-基准与-bacon-分解诊断" class="nav-link" data-scroll-target="#twfe-基准与-bacon-分解诊断"><span class="header-section-number">F.5</span> TWFE 基准与 Bacon 分解诊断</a></li>
+  <li><a href="#csdid估计-attgt-再聚合" id="toc-csdid估计-attgt-再聚合" class="nav-link" data-scroll-target="#csdid估计-attgt-再聚合"><span class="header-section-number">F.6</span> <code>csdid</code>：估计 ATT(g,t) 再聚合</a></li>
+  <li><a href="#drdidraipw-与双重稳健的两期对比" id="toc-drdidraipw-与双重稳健的两期对比" class="nav-link" data-scroll-target="#drdidraipw-与双重稳健的两期对比"><span class="header-section-number">F.7</span> <code>drdid</code>：RA、IPW 与双重稳健的两期对比</a></li>
+  <li><a href="#现代事件研究修正可选模块" id="toc-现代事件研究修正可选模块" class="nav-link" data-scroll-target="#现代事件研究修正可选模块"><span class="header-section-number">F.8</span> 现代事件研究修正（可选模块）</a></li>
+  <li><a href="#honestdid平行趋势敏感性分析可选模块" id="toc-honestdid平行趋势敏感性分析可选模块" class="nav-link" data-scroll-target="#honestdid平行趋势敏感性分析可选模块"><span class="header-section-number">F.9</span> <code>honestdid</code>：平行趋势敏感性分析（可选模块）</a></li>
+  <li><a href="#多估计量同框对比图可选模块" id="toc-多估计量同框对比图可选模块" class="nav-link" data-scroll-target="#多估计量同框对比图可选模块"><span class="header-section-number">F.10</span> 多估计量同框对比图（可选模块）</a></li>
+  <li><a href="#方法与软件地图" id="toc-方法与软件地图" class="nav-link" data-scroll-target="#方法与软件地图"><span class="header-section-number">F.11</span> 方法与软件地图</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../lectures/appendix/A02_government_guidance_fund.html">附录</a></li><li class="breadcrumb-item"><a href="../../notebooks/ch06_did/A06_did_method_selection.html"><span class="chapter-number">F</span>&nbsp; <span class="chapter-title">DID 方法与 Stata 实操</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">附录 F — DID 方法与 Stata 实操</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<blockquote class="blockquote">
+<p>本附录配合第六章《双重差分法怎么选》使用。第六章正文讲方法选择的判断逻辑，本附录讲怎么落地：在同一份交错处理数据上跑通 2×2 基准、Bacon 分解的三单位手算、TWFE 诊断、<code>csdid</code> 的 group-time ATT、<code>drdid</code> 的 RA / IPW / 双重稳健对比，以及现代事件研究与敏感性分析。</p>
+<p><strong>运行环境</strong>：Jupyter Notebook（<code>.ipynb</code>），可在 VS Code 中用 <a href="https://nbstata.readthedocs.io/">nbstata</a> 内核执行，或通过 Stata-MCP 调用本地 Stata。习惯直接在 Stata 里操作的读者，用配套的 <code>A06_did_method_selection.do</code>（纯代码版）。</p>
+<p><strong>数据</strong>：Bacon 手算模块用一份 3 个体 × 10 期的内置模拟数据（对应正文 Bacon 一节的最小例子）；其余模块用 <code>mpdta.dta</code>，Callaway–Sant’Anna 的美国县级最低工资面板，2500 obs、5 年（2003–2007）、三个处理批次（首次处理年份 2004/2006/2007）+ never-treated。全部<strong>在线读取</strong>，不占本地仓库。</p>
+<p><strong>与附录 G 的对称</strong>：附录 G 用加州禁烟（单一处理组）演示反事实构造；本附录用 mpdta（交错处理）演示 DID 方法选择。两个附录合起来覆盖政策评估的两大典型数据结构。</p>
+<p><strong>稳健性设计</strong>：核心命令（<code>csdid</code>、<code>drdid</code>）用官方文档的规范语法；版本敏感的命令（<code>eventstudyinteract</code>、<code>did_imputation</code>、<code>honestdid</code>）列为可选模块，用 <code>capture</code> 包裹，安装或语法失败不影响主线。</p>
+</blockquote>
+<section id="环境准备" class="level2" data-number="F.1">
+<h2 data-number="F.1" class="anchored" data-anchor-id="环境准备"><span class="header-section-number">F.1</span> 环境准备</h2>
+<p>首次运行安装外部命令。为避免课堂环境中断，安装用 <code>capture</code> 包裹、失败不报停。</p>
+<div id="0666aaa5" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">clear</span> <span class="ot">all</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> <span class="kw">more</span> <span class="kw">off</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">version</span> 17</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>* --- 基础依赖 ---</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>cap which ftools</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="dt">_rc</span> <span class="kw">ssc</span> install ftools, <span class="kw">replace</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>cap which reghdfe</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="dt">_rc</span> <span class="kw">ssc</span> install reghdfe, <span class="kw">replace</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>* --- DID 核心命令 ---</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>cap which drdid</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="dt">_rc</span> <span class="kw">ssc</span> install drdid, <span class="kw">replace</span>        <span class="co">// csdid 的依赖，需先装</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>cap which csdid</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="dt">_rc</span> <span class="kw">ssc</span> install csdid, <span class="kw">replace</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>cap which bacondecomp</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="dt">_rc</span> <span class="kw">ssc</span> install bacondecomp, <span class="kw">replace</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>* --- 可选命令（版本敏感，失败不影响主线）---</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>cap which eventstudyinteract</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="dt">_rc</span> cap <span class="kw">ssc</span> install eventstudyinteract, <span class="kw">replace</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>cap which did_imputation</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="dt">_rc</span> cap <span class="kw">ssc</span> install did_imputation, <span class="kw">replace</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>cap which did2s</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="dt">_rc</span> cap <span class="kw">ssc</span> install did2s, <span class="kw">replace</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>* honestdid 通常需从 GitHub 安装，见 G.8</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Running D:\stata19/profile.do ...</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<style>div.jp-Notebook .datagrid-container {min-height: 448px; }</style>
+</div>
+</div>
+</section>
+<section id="did四个均值与一个交互项" class="level2" data-number="F.2">
+<h2 data-number="F.2" class="anchored" data-anchor-id="did四个均值与一个交互项"><span class="header-section-number">F.2</span> 2×2 DID：四个均值与一个交互项</h2>
+<p>先用一份<strong>内置模拟数据</strong>把正文「2×2 DID」一节的四格均值验证一遍——不依赖外部链接，保证一定能跑通。真实数据 <code>mpdta</code> 从 G.3 开始用。</p>
+<p>我们造一个两组两期的面板：真实政策效应设为 <code>+3</code>。看回归的交互项系数能否还原它，以及三个系数是否分别对应「组间水平差」「时间趋势」「双重差分」。</p>
+<div id="39eff85a" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">clear</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> <span class="dv">seed</span> 20260708</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> <span class="kw">obs</span> 200</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> id    = <span class="dt">_n</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> treat = id &gt; 100                       <span class="co">// 后 100 个为处理组</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>expand 2                                    <span class="co">// 每个单位两期</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="kw">bysort</span> id: <span class="kw">gen</span> <span class="kw">post</span> = <span class="dt">_n</span> - 1                <span class="co">// 0=政策前, 1=政策后</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>* DGP: 个体基线 + 时间趋势 + 政策效应(仅处理组×政策后)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> <span class="fu">y</span> = 10 + 2*treat + 4*<span class="kw">post</span> + 3*(treat*<span class="kw">post</span>) + rnormal(0,1)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>*        C0     θ1        θ2        γ=政策效应</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>* 四个组别-时期均值</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="kw">table</span> <span class="kw">post</span> treat, stat(<span class="kw">mean</span> <span class="fu">y</span>) nformat(%6.2f)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>* DID 回归：交互项系数应还原 γ≈3</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="kw">reg</span> <span class="fu">y</span> i.treat##i.<span class="kw">post</span>, <span class="kw">vce</span>(<span class="kw">robust</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of observations (_N) was 0, now 200.
+(200 observations created)
+
+--------------------------------
+        |          treat        
+        |      0       1   Total
+--------+-----------------------
+post    |                       
+  0     |  10.06   12.02   11.04
+  1     |  13.82   19.03   16.43
+  Total |  11.94   15.52   13.73
+--------------------------------
+
+Linear regression                               Number of obs     =        400
+                                                F(3, 396)         =    1504.88
+                                                Prob &gt; F          =     0.0000
+                                                R-squared         =     0.9187
+                                                Root MSE          =     .99722
+
+------------------------------------------------------------------------------
+             |               Robust
+           y | Coefficient  std. err.      t    P&gt;|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+     1.treat |      1.959      0.145    13.48   0.000        1.673       2.245
+      1.post |      3.761      0.145    25.99   0.000        3.476       4.045
+             |
+  treat#post |
+        1 1  |      3.251      0.199    16.30   0.000        2.859       3.643
+             |
+       _cons |     10.059      0.107    93.91   0.000        9.849      10.270
+------------------------------------------------------------------------------</code></pre>
+</div>
+</div>
+<p><strong>输出怎么读</strong>：</p>
+<ul>
+<li><code>table</code> 给出四个格子的均值，对应正文的 <span class="math inline">\(C_0, Y_0, C_1, Y_1\)</span>。可以手算验证 <span class="math inline">\(\gamma=(Y_1-Y_0)-(C_1-C_0)\approx 3\)</span>。</li>
+<li>回归里 <code>1.treat</code> 是 <span class="math inline">\(\theta_1\)</span>（政策前组间水平差，≈2），<code>1.post</code> 是 <span class="math inline">\(\theta_2\)</span>（控制组时间趋势，≈4），<code>1.treat#1.post</code> 是 <span class="math inline">\(\gamma\)</span>（双重差分，≈3）。</li>
+<li>关键教学点：交互项才是政策效应，它把「处理组前后变化」里那部分本会自然发生的时间趋势（由控制组度量）扣掉了。</li>
+</ul>
+<p>正文用 Card and Krueger (1994) 的新泽西—宾夕法尼亚最低工资作为这个结构的经典实证例子；这里用模拟数据是为了让每个人都能一键复现四格均值。</p>
+</section>
+<section id="bacon-分解三单位最小例子与权重手算" class="level2" data-number="F.3">
+<h2 data-number="F.3" class="anchored" data-anchor-id="bacon-分解三单位最小例子与权重手算"><span class="header-section-number">F.3</span> Bacon 分解：三单位最小例子与权重手算</h2>
+<p>这个模块复现正文「权重怎么定：手算一遍」的全部数字。数据就是正文的最小例子：3 个体 × 10 期，<span class="math inline">\(id=1\)</span> 从不处理，<span class="math inline">\(id=2\)</span> 在 <span class="math inline">\(t=5\)</span> 进入（效应 2），<span class="math inline">\(id=3\)</span> 在 <span class="math inline">\(t=8\)</span> 进入（效应 4），处理吸收、含共同时间趋势。目标：亲眼看到 TWFE 系数 2.91 如何被拆成三块 2×2、再按权重拼回来。</p>
+<div id="cell-7" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">clear</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> <span class="kw">obs</span> 3</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> id = <span class="dt">_n</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>expand 10</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="kw">bysort</span> id: <span class="kw">gen</span> t = <span class="dt">_n</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>xtset id t</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>* 吸收性处理：id=2 自 t=5 起，id=3 自 t=8 起</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> D = (id==2 &amp; t&gt;=5) | (id==3 &amp; t&gt;=8)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>* 结果 = 个体基线 + 共同时间趋势 + 恒定处理效应(2 与 4)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> <span class="fu">y</span> = 2*id + 0.1*t + <span class="fu">cond</span>(id==2, 2, <span class="fu">cond</span>(id==3, 4, 0))*D</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>* TWFE：交错处理下的混合系数</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="kw">reg</span> <span class="fu">y</span> D i.id i.t</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>* Bacon 分解：ddetail 给出每个 2×2 的估计值与权重</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="kw">capture</span> <span class="kw">noisily</span> bacondecomp <span class="fu">y</span> D, ddetail</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="dt">_rc</span> <span class="kw">di</span> <span class="kw">as</span> <span class="kw">error</span> <span class="st">"bacondecomp 未运行成功，help bacondecomp 核对语法。"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of observations (_N) was 0, now 3.
+(27 observations created)
+
+Panel variable: id (strongly balanced)
+ Time variable: t, 1 to 10
+         Delta: 1 unit
+
+      Source |       SS           df       MS      Number of obs   =        30
+-------------+----------------------------------   F(12, 17)       =     72.18
+       Model |  192.693182        12  16.0577652   Prob &gt; F        =    0.0000
+    Residual |  3.78181818        17  .222459893   R-squared       =    0.9808
+-------------+----------------------------------   Adj R-squared   =    0.9672
+       Total |     196.475        29       6.775   Root MSE        =    .47166
+
+------------------------------------------------------------------------------
+           y | Coefficient  Std. err.      t    P&gt;|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           D |      2.909      0.318     9.15   0.000        2.238       3.580
+             |
+          id |
+          2  |      1.455      0.284     5.11   0.000        0.854       2.055
+          3  |      4.327      0.232    18.69   0.000        3.839       4.816
+             |
+           t |
+          2  |      0.100      0.385     0.26   0.798       -0.713       0.913
+          3  |      0.200      0.385     0.52   0.610       -0.613       1.013
+          4  |      0.300      0.385     0.78   0.447       -0.513       1.113
+          5  |      0.097      0.399     0.24   0.811       -0.746       0.940
+          6  |      0.197      0.399     0.49   0.628       -0.646       1.040
+          7  |      0.297      0.399     0.74   0.467       -0.546       1.140
+          8  |      0.761      0.440     1.73   0.102       -0.167       1.688
+          9  |      0.861      0.440     1.96   0.067       -0.067       1.788
+         10  |      0.961      0.440     2.19   0.043        0.033       1.888
+             |
+       _cons |      2.173      0.313     6.94   0.000        1.512       2.833
+------------------------------------------------------------------------------
+Computing decomposition across 3 timing groups
+including a never-treated group
+------------------------------------------------------------------------------
+           y | Coefficient  Std. err.      z    P&gt;|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           D |      2.909      0.318     9.15   0.000        2.286       3.532
+------------------------------------------------------------------------------
+
+Bacon Decomposition
+
++---------------------------------------------------+
+|                      |         Beta   TotalWeight |
+|----------------------+----------------------------|
+|         Early_v_Late |            2   .1818181841 |
+|         Late_v_Early |            4   .1363636317 |
+|       Never_v_timing |  2.933333323   .6818181841 |
++---------------------------------------------------+</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="A06_did_method_selection_files/figure-html/cell-4-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>手算对账</strong>（对应正文公式与数字；本例数据无噪声，回归完美拟合，标准误无意义，只看点估计与权重）：</p>
+<ul>
+<li><code>bacondecomp</code> 把 TWFE 系数拆成三类 2×2：<strong>早 vs 晚的未处理期</strong>（估计值 2，权重 0.182）、<strong>晚 vs 早的已处理期</strong>（估计值 4，权重 0.136——这是坏比较）、<strong>各处理组 vs 从不处理组</strong>（合并估计值 2.93，权重 0.682）。三块权重之和恰为 1。</li>
+<li>加权平均：<span class="math inline">\(2.93\times0.682+2\times0.182+4\times0.136=2.91\)</span>，与 TWFE 直接跑出的系数分毫不差——TWFE 不是一个单一比较，而是这些 2×2 的加权平均。</li>
+<li>权重排序由正文公式 <span class="math inline">\(s_k\propto n_k(1-n_k)\times\bar D_k(1-\bar D_k)\)</span> 决定：早处理组 <span class="math inline">\(\bar D=6/10\)</span>、晚处理组 <span class="math inline">\(\bar D=3/10\)</span>，处理时点越居中、处理方差越大、权重越高。<strong>居中进入的组恰是坏比较的高发区，却拿到更高权重</strong>——这就是 TWFE「错在权重」的机械根源。</li>
+<li>本例效应同质（各组效应恒定），坏比较尚未惹祸；正文「异质效应下，负权重让符号翻转」一节展示了同一机械在异质效应下如何把总系数拖成负数。</li>
+</ul>
+<p><strong>对口文献（含复现资料）</strong></p>
+<ul>
+<li>Goodman-Bacon, A. (2021). Difference-in-differences with variation in treatment timing. <em>Journal of Econometrics</em>, 225(2), 254–277. 配套 Stata 命令 <code>bacondecomp</code>。本模块示例编译自 Asjad Naqvi 的 <a href="https://asjadnaqvi.github.io/DiD/docs/code/06_02_bacon/">Bacon decomposition 教学页</a>，中文详解见康希 (<a href="https://www.lianxh.cn/details/1347.html">2024</a>）。</li>
+</ul>
+</section>
+<section id="数据与处理时点结构" class="level2" data-number="F.4">
+<h2 data-number="F.4" class="anchored" data-anchor-id="数据与处理时点结构"><span class="header-section-number">F.4</span> 数据与处理时点结构</h2>
+<p>现在载入真实的交错处理数据 <code>mpdta</code>。先不估计任何模型，只看清处理时点的结构——这一步决定了后面能用哪些方法。</p>
+<div id="a838a47d" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> https:<span class="co">//friosavila.github.io/playingwithstata/drdid/mpdta.dta, clear</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">describe</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>* 关键变量：countyreal(县) <span class="fu">year</span>(年) lemp(就业,结果) lpop(人口,协变量)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>*           first_treat(首次处理年份, 0=never-treated)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>* 处理时点结构：看每个 first_treat 批次各有多少县</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="kw">tab</span> <span class="fu">year</span> first_treat</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>* 构造<span class="st">"当期是否处于处理中"</span>的状态变量(供 TWFE 用)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> treated = (first_treat &gt; 0) &amp; (<span class="fu">year</span> &gt;= first_treat)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="kw">tab</span> <span class="fu">year</span> treated</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>xtset countyreal <span class="fu">year</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Written by R.              )
+
+Contains data from https://friosavila.github.io/playingwithstata/drdid/mpdta.dt
+&gt; a
+ Observations:         2,500                  Written by R.              
+    Variables:             6                  17 May 2021 11:45
+-------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+-------------------------------------------------------------------------------
+year            int     %9.0g                 year
+countyreal      long    %9.0g                 countyreal
+lpop            double  %9.0g                 lpop
+lemp            double  %9.0g                 lemp
+first_treat     int     %9.0g                 first.treat
+treat           byte    %9.0g                 treat
+-------------------------------------------------------------------------------
+Sorted by: 
+
+           |                 first.treat
+      year |         0       2004       2006       2007 |     Total
+-----------+--------------------------------------------+----------
+      2003 |       309         20         40        131 |       500 
+      2004 |       309         20         40        131 |       500 
+      2005 |       309         20         40        131 |       500 
+      2006 |       309         20         40        131 |       500 
+      2007 |       309         20         40        131 |       500 
+-----------+--------------------------------------------+----------
+     Total |     1,545        100        200        655 |     2,500 
+
+           |        treated
+      year |         0          1 |     Total
+-----------+----------------------+----------
+      2003 |       500          0 |       500 
+      2004 |       480         20 |       500 
+      2005 |       480         20 |       500 
+      2006 |       440         60 |       500 
+      2007 |       309        191 |       500 
+-----------+----------------------+----------
+     Total |     2,209        291 |     2,500 
+
+Panel variable: countyreal (strongly balanced)
+ Time variable: year, 2003 to 2007
+         Delta: 1 unit</code></pre>
+</div>
+</div>
+<p><strong>输出怎么读</strong>：<code>tab year first_treat</code> 是最关键的一张表。它会显示：<code>first_treat</code> 取 0（never-treated，309 个县）、2004、2006、2007 四种值，且不同批次在不同年份进入政策。这三点确认了：</p>
+<ol type="1">
+<li><strong>存在 never-treated</strong>（<code>first_treat==0</code>）——有干净的长期对照组；</li>
+<li><strong>处理是分批的</strong>（2004/2006/2007）——这不是 2×2，而是交错处理；</li>
+<li><strong>处理是吸收性的</strong>（一旦处理就保持）——适合 <code>csdid</code>、不需要 <code>did_multiplegt_dyn</code>。</li>
+</ol>
+<p>注意区分两个变量：<code>first_treat</code> 是<strong>首次处理年份</strong>（时间不变，csdid 的 <code>gvar</code>），<code>treated</code> 是<strong>当期处理状态</strong>（随时间变，TWFE 的 <span class="math inline">\(D_{it}\)</span>）。混淆这两个是初学者最常见的错误。</p>
+</section>
+<section id="twfe-基准与-bacon-分解诊断" class="level2" data-number="F.5">
+<h2 data-number="F.5" class="anchored" data-anchor-id="twfe-基准与-bacon-分解诊断"><span class="header-section-number">F.5</span> TWFE 基准与 Bacon 分解诊断</h2>
+<p>先跑一个熟悉的 TWFE，作为<strong>基准</strong>（不是最终答案）。再用 Bacon 分解诊断这个系数背后混了哪些 2×2 比较。</p>
+<div id="b25d645c" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>* TWFE 基准</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>reghdfe lemp treated lpop, absorb(countyreal <span class="fu">year</span>) <span class="kw">vce</span>(<span class="kw">cluster</span> countyreal)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="kw">estimates</span> <span class="kw">store</span> twfe</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>* Bacon 分解：把 TWFE 系数拆成若干 2x2 DID 的加权平均</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="kw">capture</span> <span class="kw">noisily</span> bacondecomp lemp treated, ddetail</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="dt">_rc</span> <span class="kw">di</span> <span class="kw">as</span> <span class="kw">error</span> <span class="st">"bacondecomp 未运行成功，可 help bacondecomp 核对语法或数据要求。"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(MWFE estimator converged in 2 iterations)
+note: lpop is probably collinear with the fixed effects (all partialled-out val
+&gt; ues are close to zero; tol = 1.0e-09)
+
+HDFE Linear regression                            Number of obs   =      2,500
+Absorbing 2 HDFE groups                           F(   1,    499) =       7.59
+Statistics robust to heteroskedasticity           Prob &gt; F        =     0.0061
+                                                  R-squared       =     0.9932
+                                                  Adj R-squared   =     0.9915
+                                                  Within R-sq.    =     0.0042
+Number of clusters (countyreal) =        500      Root MSE        =     0.1391
+
+                           (Std. err. adjusted for 500 clusters in countyreal)
+------------------------------------------------------------------------------
+             |               Robust
+        lemp | Coefficient  std. err.      t    P&gt;|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+     treated |     -0.037      0.013    -2.76   0.006       -0.063      -0.010
+        lpop |      0.000  (omitted)
+       _cons |      5.777      0.002  3741.28   0.000        5.774       5.780
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+-----------------------------------------------------+
+ Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-------------+---------------------------------------|
+  countyreal |       500         500           0    *|
+        year |         5           1           4     |
+-----------------------------------------------------+
+* = FE nested within cluster; treated as redundant for DoF computation
+Computing decomposition across 4 timing groups
+including a never-treated group
+------------------------------------------------------------------------------
+        lemp | Coefficient  Std. err.      z    P&gt;|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+     treated |     -0.037      0.013    -2.89   0.004       -0.061      -0.012
+------------------------------------------------------------------------------
+
+Bacon Decomposition
+
++---------------------------------------------------+
+|                      |         Beta   TotalWeight |
+|----------------------+----------------------------|
+|         Early_v_Late | -.0456079058   .0052931759 |
+|         Late_v_Early |  .0542869009   .0105863517 |
+|         Early_v_Late | -.0910554007   .0260027271 |
+|         Late_v_Early | -.0196048059   .0260027271 |
+|         Early_v_Late |   .018480381   .0520054542 |
+|         Late_v_Early |  .0105754538   .0173351506 |
+|       Never_v_timing | -.0407396963   .8627744133 |
++---------------------------------------------------+</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="A06_did_method_selection_files/figure-html/cell-6-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>输出怎么读</strong>：</p>
+<ul>
+<li>TWFE 的 <code>treated</code> 系数是一个数，它把 2004、2006、2007 三个批次、所有时期的比较压成了一个平均。</li>
+<li><code>bacondecomp</code> 的输出把这个系数拆开，按比较类型分组报告权重和平均效应，典型分为三类：<strong>Treated vs Never-treated</strong>、<strong>Earlier vs Later treated</strong>（早处理组当对照，干净）、<strong>Later vs Earlier treated</strong>（晚处理组拿早已处理组当对照，<strong>这是坏比较</strong>）。</li>
+<li>重点看「Later vs Earlier treated」那一类的权重有多大：权重越大，TWFE 被 already-treated 污染越严重。这就是为什么要转向 <code>csdid</code>。上一模块的三单位手算已经展示了这套分解的全部机械；这里是它在真实数据上的规模化版本。</li>
+</ul>
+<p>Bacon 分解不修正 TWFE，它只诊断。修正靠下一节的 group-time ATT。</p>
+</section>
+<section id="csdid估计-attgt-再聚合" class="level2" data-number="F.6">
+<h2 data-number="F.6" class="anchored" data-anchor-id="csdid估计-attgt-再聚合"><span class="header-section-number">F.6</span> <code>csdid</code>：估计 ATT(g,t) 再聚合</h2>
+<p>这是本附录的核心。<code>csdid</code> 的规范工作流是<strong>两步</strong>：先估计所有 group-time ATT，再用 <code>estat</code> 按需聚合。这个「先拆分、再聚合」的两步式，正好对应正文「加总的原则」一节的核心判断——聚合口径就是目标参数。</p>
+<div id="f56e346f" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> https:<span class="co">//friosavila.github.io/playingwithstata/drdid/mpdta.dta, clear</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>* 第一步：估计所有 ATT(g,t)，用 never-treated 作对照，双重稳健 IPW</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>csdid lemp lpop, ivar(countyreal) time(<span class="fu">year</span>) gvar(first_treat) method(dripw)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>* 第二步：按不同目标参数聚合(postestimation)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="kw">estat</span> simple      <span class="co">// 总体 ATT(按组规模加权，非等权)</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="kw">estat</span> event       <span class="co">// 动态 ATT：处理后第 k 年的效应</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="kw">estat</span> calendar    <span class="co">// 日历年 ATT</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="kw">estat</span> <span class="fu">group</span>       <span class="co">// 分组 ATT：各批次的效应</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>* 事件研究图</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>csdid_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Written by R.              )
+............
+Difference-in-difference with Multiple Time Periods
+
+                                                         Number of obs = 2,500
+Outcome model  : least squares
+Treatment model: inverse probability
+------------------------------------------------------------------------------
+             | Coefficient  Std. err.      z    P&gt;|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+g2004        |
+ t_2003_2004 |     -0.015      0.022    -0.66   0.511       -0.058       0.029
+ t_2003_2005 |     -0.076      0.029    -2.67   0.008       -0.133      -0.020
+ t_2003_2006 |     -0.140      0.035    -3.97   0.000       -0.210      -0.071
+ t_2003_2007 |     -0.107      0.033    -3.25   0.001       -0.171      -0.042
+-------------+----------------------------------------------------------------
+g2006        |
+ t_2003_2004 |     -0.000      0.022    -0.02   0.983       -0.044       0.043
+ t_2004_2005 |     -0.006      0.018    -0.34   0.737       -0.042       0.030
+ t_2005_2006 |      0.001      0.019     0.05   0.961       -0.037       0.039
+ t_2005_2007 |     -0.041      0.020    -2.09   0.036       -0.080      -0.003
+-------------+----------------------------------------------------------------
+g2007        |
+ t_2003_2004 |      0.027      0.014     1.90   0.057       -0.001       0.054
+ t_2004_2005 |     -0.005      0.016    -0.29   0.771       -0.035       0.026
+ t_2005_2006 |     -0.028      0.018    -1.56   0.118       -0.064       0.007
+ t_2006_2007 |     -0.029      0.016    -1.77   0.076       -0.061       0.003
+------------------------------------------------------------------------------
+Control: Never Treated
+
+See Callaway and Sant'Anna (2021) for details
+Average Treatment Effect on Treated
+------------------------------------------------------------------------------
+             | Coefficient  Std. err.      z    P&gt;|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         ATT |     -0.042      0.012    -3.63   0.000       -0.064      -0.019
+------------------------------------------------------------------------------
+ATT by Periods Before and After treatment
+Event Study:Dynamic effects
+------------------------------------------------------------------------------
+             | Coefficient  Std. err.      z    P&gt;|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+     Pre_avg |     -0.000      0.008    -0.01   0.995       -0.015       0.015
+    Post_avg |     -0.080      0.019    -4.24   0.000       -0.118      -0.043
+         Tm3 |      0.027      0.014     1.90   0.057       -0.001       0.054
+         Tm2 |     -0.004      0.013    -0.28   0.780       -0.029       0.022
+         Tm1 |     -0.023      0.014    -1.60   0.109       -0.052       0.005
+         Tp0 |     -0.021      0.011    -1.83   0.067       -0.044       0.001
+         Tp1 |     -0.053      0.016    -3.24   0.001       -0.085      -0.021
+         Tp2 |     -0.140      0.035    -3.97   0.000       -0.210      -0.071
+         Tp3 |     -0.107      0.033    -3.25   0.001       -0.171      -0.042
+------------------------------------------------------------------------------
+ATT by Calendar Period
+------------------------------------------------------------------------------
+             | Coefficient  Std. err.      z    P&gt;|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+    CAverage |     -0.044      0.015    -2.94   0.003       -0.074      -0.015
+       T2004 |     -0.015      0.022    -0.66   0.511       -0.058       0.029
+       T2005 |     -0.076      0.029    -2.67   0.008       -0.133      -0.020
+       T2006 |     -0.046      0.021    -2.18   0.029       -0.088      -0.005
+       T2007 |     -0.040      0.013    -3.06   0.002       -0.065      -0.014
+------------------------------------------------------------------------------
+ATT by group
+------------------------------------------------------------------------------
+             | Coefficient  Std. err.      z    P&gt;|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+    GAverage |     -0.033      0.012    -2.78   0.006       -0.056      -0.010
+       G2004 |     -0.085      0.025    -3.44   0.001       -0.133      -0.036
+       G2006 |     -0.020      0.017    -1.15   0.248       -0.054       0.014
+       G2007 |     -0.029      0.016    -1.77   0.076       -0.061       0.003
+------------------------------------------------------------------------------
+} is not a valid command name</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="A06_did_method_selection_files/figure-html/cell-7-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>命令逐项解读</strong>：</p>
+<ul>
+<li><code>gvar(first_treat)</code>：<strong>首次处理年份</strong>，不是处理状态。<code>gvar==0</code> 被识别为 never-treated。这是 <code>csdid</code> 与 TWFE 最大的语法差异。</li>
+<li><code>method(dripw)</code>：双重稳健 IPW（结果回归 + 倾向得分）。其他可选 <code>dripw</code>/<code>drimp</code>/<code>reg</code>/<code>ipw</code>/<code>stdipw</code>。</li>
+<li><code>lpop</code> 放在 <code>indepvars</code> 位置：进入结果回归和倾向得分模型，让平行趋势在<strong>条件</strong>意义上更可信。</li>
+<li>第二步的 <code>estat</code>：<code>simple</code>/<code>event</code>/<code>calendar</code>/<code>group</code> 各回答一个不同问题（见正文 <a href="../../lectures/06_did_design.html#tbl-cipolicy-did-agg" class="quarto-xref">表&nbsp;<span>6.3</span></a>）。</li>
+</ul>
+<p><strong>输出怎么读</strong>：<code>estat simple</code> 是一个总体数，注意它是<strong>按组规模加权</strong>的平均，不是把所有 ATT(g,t) 等权平均——这是学生最容易误解的点。<code>estat event</code> 给出一列按相对处理时间排列的系数，负的相对期用来看政策前趋势，正的相对期是动态效应。</p>
+<p><strong>never-treated vs not-yet-treated 对照组</strong></p>
+<p>默认用 never-treated 作对照。加 <code>notyet</code> 选项改用「尚未处理」的单位作对照——当 never-treated 组很小、或担心它系统性不同于处理组时有用。</p>
+<div id="bd44b7ed" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>* 改用 <span class="kw">not</span>-yet-treated 作对照组</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>csdid lemp lpop, ivar(countyreal) time(<span class="fu">year</span>) gvar(first_treat) <span class="co">///</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>      method(dripw) notyet</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="kw">estat</span> event</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>* 事件研究图</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>csdid_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>............
+Difference-in-difference with Multiple Time Periods
+
+                                                         Number of obs = 2,500
+Outcome model  : least squares
+Treatment model: inverse probability
+------------------------------------------------------------------------------
+             | Coefficient  Std. err.      z    P&gt;|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+g2004        |
+ t_2003_2004 |     -0.021      0.022    -0.98   0.328       -0.064       0.021
+ t_2003_2005 |     -0.082      0.028    -2.88   0.004       -0.137      -0.026
+ t_2003_2006 |     -0.138      0.034    -4.04   0.000       -0.205      -0.071
+ t_2003_2007 |     -0.107      0.033    -3.25   0.001       -0.171      -0.042
+-------------+----------------------------------------------------------------
+g2006        |
+ t_2003_2004 |     -0.007      0.022    -0.34   0.733       -0.050       0.035
+ t_2004_2005 |     -0.005      0.018    -0.25   0.803       -0.040       0.031
+ t_2005_2006 |      0.009      0.017     0.51   0.607       -0.024       0.042
+ t_2005_2007 |     -0.041      0.020    -2.09   0.036       -0.080      -0.003
+-------------+----------------------------------------------------------------
+g2007        |
+ t_2003_2004 |      0.027      0.014     1.90   0.057       -0.001       0.054
+ t_2004_2005 |     -0.005      0.016    -0.29   0.771       -0.035       0.026
+ t_2005_2006 |     -0.028      0.018    -1.56   0.118       -0.064       0.007
+ t_2006_2007 |     -0.029      0.016    -1.77   0.076       -0.061       0.003
+------------------------------------------------------------------------------
+Control: Not yet Treated
+
+See Callaway and Sant'Anna (2021) for details
+ATT by Periods Before and After treatment
+Event Study:Dynamic effects
+------------------------------------------------------------------------------
+             | Coefficient  Std. err.      z    P&gt;|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+     Pre_avg |     -0.000      0.007    -0.06   0.950       -0.015       0.014
+    Post_avg |     -0.080      0.018    -4.33   0.000       -0.116      -0.044
+         Tm3 |      0.027      0.014     1.90   0.057       -0.001       0.054
+         Tm2 |     -0.005      0.013    -0.40   0.686       -0.031       0.020
+         Tm1 |     -0.023      0.015    -1.56   0.118       -0.051       0.006
+         Tp0 |     -0.020      0.012    -1.73   0.083       -0.043       0.003
+         Tp1 |     -0.055      0.016    -3.34   0.001       -0.087      -0.023
+         Tp2 |     -0.138      0.034    -4.04   0.000       -0.205      -0.071
+         Tp3 |     -0.107      0.033    -3.25   0.001       -0.171      -0.042
+------------------------------------------------------------------------------</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="A06_did_method_selection_files/figure-html/cell-8-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>怎么选对照组</strong>：never-treated 是最干净的（它永远不进政策）；但如果 never-treated 太少或与处理组差异大，not-yet-treated 提供更多可比单位（代价是它们未来会进政策，需假设「进政策前的路径」可比）。关键红线始终是：<strong>绝不能把已经处理的单位当作无政策反事实</strong>——<code>csdid</code> 无论用哪种对照，都自动守住了这条线。</p>
+<p><strong>对口文献（含复现资料）</strong></p>
+<ul>
+<li>Callaway, B., &amp; Sant’Anna, P. H. C. (2021). Difference-in-differences with multiple time periods. <em>Journal of Econometrics</em>, 225(2), 200–230. 这是 <span class="math inline">\(ATT(g,t)\)</span> 框架的原始文献，本附录用的 <code>mpdta</code> 数据就来自其配套 R 包 <code>did</code>（<a href="https://bcallaway11.github.io/did/" class="uri">https://bcallaway11.github.io/did/</a>），R 与 Stata 结果可对照复现。读者写交错处理 DID 论文时，可直接以该文的估计与作图流程为范本。</li>
+</ul>
+</section>
+<section id="drdidraipw-与双重稳健的两期对比" class="level2" data-number="F.7">
+<h2 data-number="F.7" class="anchored" data-anchor-id="drdidraipw-与双重稳健的两期对比"><span class="header-section-number">F.7</span> <code>drdid</code>：RA、IPW 与双重稳健的两期对比</h2>
+<p><code>drdid</code> 针对<strong>两期</strong> DID，演示双重稳健的核心思想：把正文的 RA、IPW、AIPW 三式在同一份 2×2 子样本上各估一遍，直接观察三个估计值的异同。为用同一份在线数据，把 <code>mpdta</code> 压成一个 2×2 子样本：只留 2004 年首次处理的县和 never-treated 县，只留 2003、2004 两年。</p>
+<div id="7b5ac188" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> https:<span class="co">//friosavila.github.io/playingwithstata/drdid/mpdta.dta, clear</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>* 压成 2×2：2004 处理组 vs never-treated，2003(前) vs 2004(后)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="kw">keep</span> <span class="kw">if</span> first_treat == 2004 | first_treat == 0</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="kw">keep</span> <span class="kw">if</span> <span class="fu">inlist</span>(<span class="fu">year</span>, 2003, 2004)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>* mpdta 自带 treat 变量(标记 eventually-treated)，先删除以免歧义，再按本例定义重建</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="kw">drop</span> treat</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> treat = (first_treat == 2004)          <span class="co">// 单位级、时间不变</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="kw">tab</span> <span class="fu">year</span> treat</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>* 普通 DID 基准</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="kw">reg</span> lemp i.treat##i.<span class="fu">year</span> lpop, <span class="kw">vce</span>(<span class="kw">cluster</span> countyreal)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>* 对应正文三式，逐一估计</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>drdid lemp lpop, ivar(countyreal) time(<span class="fu">year</span>) tr(treat) <span class="kw">reg</span>     <span class="co">// RA：只用结果模型</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>drdid lemp lpop, ivar(countyreal) time(<span class="fu">year</span>) tr(treat) ipw     <span class="co">// IPW：只用倾向得分</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>drdid lemp lpop, ivar(countyreal) time(<span class="fu">year</span>) tr(treat) dripw   <span class="co">// 双重稳健 IPW</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Written by R.              )
+(855 observations deleted)
+(987 observations deleted)
+
+           |         treat
+      year |         0          1 |     Total
+-----------+----------------------+----------
+      2003 |       309         20 |       329 
+      2004 |       309         20 |       329 
+-----------+----------------------+----------
+     Total |       618         40 |       658 
+
+Linear regression                               Number of obs     =        658
+                                                F(4, 328)         =     649.86
+                                                Prob &gt; F          =     0.0000
+                                                R-squared         =     0.8645
+                                                Root MSE          =      .5509
+
+                           (Std. err. adjusted for 329 clusters in countyreal)
+------------------------------------------------------------------------------
+             |               Robust
+        lemp | Coefficient  std. err.      t    P&gt;|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+     1.treat |      0.210      0.063     3.35   0.001        0.087       0.334
+             |
+        year |
+       2004  |     -0.063      0.010    -6.37   0.000       -0.082      -0.043
+             |
+  treat#year |
+     1 2004  |     -0.011      0.023    -0.45   0.653       -0.056       0.035
+             |
+        lpop |      1.074      0.021    50.16   0.000        1.032       1.116
+       _cons |      2.235      0.086    25.87   0.000        2.065       2.405
+------------------------------------------------------------------------------
+
+Doubly robust difference-in-differences                    Number of obs = 658
+Outcome model  : regression adjustment
+Treatment model: none
+------------------------------------------------------------------------------
+             | Coefficient  Std. err.      z    P&gt;|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+ATET         |
+       treat |
+   (1 vs 0)  |     -0.015      0.022    -0.68   0.499       -0.058       0.028
+------------------------------------------------------------------------------
+
+Doubly robust difference-in-differences                    Number of obs = 658
+Outcome model  : weighted mean
+Treatment model: inverse probability
+------------------------------------------------------------------------------
+             | Coefficient  Std. err.      z    P&gt;|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+ATET         |
+       treat |
+   (1 vs 0)  |     -0.015      0.022    -0.66   0.511       -0.058       0.029
+------------------------------------------------------------------------------
+  0
+
+Doubly robust difference-in-differences                    Number of obs = 658
+Outcome model  : least squares
+Treatment model: inverse probability
+------------------------------------------------------------------------------
+             | Coefficient  Std. err.      z    P&gt;|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+ATET         |
+       treat |
+   (1 vs 0)  |     -0.015      0.022    -0.66   0.511       -0.058       0.029
+------------------------------------------------------------------------------</code></pre>
+</div>
+</div>
+<p><strong>命令逐项解读</strong>：</p>
+<ul>
+<li><code>tr(treat)</code>：处理组指示，单位级、时间不变（「这个县是否属于 2004 处理批次」）。</li>
+<li><code>ivar()</code> <code>time()</code>：面板与时间标识；<code>drdid</code> 用它们先做单位内一阶差分，再重加权。</li>
+<li><code>lpop</code>：同时进入结果回归和倾向得分。</li>
+</ul>
+<p><strong>三个估计值怎么对比</strong>：<code>reg</code>、<code>ipw</code>、<code>dripw</code> 分别对应正文的 RA、IPW、AIPW 三式。三个 ATT 彼此接近，说明结果模型与倾向得分模型都不算离谱；若差异明显，则至少有一个模型误设——这正是双重稳健的用武之地：AIPW 只要两者之一正确即一致。</p>
+<p><strong>双重稳健的含义</strong>：<code>drdid</code> 同时估计「结果如何依赖协变量」和「谁更可能进处理」两个模型。<strong>只要两者之一设定正确，ATT 就一致</strong>——给了你两次做对的机会。这正是通向第七章的引子：当协变量很多、这两个模型的函数形式未知时，如何估计它们而不让第一阶段误差污染 ATT？那是 DDML 的问题。</p>
+<p>若 <code>drdid</code> 报语法错误，先 <code>help drdid</code> 核对当前版本（该命令跨版本略有差异）。</p>
+<p><strong>对口文献（含复现资料）</strong></p>
+<ul>
+<li>Sant’Anna, P. H. C., &amp; Zhao, J. (2020). Doubly robust difference-in-differences estimators. <em>Journal of Econometrics</em>, 219(1), 101–122. 双重稳健 DID 的原始文献，公开了 R 包 <code>DRDID</code> 与复现代码（<a href="https://github.com/pedrohcgs/DRDID" class="uri">https://github.com/pedrohcgs/DRDID</a>），其实证示例用 LaLonde/NSW 就业培训数据演示「结果回归 + 倾向得分，其一正确即一致」。想在条件平行趋势下做 DID 的读者，可照该示例组织协变量与稳健性。</li>
+</ul>
+</section>
+<section id="现代事件研究修正可选模块" class="level2" data-number="F.8">
+<h2 data-number="F.8" class="anchored" data-anchor-id="现代事件研究修正可选模块"><span class="header-section-number">F.8</span> 现代事件研究修正（可选模块）</h2>
+<p>传统 TWFE 事件研究在交错处理下，lead/lag 系数可能被其他队列的处理效应污染。这里给 Sun–Abraham（<code>eventstudyinteract</code>）和 BJS（<code>did_imputation</code>）两个入口，并附 <code>did2s</code> 两步法的最小示例。两者版本敏感，用 <code>capture</code> 包裹，失败不影响前面主线。</p>
+<div id="19f33926" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> https:<span class="co">//friosavila.github.io/playingwithstata/drdid/mpdta.dta, clear</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> never   = (first_treat == 0)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> treated = (first_treat &gt; 0) &amp; (<span class="fu">year</span> &gt;= first_treat)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> rel   = <span class="fu">year</span> - first_treat <span class="kw">if</span> first_treat &gt; 0   <span class="co">// 相对处理时间</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>* 构造 lead/lag 虚拟变量(排除基准期 rel=-1)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="kw">forvalues</span> <span class="kw">k</span> = -3/3 {</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">local</span> nm = <span class="fu">cond</span>(<span class="ot">`k'</span>&lt;0, <span class="st">"m"</span>+<span class="fu">string</span>(<span class="fu">abs</span>(<span class="ot">`k'</span>)), <span class="st">"p"</span>+<span class="fu">string</span>(<span class="ot">`k'</span>))</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">gen</span> g_<span class="ot">`nm'</span> = (rel == <span class="ot">`k'</span>)</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">replace</span> g_<span class="ot">`nm'</span> = 0 <span class="kw">if</span> <span class="fu">missing</span>(rel)</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="kw">drop</span> g_m1                                    <span class="co">// 基准期归一化</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>* 传统 TWFE 事件研究(作对照)</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>reghdfe lemp g_m3 g_m2 g_p0 g_p1 g_p2 g_p3 lpop, <span class="co">///</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>    absorb(countyreal <span class="fu">year</span>) <span class="kw">vce</span>(<span class="kw">cluster</span> countyreal)</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>* Sun-Abraham：按队列估事件效应，避免污染(可选)</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a><span class="kw">capture</span> <span class="kw">noisily</span> eventstudyinteract lemp g_m3 g_m2 g_p0 g_p1 g_p2 g_p3, <span class="co">///</span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>    cohort(first_treat) control_cohort(never) <span class="co">///</span></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>    absorb(countyreal <span class="fu">year</span>) <span class="kw">vce</span>(<span class="kw">cluster</span> countyreal)</span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="dt">_rc</span> <span class="kw">di</span> <span class="kw">as</span> <span class="kw">error</span> <span class="st">"eventstudyinteract 未运行成功，help eventstudyinteract 核对语法。"</span></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>* BJS 插补法(可选)：参数顺序为 Y i t Ei</span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a><span class="kw">capture</span> <span class="kw">noisily</span> did_imputation lemp countyreal <span class="fu">year</span> first_treat, <span class="co">///</span></span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>    horizons(0/3) pretrends(3) <span class="kw">fe</span>(countyreal <span class="fu">year</span>) controls(lpop) <span class="kw">cluster</span>(countyreal)</span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="dt">_rc</span> <span class="kw">di</span> <span class="kw">as</span> <span class="kw">error</span> <span class="st">"did_imputation 未运行成功，help did_imputation 核对语法。"</span></span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>* did2s 两步法(可选)：第一步只用固定效应净化结果，第二步在净化后的结果上估事件效应</span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a><span class="kw">capture</span> <span class="kw">noisily</span> did2s lemp, first_stage(i.countyreal i.<span class="fu">year</span>) <span class="co">///</span></span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>    second_stage(g_m3 g_m2 g_p0 g_p1 g_p2 g_p3) treatment(treated) <span class="kw">cluster</span>(countyreal)</span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="dt">_rc</span> <span class="kw">di</span> <span class="kw">as</span> <span class="kw">error</span> <span class="st">"did2s 未运行成功，help did2s 核对语法。"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Written by R.              )
+(1,545 missing values generated)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(0 real changes made)
+(MWFE estimator converged in 2 iterations)
+note: lpop is probably collinear with the fixed effects (all partialled-out val
+&gt; ues are close to zero; tol = 1.0e-09)
+
+HDFE Linear regression                            Number of obs   =      2,500
+Absorbing 2 HDFE groups                           F(   6,    499) =       4.08
+Statistics robust to heteroskedasticity           Prob &gt; F        =     0.0005
+                                                  R-squared       =     0.9933
+                                                  Adj R-squared   =     0.9915
+                                                  Within R-sq.    =     0.0103
+Number of clusters (countyreal) =        500      Root MSE        =     0.1388
+
+                           (Std. err. adjusted for 500 clusters in countyreal)
+------------------------------------------------------------------------------
+             |               Robust
+        lemp | Coefficient  std. err.      t    P&gt;|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+        g_m3 |      0.023      0.012     1.89   0.059       -0.001       0.047
+        g_m2 |      0.022      0.011     1.93   0.054       -0.000       0.045
+        g_p0 |     -0.019      0.013    -1.47   0.141       -0.045       0.006
+        g_p1 |     -0.044      0.018    -2.45   0.015       -0.079      -0.009
+        g_p2 |     -0.132      0.029    -4.57   0.000       -0.188      -0.075
+        g_p3 |     -0.092      0.033    -2.84   0.005       -0.157      -0.028
+        lpop |      0.000  (omitted)
+       _cons |      5.774      0.002  2765.55   0.000        5.770       5.778
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+-----------------------------------------------------+
+ Absorbed FE | Categories  - Redundant  = Num. Coefs |
+-------------+---------------------------------------|
+  countyreal |       500         500           0    *|
+        year |         5           1           4     |
+-----------------------------------------------------+
+* = FE nested within cluster; treated as redundant for DoF computation
+(obs=955)
+
+IW estimates for dynamic effects                        Number of obs =  2,500
+Absorbing 2 HDFE groups                                 F(11, 499)    =   2.91
+                                                        Prob &gt; F      = 0.0010
+                                                        R-squared     = 0.9933
+                                                        Adj R-squared = 0.9915
+                                                        Root MSE      = 0.1388
+                           (Std. err. adjusted for 500 clusters in countyreal)
+------------------------------------------------------------------------------
+             |               Robust
+        lemp | Coefficient  std. err.      t    P&gt;|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+        g_m3 |      0.024      0.012     1.91   0.057       -0.001       0.048
+        g_m2 |      0.023      0.011     2.04   0.042        0.001       0.046
+        g_p0 |     -0.021      0.013    -1.57   0.117       -0.047       0.005
+        g_p1 |     -0.051      0.017    -3.03   0.003       -0.084      -0.018
+        g_p2 |     -0.136      0.036    -3.83   0.000       -0.206      -0.066
+        g_p3 |     -0.100      0.034    -2.96   0.003       -0.167      -0.034
+------------------------------------------------------------------------------
+Could not impute FE for 191 observations. Those are saved in the cannot_impute 
+&gt; variable. Use the autosample option if you would like those observations to b
+&gt; e dropped from the sample automatically.
+invalid syntax
+did_imputation 未运行成功，help did_imputation 核对语法。
+                             (Std. err. adjusted for clustering on countyreal)
+------------------------------------------------------------------------------
+             | Coefficient  Std. err.      z    P&gt;|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+        g_m3 |      0.010      0.006     1.50   0.134       -0.003       0.022
+        g_m2 |      0.008      0.006     1.27   0.204       -0.004       0.019
+        g_p0 |     -0.031      0.014    -2.28   0.023       -0.058      -0.004
+        g_p1 |     -0.052      0.019    -2.76   0.006       -0.089      -0.015
+        g_p2 |     -0.136      0.035    -3.85   0.000       -0.205      -0.067
+        g_p3 |     -0.105      0.034    -3.10   0.002       -0.171      -0.039
+------------------------------------------------------------------------------</code></pre>
+</div>
+</div>
+<p><strong>四种事件研究的区别</strong>：</p>
+<ul>
+<li><p><strong>传统 TWFE</strong>（第一段）：直观，但交错处理下 lead/lag 可能被其他队列污染，只作对照。</p></li>
+<li><p><strong>Sun–Abraham</strong>（<code>eventstudyinteract</code>）：按处理队列（cohort）分别估事件时间效应再加权，<code>control_cohort()</code> 指定干净对照（这里用 never-treated）。</p></li>
+<li><p><strong>BJS</strong>（<code>did_imputation</code>）：只用未处理观测拟合 <span class="math inline">\(\alpha_i+\lambda_t\)</span>，插补每个处理观测的 <span class="math inline">\(Y(0)\)</span>，再由实际值减插补值得到效应。参数顺序是 <code>Y i t Ei</code>（结果、单位、时间、首次处理年份）。</p></li>
+<li><p><strong>did2s</strong>（Gardner 2022）：第一阶段只用固定效应和协变量解释结果、不含处理项，第二阶段用净化后的结果估事件效应——两步式避免处理效应污染固定效应估计。</p></li>
+</ul>
+<p>四者目标参数和加权不同，结果<strong>方向应一致、数值不必相同</strong>。若都指向同一结论，说明结论不依赖单一估计量——这正是正文「证据架构」一节的实操体现。</p>
+<p><strong>对口文献（含复现资料）</strong></p>
+<ul>
+<li><p>Sun, L., &amp; Abraham, S. (2021). Estimating dynamic treatment effects in event studies with heterogeneous treatment effects. <em>Journal of Econometrics</em>, 225(2), 175–199. <a href="https://doi.org/10.1016/j.jeconom.2020.09.006">Link</a>, <a href="https://lsun20.github.io/event_studies_paper.pdf">PDF</a>, <a href="https://scholar.google.com/scholar?q=Estimating+dynamic+treatment+effects+in+event+studies+with+heterogeneous+treatment+effects">Google</a>. 事件研究污染问题的原始文献，配套 Stata 命令 <code>eventstudyinteract</code>，复现材料见 <a href="https://github.com/lsun20/EventStudyInteract">Code</a>。</p></li>
+<li><p>Borusyak, K., Jaravel, X., &amp; Spiess, J. (2024). Revisiting event-study designs: Robust and efficient estimation. <em>The Review of Economic Studies</em>, 91(6), 3253–3285. <a href="https://doi.org/10.1093/restud/rdae007">Link</a>, <a href="https://arxiv.org/pdf/2108.12419">PDF</a>, <a href="https://scholar.google.com/scholar?q=Revisiting+event-study+designs+robust+and+efficient+estimation">Google</a>. 插补法的原始文献，配套 Stata 命令 <code>did_imputation</code>，复现材料见 <a href="https://github.com/borusyak/did_imputation">Code</a>。</p></li>
+<li><p>Gardner, J. (2022). Two-stage differences in differences. <em>arXiv working paper</em>, arXiv:2207.05943. <a href="https://doi.org/10.48550/arXiv.2207.05943">Link</a>, <a href="https://arxiv.org/pdf/2207.05943">PDF</a>, <a href="https://scholar.google.com/scholar?q=Two-stage+differences+in+differences+John+Gardner">Google</a>. 两阶段 DID 方法的原始工作论文，配套 Stata 命令 <code>did2s</code>，复现材料见 <a href="https://github.com/kylebutts/did2s_stata">Code</a>。</p></li>
+<li><p>Butts, K., &amp; Gardner, J. (2022). did2s: Two-stage difference-in-differences. <em>The R Journal</em>, 14(3), 162–173. <a href="https://doi.org/10.32614/RJ-2022-048">Link</a>, <a href="https://journal.r-project.org/articles/RJ-2022-048/RJ-2022-048.pdf">PDF</a>, <a href="https://scholar.google.com/scholar?q=did2s+Two-Stage+Difference-in-Differences">Google</a>. 这篇文章介绍 R 包 <code>did2s</code>，用于实现 Gardner (2022) 提出的两阶段 DID 估计量，并提供了较清晰的语法说明和事件研究绘图接口。</p></li>
+</ul>
+</section>
+<section id="honestdid平行趋势敏感性分析可选模块" class="level2" data-number="F.9">
+<h2 data-number="F.9" class="anchored" data-anchor-id="honestdid平行趋势敏感性分析可选模块"><span class="header-section-number">F.9</span> <code>honestdid</code>：平行趋势敏感性分析（可选模块）</h2>
+<p>honest DiD（Rambachan–Roth 2023）不检验平行趋势是否成立，而是问：平行趋势要被违反到什么程度，结论才翻转？它需要前序事件研究的系数向量与协方差矩阵作输入。</p>
+<p><code>honestdid</code> 一般从 GitHub 安装。下面给出一条<strong>能实际串起来</strong>的最小流程：用 <code>csdid</code> 的事件研究结果喂给 <code>honestdid</code>。</p>
+<div id="7d045ab4" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>* 安装(以官方 README 为准)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>cap which honestdid</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="dt">_rc</span> {</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    cap net install honestdid, <span class="co">///</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>        from(<span class="st">"https://raw.githubusercontent.com/mcaceresb/stata-honestdid/main"</span>) <span class="kw">replace</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> https:<span class="co">//friosavila.github.io/playingwithstata/drdid/mpdta.dta, clear</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>* 先用 csdid 得到事件研究估计(honestdid 可直接读取 csdid 结果)</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="kw">qui</span> csdid lemp lpop, ivar(countyreal) time(<span class="fu">year</span>) gvar(first_treat) <span class="co">///</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>     method(dripw) agg(event)</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>* 敏感性分析：Mbar 取 0.5、1、1.5、2</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>* Mbar = 允许的政策后趋势偏离相对于政策前最大偏离的倍数</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="kw">capture</span> <span class="kw">noisily</span> honestdid, pre(1/3) <span class="kw">post</span>(4/6) mvec(0.5(0.5)2) coefplot</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="dt">_rc</span> <span class="kw">di</span> <span class="kw">as</span> <span class="kw">error</span> <span class="st">"honestdid 未运行成功，请见 GitHub README 核对安装与语法。"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Written by R.              )
+(note: running execution using -parallel-; see help parallel for details)
+
+|    M    |   lb   |   ub   |
+| ------- | ------ | ------ |
+|       . | -0.029 |  0.022 | (Original)
+|  0.5000 | -0.087 |  0.076 | 
+|  1.0000 | -0.156 |  0.143 | 
+|  1.5000 | -0.226 |  0.213 | 
+|  2.0000 | -0.297 |  0.284 | 
+(method = C-LF, Delta = DeltaRM, alpha = 0.050)</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="A06_did_method_selection_files/figure-html/cell-11-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>输出怎么读</strong>：<code>honestdid</code> 给出在不同「允许趋势偏离幅度」（<code>mvec</code>/Mbar）下，处理效应的稳健置信区间。核心看<strong>breakdown 值</strong>——趋势偏离达到多大时，置信区间才开始包含 0（结论翻转）。breakdown 值越大，结论对平行趋势违反越不敏感、越可信。</p>
+<ul>
+<li><code>pre()</code> <code>post()</code>：指定政策前、政策后的相对期位置（随 csdid 事件结果的排列而定，需按实际输出调整）。</li>
+<li><code>mvec(0.5(0.5)2)</code>：让允许的偏离从政策前最大偏离的 0.5 倍扫到 2 倍。</li>
+</ul>
+<p>这把「平行趋势成立吗」这个无法回答的是非题，换成了「结论对假设违反有多敏感」这个可量化的问题。</p>
+<p><strong>对口文献（含复现资料）</strong></p>
+<ul>
+<li>Rambachan, A., &amp; Roth, J. (2023). A more credible approach to parallel trends. <em>Review of Economic Studies</em>, 90(5), 2555–2591. honest DiD 的原始文献，配套 R 包 <code>HonestDiD</code> 与 Stata 版 <code>honestdid</code>（<a href="https://github.com/mcaceresb/stata-honestdid">github</a>），复现示例直接对接事件研究输出。审稿人越来越常要求这类敏感性分析，该文是标准范本。</li>
+</ul>
+</section>
+<section id="多估计量同框对比图可选模块" class="level2" data-number="F.10">
+<h2 data-number="F.10" class="anchored" data-anchor-id="多估计量同框对比图可选模块"><span class="header-section-number">F.10</span> 多估计量同框对比图（可选模块）</h2>
+<p>把 TWFE、<code>csdid</code>、Sun–Abraham 的动态效应画在同一张图，直观展示不同估计量的动态路径差异。下面给出可运行的骨架：抓取 <code>csdid</code> 事件研究结果、整理成长表、绘图。完整的多估计量模拟对比可参考 Zevelev 的 <a href="https://github.com/azev77/Compare-DiD-Estimators">Compare-DiD-Estimators</a>，周嘉怡 (<a href="https://www.lianxh.cn/details/1097.html">2023</a>) 有中文整理，正文「各估计量放在一起比一比」一节的两张图即出自该材料。</p>
+<div id="753c5541" class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> https:<span class="co">//friosavila.github.io/playingwithstata/drdid/mpdta.dta, clear</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>csdid lemp lpop, ivar(countyreal) time(<span class="fu">year</span>) gvar(first_treat) <span class="co">///</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>     method(dripw) agg(event)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>     </span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>csdid_plot</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>* 多估计量同框思路：</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>*  1. 分别运行 csdid / eventstudyinteract / twfe，各自取出 event_time、coef、se；</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>*  2. 拼成长表(event_time coef lb ub method)；</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>*  3. <span class="kw">twoway</span> (rcap lb ub event_time) (connected coef event_time), <span class="kw">by</span>(method)</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="kw">di</span> <span class="kw">as</span> <span class="bn">text</span> <span class="st">"多估计量同框图：按上述三步在本地整理后绘制。"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Written by R.              )
+............
+Difference-in-difference with Multiple Time Periods
+
+                                                         Number of obs = 2,500
+Outcome model  : least squares
+Treatment model: inverse probability
+------------------------------------------------------------------------------
+             | Coefficient  Std. err.      z    P&gt;|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+     Pre_avg |     -0.000      0.008    -0.01   0.995       -0.015       0.015
+    Post_avg |     -0.080      0.019    -4.24   0.000       -0.118      -0.043
+         Tm3 |      0.027      0.014     1.90   0.057       -0.001       0.054
+         Tm2 |     -0.004      0.013    -0.28   0.780       -0.029       0.022
+         Tm1 |     -0.023      0.014    -1.60   0.109       -0.052       0.005
+         Tp0 |     -0.021      0.011    -1.83   0.067       -0.044       0.001
+         Tp1 |     -0.053      0.016    -3.24   0.001       -0.085      -0.021
+         Tp2 |     -0.140      0.035    -3.97   0.000       -0.210      -0.071
+         Tp3 |     -0.107      0.033    -3.25   0.001       -0.171      -0.042
+------------------------------------------------------------------------------
+Control: Never Treated
+
+See Callaway and Sant'Anna (2021) for details
+多估计量同框图：按上述三步在本地整理后绘制。</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="A06_did_method_selection_files/figure-html/cell-12-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>这张图想说明什么</strong>：不同估计量在同一数据上给出的动态路径，<strong>形状应大体一致</strong>（都指向同方向的效应演化），但<strong>具体数值和置信区间会有差异</strong>，因为它们的目标参数与加权方式不同。图上若三条线走势一致，就是「结论不依赖单一估计量」最有力的可视化证据。</p>
+</section>
+<section id="方法与软件地图" class="level2" data-number="F.11">
+<h2 data-number="F.11" class="anchored" data-anchor-id="方法与软件地图"><span class="header-section-number">F.11</span> 方法与软件地图</h2>
+<p>正文不把命令写成教程；课后系统查阅优先看这些资源：</p>
+<ul>
+<li><strong>Asjad Naqvi, DiD 方法与软件地图</strong>：<a href="https://asjadnaqvi.github.io/DiD/" class="uri">https://asjadnaqvi.github.io/DiD/</a> —— 跟踪各语言 DID 包的发展，列出 TWFE、Bacon、<code>csdid</code>、<code>did_imputation</code>、<code>eventstudyinteract</code>、<code>did2s</code>、<code>stackedev</code>、<code>jwdid</code>、<code>did_multiplegt_dyn</code>、<code>sdid</code> 等全部入口。</li>
+<li><strong>Pedro Sant’Anna, DiD Resources</strong>：<a href="https://psantanna.com/did-resources/" class="uri">https://psantanna.com/did-resources/</a> —— 理论与课程索引，含 JEL practitioner guide、DID 课程、checklist，并说明各命令适用场景。</li>
+<li><strong>Fernando Rios-Avila, stpackages</strong>（<code>csdid</code> / <code>drdid</code> 的作者仓库与文档）：<a href="https://github.com/friosavila/stpackages" class="uri">https://github.com/friosavila/stpackages</a></li>
+<li><strong>Albert Alex Zevelev, Compare-DiD-Estimators</strong>（多估计量模拟对比）：<a href="https://github.com/azev77/Compare-DiD-Estimators" class="uri">https://github.com/azev77/Compare-DiD-Estimators</a></li>
+<li><strong>Kyle Butts</strong>, <code>did2s</code>（Stata 版）：<a href="https://github.com/kylebutts/did2s_stata" class="uri">https://github.com/kylebutts/did2s_stata</a></li>
+<li><strong>Stata</strong> <code>honestdid</code>：<a href="https://github.com/mcaceresb/stata-honestdid" class="uri">https://github.com/mcaceresb/stata-honestdid</a></li>
+</ul>
+<p><strong>延伸阅读（含复现包）</strong>：</p>
+<ul>
+<li>Cengiz, Dube, Lindner &amp; Zipperer (2019, QJE)，最低工资的堆叠事件研究，交错处理的应用典范。复现包（数据 + 代码）见 Harvard Dataverse：<a href="https://doi.org/10.7910/DVN/TJCTC7" class="uri">https://doi.org/10.7910/DVN/TJCTC7</a>。</li>
+<li>Callaway &amp; Sant’Anna (2021, J. Econometrics)，group-time ATT 的原始文献，<code>csdid</code>/<code>did</code> 的理论出处，配套 R 包 <code>did</code> 与本附录数据 <code>mpdta</code>。</li>
+<li>Liu, D. (2023). Heterogeneous Difference-in-Differences in Stata. Stata Webinar slides（正文最低工资案例与四类聚合公式的原始材料）：<a href="https://www.stata.com/training/webinar_series/materials/hdidweb1.pdf" class="uri">https://www.stata.com/training/webinar_series/materials/hdidweb1.pdf</a>。</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/lianxhcn\.github\.io\/ci-policy\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../notebooks/ch05_counterfactuals/A05_counterfactual_replication.html" class="pagination-link" aria-label="加州禁烟：SCM/RCM/SDID">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">加州禁烟：SCM/RCM/SDID</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../notebooks/ch07_ddml/A07_fwl_ddml.html" class="pagination-link" aria-label="双重机器学习 Stata 实操">
+        <span class="nav-page-text"><span class="chapter-number">G</span>&nbsp; <span class="chapter-title">双重机器学习 Stata 实操</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p><a href="https://www.lianxh.cn">lianxh.cn</a></p>
+</div>
+    <div class="nav-footer-right">
+<p>基于 <a href="https://quarto.org/">Quarto</a> 构建</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

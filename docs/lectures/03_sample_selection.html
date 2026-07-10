@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>3&nbsp; 样本选择偏误 – 因果推断：政策评估中的识别思维与实证设计</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../lectures/04_fixed_effects.html" rel="next">
+<link href="../lectures/02_policy_to_data.html" rel="prev">
+<link href="../images/book-logo.png" rel="icon" type="image/png">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e8fb9d25728d58bfeac61b497e4a6629.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-57a92833092fd6dc0d7710b6bdfff9c5.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-7ef202e96c563d31d9e5226e4d6cabf9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-490ba4e843cb1303a232ed0c676384f2.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/01_policy_to_design.html"><strong>讲义</strong></a></li><li class="breadcrumb-item"><a href="../lectures/03_sample_selection.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">样本选择偏误</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="https://lianxhcn.github.io/ci-policy/" class="sidebar-logo-link">
+      <img src="../images/book-logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Causal Inference</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/lianxhcn/ci-policy" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
+    <a href="https://www.lianxh.cn" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-house-fill"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🏠 前言</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../syllabus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📌讲授计划</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../settings.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🚀课前准备：环境配置</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text"><strong>讲义</strong></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/01_policy_to_design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">从政策背景到研究设计</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/02_policy_to_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">政策如何进入数据</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/03_sample_selection.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">样本选择偏误</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/04_fixed_effects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">固定效应：控制了什么</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/05_counterfactuals.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">反事实构造</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/06_did_design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">双重差分：从 TWFE 到 CSDID</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/07_ddml.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">双重机器学习：DDML</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/08_ai_agent_workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">AI Agent 辅助实证研究</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/09_reading_list.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">阅读清单</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">附录</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/appendix/A02_government_guidance_fund.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">政府引导基金政策梳理笔记</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/appendix/A03_heckman_selection_literature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Heckman 模型扩展阅读</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch03_heckman/heckman_practical_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Heckman 实操笔记</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch04_fixed_effects/fixed_effects_practical_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">固定效应实操笔记</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch05_counterfactuals/A05_counterfactual_replication.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">加州禁烟：SCM/RCM/SDID</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch06_did/A06_did_method_selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">F</span>&nbsp; <span class="chapter-title">DID 方法与 Stata 实操</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch07_ddml/A07_fwl_ddml.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">G</span>&nbsp; <span class="chapter-title">双重机器学习 Stata 实操</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exercises/exercise_overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">练习概览</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#删样本本身不一定造成偏误" id="toc-删样本本身不一定造成偏误" class="nav-link active" data-scroll-target="#删样本本身不一定造成偏误"><span class="header-section-number">3.1</span> 删样本本身不一定造成偏误</a></li>
+  <li><a href="#主案例女性工资与劳动参与" id="toc-主案例女性工资与劳动参与" class="nav-link" data-scroll-target="#主案例女性工资与劳动参与"><span class="header-section-number">3.2</span> 主案例：女性工资与劳动参与</a></li>
+  <li><a href="#选择方程和结果方程" id="toc-选择方程和结果方程" class="nav-link" data-scroll-target="#选择方程和结果方程"><span class="header-section-number">3.3</span> 选择方程和结果方程</a></li>
+  <li><a href="#一个-stata-实例" id="toc-一个-stata-实例" class="nav-link" data-scroll-target="#一个-stata-实例"><span class="header-section-number">3.4</span> 一个 Stata 实例</a></li>
+  <li><a href="#排他性变量不是装饰" id="toc-排他性变量不是装饰" class="nav-link" data-scroll-target="#排他性变量不是装饰"><span class="header-section-number">3.5</span> 排他性变量不是装饰</a></li>
+  <li><a href="#回到政策评估" id="toc-回到政策评估" class="nav-link" data-scroll-target="#回到政策评估"><span class="header-section-number">3.6</span> 回到政策评估</a>
+  <ul class="collapse">
+  <li><a href="#科创板" id="toc-科创板" class="nav-link" data-scroll-target="#科创板"><span class="header-section-number">3.6.1</span> 科创板</a></li>
+  <li><a href="#政府引导基金" id="toc-政府引导基金" class="nav-link" data-scroll-target="#政府引导基金"><span class="header-section-number">3.6.2</span> 政府引导基金</a></li>
+  <li><a href="#政策试点" id="toc-政策试点" class="nav-link" data-scroll-target="#政策试点"><span class="header-section-number">3.6.3</span> 政策试点</a></li>
+  </ul></li>
+  <li><a href="#heckman-能解决什么不能解决什么" id="toc-heckman-能解决什么不能解决什么" class="nav-link" data-scroll-target="#heckman-能解决什么不能解决什么"><span class="header-section-number">3.7</span> Heckman 能解决什么，不能解决什么</a></li>
+  <li><a href="#顶级期刊如何处理样本选择问题" id="toc-顶级期刊如何处理样本选择问题" class="nav-link" data-scroll-target="#顶级期刊如何处理样本选择问题"><span class="header-section-number">3.8</span> 顶级期刊如何处理样本选择问题</a>
+  <ul class="collapse">
+  <li><a href="#从-mroz-到现代性别工资差距blau-et-al.-2024" id="toc-从-mroz-到现代性别工资差距blau-et-al.-2024" class="nav-link" data-scroll-target="#从-mroz-到现代性别工资差距blau-et-al.-2024"><span class="header-section-number">3.8.1</span> 从 Mroz 到现代性别工资差距：Blau et al.&nbsp;(2024)</a></li>
+  <li><a href="#政策冲击改变谁留在样本中borjas-and-edo-2026" id="toc-政策冲击改变谁留在样本中borjas-and-edo-2026" class="nav-link" data-scroll-target="#政策冲击改变谁留在样本中borjas-and-edo-2026"><span class="header-section-number">3.8.2</span> 政策冲击改变谁留在样本中：Borjas and Edo (2026)</a></li>
+  <li><a href="#国际贸易中的零贸易流helpman-et-al.-2008" id="toc-国际贸易中的零贸易流helpman-et-al.-2008" class="nav-link" data-scroll-target="#国际贸易中的零贸易流helpman-et-al.-2008"><span class="header-section-number">3.8.3</span> 国际贸易中的零贸易流：Helpman et al.&nbsp;(2008)</a></li>
+  <li><a href="#从均值校正到分布校正chernozhukov-et-al.-2025" id="toc-从均值校正到分布校正chernozhukov-et-al.-2025" class="nav-link" data-scroll-target="#从均值校正到分布校正chernozhukov-et-al.-2025"><span class="header-section-number">3.8.4</span> 从均值校正到分布校正：Chernozhukov et al.&nbsp;(2025)</a></li>
+  <li><a href="#顶刊写法的共同逻辑" id="toc-顶刊写法的共同逻辑" class="nav-link" data-scroll-target="#顶刊写法的共同逻辑"><span class="header-section-number">3.8.5</span> 顶刊写法的共同逻辑</a></li>
+  </ul></li>
+  <li><a href="#扩展阅读" id="toc-扩展阅读" class="nav-link" data-scroll-target="#扩展阅读"><span class="header-section-number">3.9</span> 扩展阅读</a></li>
+  <li><a href="#从本章走向下一章" id="toc-从本章走向下一章" class="nav-link" data-scroll-target="#从本章走向下一章"><span class="header-section-number">3.10</span> 从本章走向下一章</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/01_policy_to_design.html"><strong>讲义</strong></a></li><li class="breadcrumb-item"><a href="../lectures/03_sample_selection.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">样本选择偏误</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">样本选择偏误</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-important callout-titled" title="本章核心判断">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+本章核心判断
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>样本选择问题的关键不在于少了多少观测，而在于进入样本的规则是否与结果方程中的不可观测因素相关。研究者看到的数据，往往只是经过制度、市场、个体决策或数据可得性筛选后的样本。</p>
+</div>
+</div>
+<p>第二章讨论了政策如何进入数据。政策进入数据以后，我们还要追问另一个更基础的问题：哪些个体、企业、地区或项目真的被我们观察到了？</p>
+<p>很多经验研究看似有完整数据，实际上只观察到一部分对象。工资只在就业者中可见；企业绩效只在存活企业中可见；创新产出可能只在申请专利或披露研发信息的企业中可见；科创板研究中，最终上市企业已经经过申报、受理、问询、注册和发行等多重筛选；政府引导基金研究中，被投企业通常不是随机企业，而是基金管理人、地方政府和产业目标共同筛选出的对象。</p>
+<p>这类问题不能简单归结为「样本量变少」。真正的问题是：进入样本的机制是否改变了结果变量和解释变量之间的关系。</p>
+<p>本章先用一个最小模拟例子说明样本选择偏误的基本机制，再用女性工资和劳动参与的 Heckman 经典案例讲清选择方程与结果方程，最后回到政策评估中的科创板、政府引导基金和政策试点。</p>
+<section id="删样本本身不一定造成偏误" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="删样本本身不一定造成偏误"><span class="header-section-number">3.1</span> 删样本本身不一定造成偏误</h2>
+<p>样本选择偏误经常被误解为「删掉一部分样本就会有偏」。这个理解过于粗糙。删样本是否造成 OLS 有偏，取决于样本进入规则是否破坏回归所需的外生性条件。</p>
+<p>考虑一个最简单的数据生成过程：</p>
+<p><span id="eq-cipolicy-selection-basic-dgp"><span class="math display">\[
+y_i=\beta x_i+u_i,\qquad \beta=1
+\tag{3.1}\]</span></span></p>
+<p>其中，<span class="math inline">\(x_i\)</span> 与 <span class="math inline">\(u_i\)</span> 相互独立。完整样本中，OLS 能够识别 <span class="math inline">\(\beta\)</span>，因为：</p>
+<p><span id="eq-cipolicy-selection-exogeneity"><span class="math display">\[
+E(u_i\mid x_i)=0
+\tag{3.2}\]</span></span></p>
+<p>现在比较两种样本限制。</p>
+<p>第一种限制是只保留 <span class="math inline">\(x_i\ge0\)</span> 的观测。进入样本的规则只取决于解释变量 <span class="math inline">\(x_i\)</span>。在上述设定下，这种筛选改变了 <span class="math inline">\(x_i\)</span> 的分布，也减少了样本量，但没有把误差项 <span class="math inline">\(u_i\)</span> 带入选择过程。因此，在被保留样本中，<span class="math inline">\(u_i\)</span> 与 <span class="math inline">\(x_i\)</span> 仍然没有系统性相关。</p>
+<p>第二种限制是只保留 <span class="math inline">\(y_i\ge0\)</span> 的观测。由于 <span class="math inline">\(y_i=x_i+u_i\)</span>，这个进入规则等价于：</p>
+<p><span id="eq-cipolicy-selection-y-positive"><span class="math display">\[
+x_i+u_i\ge0
+\tag{3.3}\]</span></span></p>
+<p>这时，误差项 <span class="math inline">\(u_i\)</span> 直接进入了样本选择过程。低 <span class="math inline">\(x_i\)</span> 的观测如果要进入样本，就需要较高的 <span class="math inline">\(u_i\)</span> 把 <span class="math inline">\(y_i\)</span> 推到 0 以上；高 <span class="math inline">\(x_i\)</span> 的观测即使 <span class="math inline">\(u_i\)</span> 较低，也可能进入样本。结果是，在被选择出来的样本中，<span class="math inline">\(x_i\)</span> 和 <span class="math inline">\(u_i\)</span> 被人为制造出相关性。OLS 的关键条件被破坏：</p>
+<p><span id="eq-cipolicy-selection-conditional-error"><span class="math display">\[
+E(u_i\mid x_i,S_i=1)\ne0
+\tag{3.4}\]</span></span></p>
+<p><a href="#fig-cipolicy-selection-x-vs-y" class="quarto-xref">图&nbsp;<span>3.1</span></a> 直观展示了这两类筛选规则的差别。核心不是删掉了多少点，而是筛选规则是否把误差项带进来。</p>
+<div id="fig-cipolicy-selection-x-vs-y" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-selection-x-vs-y-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/lianxh_selection_bias_fig01_x_vs_y_selection_whiteboard.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-selection-x-vs-y-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;3.1: 按解释变量筛选与按结果变量筛选
+</figcaption>
+</figure>
+</div>
+<p>另一幅图更直接地展示了 OLS 斜率的变化。完整样本和只保留 <span class="math inline">\(x_i\ge0\)</span> 的样本中，拟合线差异不大；只保留 <span class="math inline">\(y_i\ge0\)</span> 的样本中，拟合线明显变平，因为选择规则已经改变了 <span class="math inline">\(x_i\)</span> 与误差项之间的关系。</p>
+<div id="fig-cipolicy-selection-ols-slope" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-selection-ols-slope-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/selection_bias_simulation_twopanel.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-selection-ols-slope-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;3.2: 选择规则与 OLS 斜率变化
+</figcaption>
+</figure>
+</div>
+<p>这个例子给第三章定下基调：样本选择问题不是「数据少了」的问题，而是「谁被看见」的问题。</p>
+<div class="callout callout-style-default callout-note callout-titled" title="判断样本选择偏误的第一原则">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+判断样本选择偏误的第一原则
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>如果进入样本的规则只改变解释变量的分布，但没有改变误差项与解释变量之间的关系，OLS 未必有偏。若进入样本的规则依赖结果变量或结果方程中的不可观测因素，OLS 通常会出现偏误。</p>
+</div>
+</div>
+</section>
+<section id="主案例女性工资与劳动参与" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="主案例女性工资与劳动参与"><span class="header-section-number">3.2</span> 主案例：女性工资与劳动参与</h2>
+<p>Heckman 模型最经典的入口是女性工资和劳动参与。研究者想估计教育、经验和居住地等因素对工资的影响，但工资只有在女性进入劳动市场时才可见。未参加劳动市场的女性并不是不存在，只是工资没有被观察到。</p>
+<p>这时，研究总体和观察样本之间出现了差别。</p>
+<ul>
+<li><strong>研究总体</strong>
+<ul>
+<li>所有适龄女性；</li>
+<li>每个人都有潜在市场工资；</li>
+<li>但潜在工资并不总是被观察到。</li>
+</ul></li>
+<li><strong>观察样本</strong>
+<ul>
+<li>进入劳动市场的女性；</li>
+<li>她们有工资数据；</li>
+<li>工资方程只能在这部分样本中直接估计。</li>
+</ul></li>
+<li><strong>未被观察的结果</strong>
+<ul>
+<li>未进入劳动市场的女性没有工资数据；</li>
+<li>她们可能有潜在工资能力；</li>
+<li>但研究者看不到其工资结果。</li>
+</ul></li>
+</ul>
+<p>问题在于，劳动参与本身不是随机的。是否进入劳动市场，可能取决于教育、年龄、工作经验、家庭收入、丈夫工资、子女数量、照护责任、本地就业机会以及个人偏好。其中一些因素也可能影响潜在工资。于是，仅在就业女性中估计工资方程，得到的不一定是教育对所有女性潜在工资的影响。</p>
+<p>可以把数据生成过程分成两步：</p>
+<pre class="text"><code>所有女性
+  ↓
+是否进入劳动市场
+  ↓
+进入劳动市场：工资被观察到
+未进入劳动市场：工资不可见
+  ↓
+研究者只能在工资可见样本中估计工资方程</code></pre>
+<p>这种结构正是 Heckman 选择模型要处理的问题。</p>
+</section>
+<section id="选择方程和结果方程" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="选择方程和结果方程"><span class="header-section-number">3.3</span> 选择方程和结果方程</h2>
+<p>Heckman 思维的核心是承认数据生成过程包含两条方程。</p>
+<p>第一条是选择方程，描述谁进入可观察样本：</p>
+<p><span id="eq-cipolicy-selection-selection-equation"><span class="math display">\[
+S_i^*=Z_i'\gamma+v_i,\qquad S_i=\mathbf{1}\{S_i^*&gt;0\}
+\tag{3.5}\]</span></span></p>
+<p>其中，<span class="math inline">\(S_i^*\)</span> 是不可观察的选择倾向，<span class="math inline">\(S_i\)</span> 是是否进入样本的实际状态，<span class="math inline">\(Z_i\)</span> 是影响选择的变量，<span class="math inline">\(v_i\)</span> 是选择方程中的不可观测因素。</p>
+<p>第二条是结果方程，描述进入样本以后结果变量是多少：</p>
+<p><span id="eq-cipolicy-selection-outcome-equation"><span class="math display">\[
+Y_i=X_i'\beta+u_i,\qquad Y_i\text{ 仅当 }S_i=1\text{ 时被观察到}
+\tag{3.6}\]</span></span></p>
+<p>其中，<span class="math inline">\(Y_i\)</span> 是结果变量，<span class="math inline">\(X_i\)</span> 是结果方程中的解释变量，<span class="math inline">\(u_i\)</span> 是结果方程中的不可观测因素。</p>
+<p>样本选择偏误来自 <span class="math inline">\(u_i\)</span> 与 <span class="math inline">\(v_i\)</span> 的相关性。如果二者相关，意味着影响个体进入样本的不可观测因素，也影响结果变量。此时，仅在 <span class="math inline">\(S_i=1\)</span> 的样本中估计结果方程，会导致误差项条件均值不为 0。</p>
+<p>用女性工资例子来说：</p>
+<ul>
+<li>劳动参与方程解释 <code>inlf</code>；</li>
+<li>工资方程解释 <code>wage</code> 或 <code>lwage</code>；</li>
+<li>如果影响女性是否工作的不可观测因素，也影响其潜在工资，直接在就业女性样本中估计工资方程就可能有偏。</li>
+</ul>
+<p>Heckman 模型的目标不是把所有内生性问题自动修好，而是针对这一类「结果变量只在被选择样本中可见」的问题，显式建模选择过程。</p>
+</section>
+<section id="一个-stata-实例" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="一个-stata-实例"><span class="header-section-number">3.4</span> 一个 Stata 实例</h2>
+<p>Stata 自带的 <code>mroz.dta</code> 数据提供了一个适合教学的例子。数据可以在线读入：</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">webuse</span> <span class="st">"mroz.dta"</span>, <span class="kw">clear</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">des</span> wage educ exper expersq city age faminc kidslt6</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">heckman</span> wage educ exper expersq city, <span class="co">///</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>   select(inlf = age c.age#c.age faminc kidslt6 educ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>在这个例子中，结果方程解释工资 <code>wage</code>：</p>
+<p><span id="eq-cipolicy-selection-mroz-wage"><span class="math display">\[
+\operatorname{wage}_i
+=\beta_0+\beta_1\operatorname{educ}_i+\beta_2\operatorname{exper}_i+\beta_3\operatorname{expersq}_i+\beta_4\operatorname{city}_i+u_i
+\tag{3.7}\]</span></span></p>
+<p>选择方程解释女性是否进入劳动市场 <code>inlf</code>：</p>
+<p><span id="eq-cipolicy-selection-mroz-inlf"><span class="math display">\[
+S_i^*
+=\gamma_0+\gamma_1\operatorname{age}_i+\gamma_2\operatorname{age}_i^2+\gamma_3\operatorname{faminc}_i+\gamma_4\operatorname{kidslt6}_i+\gamma_5\operatorname{educ}_i+v_i
+\tag{3.8}\]</span></span></p>
+<p>这里，<code>kidslt6</code> 表示 6 岁以下子女数量，反映家庭照护责任；<code>faminc</code> 表示家庭收入，影响女性是否参加劳动市场；<code>educ</code> 同时进入选择方程和结果方程，因为教育既可能影响劳动参与，也会影响工资。</p>
+<p>执行后的核心结果如下：</p>
+<pre class="text"><code>Heckman selection model                   Number of obs  =    753
+(model with sample selection)             Selected       =    428
+                                          Nonselected    =    325
+     
+                                          Wald chi2(4)   =  88.79
+Log likelihood = -1474.133                Prob &gt; chi2    = 0.0000
+
+-----------------------------------------------------------------
+             |   Coeff     S.E.      z     P&gt;|z|      [95% CI]
+-------------+---------------------------------------------------
+wage         |                                                   
+        educ |   0.671    0.076     8.86   0.000    0.523   0.820
+       exper |   0.072    0.033     2.17   0.030    0.007   0.137
+     expersq |  -0.001    0.001    -1.02   0.306   -0.003   0.001
+        city |  -0.079    0.195    -0.40   0.686   -0.461   0.304
+       _cons |  -7.517    0.993    -7.57   0.000   -9.464  -5.570
+-------------+---------------------------------------------------
+inlf         |                                                   
+         age |  -0.032    0.033    -0.98   0.328   -0.097   0.032
+ c.age#c.age |   0.000    0.000     0.89   0.374   -0.000   0.001
+      faminc |  -0.000    0.000    -3.19   0.001   -0.000  -0.000
+     kidslt6 |  -0.162    0.049    -3.30   0.001   -0.259  -0.066
+        educ |   0.161    0.020     8.11   0.000    0.122   0.200
+       _cons |  -0.941    0.749    -1.26   0.209   -2.409   0.528
+-------------+---------------------------------------------------
+     /athrho |   2.766    0.229    12.10   0.000    2.318   3.214
+    /lnsigma |   1.426    0.040    35.74   0.000    1.347   1.504
+-------------+---------------------------------------------------
+         rho |   0.992    0.004                     0.981   0.997
+       sigma |   4.160    0.166                     3.848   4.499
+      lambda |   4.128    0.171                     3.792   4.464
+-----------------------------------------------------------------
+LR test of indep. eqns. (rho = 0): chi2(1) = 164.38  Prob &gt; chi2 = 0.0000</code></pre>
+<p>这个输出至少要读三处。</p>
+<p>第一，看 <code>Selected</code> 和 <code>Nonselected</code>。753 个观测中，428 个女性进入劳动市场并有工资数据，325 个没有工资结果。工资不是总体中每个人都可见的变量。</p>
+<p>第二，看选择方程。<code>kidslt6</code> 的系数为负，说明 6 岁以下子女数量越多，女性进入劳动市场的概率越低；<code>faminc</code> 的系数也为负，说明家庭收入较高时，女性劳动参与倾向下降；<code>educ</code> 的系数为正，说明教育提高劳动参与概率。</p>
+<p>第三，看 <code>rho</code> 和独立性检验。输出中 <code>rho</code> 接近 1，且 <code>rho = 0</code> 的检验被拒绝，说明选择方程和结果方程中的不可观测因素存在显著相关。此时，把选择过程完全忽略掉，直接在就业女性样本中估计工资方程，就可能存在样本选择偏误。</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Notebook 实操">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Notebook 实操
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>本书另附一个可运行 Notebook，用 nbstata 演示 <code>mroz.dta</code>、OLS、Heckman 极大似然估计、Heckman 两步法和 IMR 生成过程，见 <a href="../notebooks/ch03_heckman/heckman_practical_notes.html">Heckman 实操笔记</a>。</p>
+</div>
+</div>
+</section>
+<section id="排他性变量不是装饰" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="排他性变量不是装饰"><span class="header-section-number">3.5</span> 排他性变量不是装饰</h2>
+<p>Heckman 模型最容易被误用的地方，是排他性变量。选择方程中最好至少有一个变量影响是否进入样本，但不直接影响结果变量。这个要求类似工具变量中的排除限制，但它服务的是选择方程识别。</p>
+<p>在女性工资例子中，可以考虑的选择变量包括：</p>
+<ul>
+<li>6 岁以下子女数量；</li>
+<li>年龄及年龄平方；</li>
+<li>家庭收入；</li>
+<li>丈夫工资；</li>
+<li>本地托育资源；</li>
+<li>通勤成本；</li>
+<li>家庭照护负担。</li>
+</ul>
+<p>但是，这些变量能否作为排他性变量，不能只靠直觉。比如，6 岁以下子女数量可能影响女性是否工作，但它也可能影响工时、职业选择和工作地点；家庭收入可能影响劳动参与，但也可能与社会阶层、居住地和家庭网络相关，进而影响工资。研究者必须解释为什么这些变量主要通过选择过程影响结果，而不是直接进入结果方程。</p>
+<div class="callout callout-style-default callout-warning callout-titled" title="不要硬造排他性变量">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+不要硬造排他性变量
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Heckman 模型不是靠命令自动修正偏误。选择方程和结果方程如何区分，排他性变量为什么有效，都需要制度背景和经济学逻辑支持。解释不清选择机制时，Heckman 只会把问题变得更复杂。</p>
+</div>
+</div>
+</section>
+<section id="回到政策评估" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="回到政策评估"><span class="header-section-number">3.6</span> 回到政策评估</h2>
+<p>第三章的目标不是让读者学会机械运行 <code>heckman</code> 命令，而是建立样本进入机制的意识。这个意识可以直接迁移到政策评估。</p>
+<section id="科创板" class="level3" data-number="3.6.1">
+<h3 data-number="3.6.1" class="anchored" data-anchor-id="科创板"><span class="header-section-number">3.6.1</span> 科创板</h3>
+<p>科创板研究中，最终上市企业不是天然处理组。企业要经历申报、受理、问询、注册和发行等环节。能够最终上市的企业，通常已经经过科技属性、成长性、治理结构、中介机构支持和监管审核等筛选。</p>
+<p>因此，若直接比较科创板上市企业和其他企业，估计结果可能混合三类因素：</p>
+<ul>
+<li>注册制改革的政策效应；</li>
+<li>企业政策前质量和成长性；</li>
+<li>审核和中介机构筛选。</li>
+</ul>
+<p>更稳妥的做法，是根据研究问题区分：</p>
+<ul>
+<li>潜在符合科创板定位的企业；</li>
+<li>提交申报材料的企业；</li>
+<li>被受理企业；</li>
+<li>通过注册企业；</li>
+<li>最终上市企业。</li>
+</ul>
+<p>不同样本对应不同估计对象，也对应不同选择机制。</p>
+</section>
+<section id="政府引导基金" class="level3" data-number="3.6.2">
+<h3 data-number="3.6.2" class="anchored" data-anchor-id="政府引导基金"><span class="header-section-number">3.6.2</span> 政府引导基金</h3>
+<p>政府引导基金被投企业通常也不是随机企业。基金管理人和政府资金往往倾向选择符合产业方向、成长潜力更高、技术路线更重要或更有地方战略价值的企业。后续追投更可能反映企业已经展示出的阶段性成功。</p>
+<p>如果研究者只比较被投企业和未被投企业，很容易把企业本来更强的成长潜力误认为政府引导基金的效果。这个问题在多层级、多轮次投资中会更加严重：</p>
+<ul>
+<li>中央级基金可能选择国家战略方向；</li>
+<li>地方基金可能选择本地产业链关键企业；</li>
+<li>后续追投可能选择表现更好的企业；</li>
+<li>退出也可能发生在目标达成或绩效改善之后。</li>
+</ul>
+<p>因此，政府引导基金研究不仅要定义 <code>Treat</code>，还要定义进入机制：哪些企业有机会被投，谁负责筛选，筛选依据是什么，是否能观察到申请者、候选项目或未中选对象。</p>
+</section>
+<section id="政策试点" class="level3" data-number="3.6.3">
+<h3 data-number="3.6.3" class="anchored" data-anchor-id="政策试点"><span class="header-section-number">3.6.3</span> 政策试点</h3>
+<p>很多政策试点也存在进入选择。第一批试点城市可能治理能力更强，产业基础更好，问题更突出，或者地方政府更积极。后续扩围又可能吸纳不同类型地区。</p>
+<p>这会影响 DID 的可比性。即使后续使用双向固定效应、事件研究、交错 DID 或合成控制法，研究者仍要先解释试点进入机制。否则，处理组和对照组政策前差异可能已经包含在进入机制中。</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="政策评估中的样本选择问题">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+政策评估中的样本选择问题
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>看到「上市企业」「被投企业」「获批企业」「试点城市」「幸存企业」时，先不要急着估计政策效应。先问：这些对象是怎样进入样本的？未进入样本的对象是否可见？进入机制是否与潜在结果相关？</p>
+</div>
+</div>
+</section>
+</section>
+<section id="heckman-能解决什么不能解决什么" class="level2" data-number="3.7">
+<h2 data-number="3.7" class="anchored" data-anchor-id="heckman-能解决什么不能解决什么"><span class="header-section-number">3.7</span> Heckman 能解决什么，不能解决什么</h2>
+<p>Heckman 模型适合处理一类特定问题：结果变量只在被选择样本中可见，且选择过程可以被合理建模。它可以帮助研究者把选择过程显式写出来，并在一定分布假设下校正选择偏误。</p>
+<p>但 Heckman 不能自动解决所有内生性问题。</p>
+<ul>
+<li>如果处理变量本身内生，Heckman 未必适合；</li>
+<li>如果结果变量在所有样本中都可见，只是处理组自选择，问题可能更接近处理效应识别，而不是经典样本选择；</li>
+<li>如果没有合理的排他性变量，Heckman 只能依赖函数形式识别，可信度较弱；</li>
+<li>如果选择过程来自复杂政治经济机制，仅靠选择方程很难充分刻画；</li>
+<li>如果研究者把第一阶段预测值当作工具变量，或机械加入 IMR 而不解释选择机制，模型可能被误用。</li>
+</ul>
+<p>因此，Heckman 应该被理解为一种样本选择模型，而不是万能稳健性检验。</p>
+</section>
+<section id="顶级期刊如何处理样本选择问题" class="level2" data-number="3.8">
+<h2 data-number="3.8" class="anchored" data-anchor-id="顶级期刊如何处理样本选择问题"><span class="header-section-number">3.8</span> 顶级期刊如何处理样本选择问题</h2>
+<p>前文已经说明，样本选择问题不是简单的样本量减少，而是进入样本的规则可能与结果方程中的不可观测因素相关。工资只在就业者中可见，贸易量只在发生贸易的国家对中可见，上市公司只是在资本市场筛选后留下来的企业。研究者真正需要说明的是：哪些结果没有被观察到？谁决定了这些结果是否可见？进入样本的机制是否也影响结果变量本身？</p>
+<p>顶级期刊中，经典 Heckman 两方程模型已经很少作为唯一主识别策略出现。更常见的写法是先把样本进入机制讲清楚，再根据问题结构选择不同形式的选择校正：有的是传统的 employment selection correction，有的是两阶段贸易流估计，有的是把 Heckman 思路推广到工资分布。下面四篇文献可以帮助读者理解这种写法。</p>
+<section id="从-mroz-到现代性别工资差距blau-et-al.-2024" class="level3" data-number="3.8.1">
+<h3 data-number="3.8.1" class="anchored" data-anchor-id="从-mroz-到现代性别工资差距blau-et-al.-2024"><span class="header-section-number">3.8.1</span> 从 Mroz 到现代性别工资差距：Blau et al.&nbsp;(2024)</h3>
+<ul>
+<li>Blau, F. D., Kahn, L. M., Boboshko, N., &amp; Comey, M. L. (2024). The impact of selection into the labor force on the gender wage gap. <em>Journal of Labor Economics</em>, 42(4), 1093–1133. <a href="https://doi.org/10.1086/725032">Link</a>, <a href="https://www.nber.org/system/files/working_papers/w28855/w28855.pdf">PDF</a>, <a href="https://www.openicpsr.org/openicpsr/project/210781/version/V1/view">Data</a>, <a href="https://scholar.google.com/scholar?q=The+Impact+of+Selection+into+the+Labor+Force+on+the+Gender+Wage+Gap">Google</a>.</li>
+</ul>
+<p>这篇文章可以看作 Mroz 女性工资案例的现代扩展。Mroz 例子告诉我们，工资只在就业女性中可见；Blau et al.&nbsp;(2024) 进一步追问：1981–2015 年美国性别工资差距的收敛，到底是潜在工资报价真的收敛，还是男女进入就业样本的方式发生了变化？如果女性劳动参与上升主要来自高教育、高潜在工资女性进入市场，观察到的性别工资差距可能被压低；如果低工资男性退出劳动力市场，观察到的男性平均工资也会被抬高。这些变化都会改变工资样本构成。</p>
+<p>这篇文章的研究背景是美国性别工资差距长期收敛。作者使用 PSID 数据，并通过纵向信息尽量补齐工资观测：不仅使用常规全职工资样本，也使用兼职、短期就业和相邻年份的工资信息。这样做的原因很清楚：若工资只在较强劳动参与者中可见，直接估计观察工资差距，得到的是就业样本中的工资差距，而不是总体潜在工资报价差距。</p>
+<p>用 Heckman 语言表达，潜在工资方程可以写为：</p>
+<p><span class="math display">\[
+W_{it}^{*}=X_{it}'\beta+u_{it}
+\]</span></p>
+<p>其中，<span class="math inline">\(W_{it}^{*}\)</span> 表示个体 <span class="math inline">\(i\)</span> 在年份 <span class="math inline">\(t\)</span> 的潜在工资报价，<span class="math inline">\(X_{it}\)</span> 包括教育、实际工作经验、年龄、种族、家庭结构等变量。工资只有在个体进入工资样本时才能观察到。选择方程可以写为：</p>
+<p><span class="math display">\[
+D_{it}^{*}=Z_{it}'\gamma+v_{it},\qquad D_{it}=\mathbf{1}\{D_{it}^{*}&gt;0\},\qquad W_{it}=W_{it}^{*}\text{ if }D_{it}=1
+\]</span></p>
+<p>其中，<span class="math inline">\(D_{it}\)</span> 表示是否有可用工资观测。若 <span class="math inline">\(u_{it}\)</span> 与 <span class="math inline">\(v_{it}\)</span> 相关，劳动参与选择就会影响工资差距估计。</p>
+<p>需要说明的是，Blau et al.&nbsp;(2024) 并不只是机械使用经典 Heckman 两步法。文章比较了结构式选择校正、identification at infinity、bounds 和概率加权等多种方法。作者偏好的方法是 probability weighting，即根据可观察特征预测未观测工资者落入工资分布各分位区间的概率，而不是给每个人机械填入一个工资水平。文章同时讨论经典选择模型中的排他变量问题：以往文献常用婚姻状况、子女数量、二者交互、非劳动收入或家庭成员年龄结构来解释就业参与，但这些变量能否排除在工资方程之外需要谨慎论证。</p>
+<p>这篇文章适合放在 Mroz 案例后面。它提醒学生，Heckman 模型的教学价值不在于记住一个命令，而在于理解一个更一般的问题：<strong>观察到的工资差距不一定等于潜在工资报价差距</strong>。当男女进入劳动市场的规则不同，且这种规则随时间变化时，工资差距的趋势本身也可能受到样本选择影响。</p>
+</section>
+<section id="政策冲击改变谁留在样本中borjas-and-edo-2026" class="level3" data-number="3.8.2">
+<h3 data-number="3.8.2" class="anchored" data-anchor-id="政策冲击改变谁留在样本中borjas-and-edo-2026"><span class="header-section-number">3.8.2</span> 政策冲击改变谁留在样本中：Borjas and Edo (2026)</h3>
+<ul>
+<li>Borjas, G. J., &amp; Edo, A. (2026). Gender, selection into employment, and the wage impact of immigration. <em>Journal of Labor Economics</em>, 44(2), 515–552. <a href="https://doi.org/10.1086/732774">Link</a>, <a href="https://gborjas.scholars.harvard.edu/sites/g/files/omnuum4696/files/2026-02/JOLE2026.pdf">PDF</a>, <a href="https://www.nber.org/papers/w28682">NBER</a>, <a href="https://scholar.google.com/scholar?q=Gender+Selection+into+Employment+and+the+Wage+Impact+of+Immigration">Google</a>.</li>
+</ul>
+<p>这篇文章更接近因果推断课堂中的政策冲击问题。移民流入通常被理解为对本地劳动力市场的供给冲击。常规估计会比较移民流入较多地区和较少地区中本地劳动者工资的变化。但作者指出，这种估计有一个容易被忽略的问题：移民冲击不只影响工资，也可能影响本地人是否继续留在就业样本中。如果退出就业的本地人不是随机的，观察到的工资变化就会同时包含工资效应和样本构成变化。</p>
+<p>这篇文章以法国劳动力市场为背景。原始相关性显示，移民冲击对本地男性工资有明显负面影响，但对本地女性工资影响接近于零；与此同时，移民冲击显著降低了本地女性就业率。作者的解释是，部分低工资潜力女性在移民冲击后退出就业样本，留下来的女性工资较高，导致观察到的平均工资下降不明显。换言之，直接看就业女性工资，会低估移民冲击对女性潜在工资的负面影响。</p>
+<p>这可以写成一个带政策冲击的选择模型。潜在工资方程为：</p>
+<p><span class="math display">\[
+\ln W_{irt}^{*}=\alpha M_{rt}+X_{irt}'\beta+\delta_{r}+\delta_{t}+u_{irt}
+\]</span></p>
+<p>其中，<span class="math inline">\(M_{rt}\)</span> 表示地区 <span class="math inline">\(r\)</span> 在年份 <span class="math inline">\(t\)</span> 的移民冲击或移民份额，<span class="math inline">\(X_{irt}\)</span> 是个人特征，<span class="math inline">\(\delta_{r}\)</span> 和 <span class="math inline">\(\delta_{t}\)</span> 表示地区和年份固定效应。问题在于，<span class="math inline">\(W_{irt}^{*}\)</span> 只在个体就业时被观察到。就业选择方程可写为：</p>
+<p><span class="math display">\[
+E_{irt}^{*}=Z_{irt}'\gamma+\theta M_{rt}+v_{irt},\qquad E_{irt}=\mathbf{1}\{E_{irt}^{*}&gt;0\}
+\]</span></p>
+<p>当 <span class="math inline">\(u_{irt}\)</span> 与 <span class="math inline">\(v_{irt}\)</span> 相关时，移民冲击对工资的估计会被就业选择污染。作者在工资方程中加入由就业选择方程得到的 inverse Mills ratio，并结合 shift-share 工具变量处理移民份额的内生性。</p>
+<p>这篇文章的排他变量和识别结构比 Mroz 例子复杂。基础控制包括年龄-年份、教育-年份、地区-年份固定效应；选择方程中进一步使用家庭特征和家庭财富信息，如婚姻、是否有年幼子女、住房所有权等。作者还通过替代选择方程、线性概率模型生成的选择校正项、以及高就业概率女性子样本等方式检验结论是否依赖某个特定的 Heckman 函数形式。</p>
+<p>这篇文章特别适合放在政策评估部分。它说明，政策冲击可能改变 outcome sample 本身。DID、IV 或 shift-share 识别即使处理了冲击变量的外生性，也仍然需要问一个问题：政策之后，谁还留在可观察结果样本中？如果留下来的人已经被筛选过，观察到的平均结果就不再只是政策作用于固定总体的结果。</p>
+</section>
+<section id="国际贸易中的零贸易流helpman-et-al.-2008" class="level3" data-number="3.8.3">
+<h3 data-number="3.8.3" class="anchored" data-anchor-id="国际贸易中的零贸易流helpman-et-al.-2008"><span class="header-section-number">3.8.3</span> 国际贸易中的零贸易流：Helpman et al.&nbsp;(2008)</h3>
+<ul>
+<li>Helpman, E., Melitz, M., &amp; Rubinstein, Y. (2008). Estimating trade flows: Trading partners and trading volumes. <em>The Quarterly Journal of Economics</em>, 123(2), 441–487. <a href="https://doi.org/10.1162/qjec.2008.123.2.441">Link</a>, <a href="https://melitz.scholars.harvard.edu/sites/g/files/omnuum5906/files/melitz/files/estimatingtradeflows_qje.pdf">PDF</a>, <a href="https://melitz.scholars.harvard.edu/publications/estimating-trade-flows-trading-partners-and-trading-volumes">Homepage</a>, <a href="https://scholar.google.com/scholar?q=Estimating+Trade+Flows+Trading+Partners+and+Trading+Volumes">Google</a>.</li>
+</ul>
+<p>这篇文章虽然早于近十年，但非常适合讲样本选择问题如何跳出劳动经济学。传统引力模型通常只在正贸易流样本中估计双边贸易量，即只使用已经发生贸易的国家对。Helpman et al.&nbsp;(2008) 指出，大量国家对之间的贸易额为零，这些零贸易流不是无关信息，而是反映了企业是否进入出口市场的选择过程。若只看正贸易流，研究者观察到的是经过出口进入筛选后的国家对样本。</p>
+<p>文章的理论基础来自异质性企业贸易模型。企业面对固定出口成本和可变贸易成本，只有生产率足够高、能够覆盖目的国进入成本的企业才会出口。某一国家对之间是否有贸易，取决于是否存在企业愿意进入该目的国市场；一旦发生贸易，贸易量又取决于贸易成本、市场规模和进入企业数量。因此，作者把双边贸易分成两个问题：是否成为贸易伙伴，以及成为贸易伙伴以后贸易量是多少。</p>
+<p>选择方程可以写为：</p>
+<p><span class="math display">\[
+T_{ij}=\mathbf{1}\{Z_{ij}'\gamma+v_{ij}&gt;0\}
+\]</span></p>
+<p>其中，<span class="math inline">\(T_{ij}\)</span> 表示出口国 <span class="math inline">\(j\)</span> 是否向进口国 <span class="math inline">\(i\)</span> 出口，<span class="math inline">\(Z_{ij}\)</span> 包括距离、共同边界、共同语言、殖民关系、贸易成本和固定进入成本等变量。结果方程只在 <span class="math inline">\(T_{ij}=1\)</span> 的国家对中观察到：</p>
+<p><span class="math display">\[
+\ln X_{ij}=X_{ij}'\beta+\eta_{ij}+u_{ij},\qquad \text{observed only if }T_{ij}=1
+\]</span></p>
+<p>这里，<span class="math inline">\(X_{ij}\)</span> 是双边贸易额，<span class="math inline">\(\eta_{ij}\)</span> 表示与进入出口市场的企业比例有关的 extensive margin。文章的重点不只是 Heckman 意义上的样本选择校正，还包括被遗漏的出口企业数量这一 extensive margin。因此，第二阶段同时使用选择方程生成的校正项和对 extensive margin 的估计。</p>
+<p>排他变量是这篇文章最适合教学的地方。作者先在较小样本中使用企业进入监管成本作为排他变量，理由是这些成本影响企业进入出口市场的固定成本，从而影响是否发生贸易，但在控制贸易伙伴选择和其他贸易成本后，不直接影响正贸易流的强度。随后作者构造共同宗教指数，并检验其可作为更大样本中的排他变量。共同宗教影响贸易关系建立和进入成本，但在其设定中不直接进入贸易量方程。</p>
+<p>这篇文章可以帮助学生看到，样本选择的核心不是「人是否工作」这一种形式。只要结果变量只在某个进入状态下可见，就会产生类似结构。国家对之间没有贸易时，贸易量不是简单缺失，而是经济机制决定的零值。传统只看正贸易流的回归，等价于只在被选择样本中估计结果方程。</p>
+</section>
+<section id="从均值校正到分布校正chernozhukov-et-al.-2025" class="level3" data-number="3.8.4">
+<h3 data-number="3.8.4" class="anchored" data-anchor-id="从均值校正到分布校正chernozhukov-et-al.-2025"><span class="header-section-number">3.8.4</span> 从均值校正到分布校正：Chernozhukov et al.&nbsp;(2025)</h3>
+<ul>
+<li>Chernozhukov, V., Fernández-Val, I., &amp; Luo, S. (2025). Distribution regression with sample selection and UK wage decomposition. <em>Journal of Political Economy</em>, 133(12), 3952–3992. <a href="https://doi.org/10.1086/738148">Link</a>, <a href="https://www.cemmap.ac.uk/wp-content/uploads/2023/04/CWP0923-Distribution-regression-with-sample-selection-and-UK-wage-decomposition.pdf">PDF</a>, <a href="https://doi.org/10.7910/DVN/JOQBNQ">Replication Package</a>, <a href="https://doi.org/10.5255/UKDA-SN-9355-1">Data</a>, <a href="https://scholar.google.com/scholar?q=Distribution+Regression+with+Sample+Selection+and+UK+Wage+Decomposition">Google</a>.</li>
+</ul>
+<p>经典 Heckman 模型主要处理条件均值：在控制选择以后，解释变量如何影响平均工资或平均结果。Chernozhukov et al.&nbsp;(2025) 代表了另一个方向：研究者不仅关心平均工资差距，也关心整个工资分布上的差距。比如，女性在工资分布低端、中位数和高端的选择机制可能不同；如果只校正均值，就会遗漏 sticky floor 和 glass ceiling 等分布差异。</p>
+<p>这篇文章提出带样本选择的 distribution regression model，并明确把它定位为 Heckman selection model 的半参数推广。应用背景仍是工资选择问题：潜在工资 <span class="math inline">\(Y^{*}\)</span> 只在个体就业时被观察到，选择变量 <span class="math inline">\(D\)</span> 表示是否就业，<span class="math inline">\(D=1\)</span> 时才观察到 <span class="math inline">\(Y=Y^{*}\)</span>。但与传统 Heckman 不同，文章不只估计一个工资方程，而是在不同阈值 <span class="math inline">\(y\)</span> 上估计潜在工资分布。</p>
+<p>其核心模型可写为：</p>
+<p><span class="math display">\[
+F_{Y^{*},D^{*}}(y,0\mid Z=z)=\Phi_2(-x'\beta(y),-z'\pi;\rho(x'\delta(y)))
+\]</span></p>
+<p>其中，<span class="math inline">\(Y^{*}\)</span> 是潜在工资，<span class="math inline">\(D^{*}\)</span> 是就业选择的潜在变量，<span class="math inline">\(D=\mathbf{1}\{D^{*}&gt;0\}\)</span>。<span class="math inline">\(-x'\beta(y)\)</span> 是 outcome equation，<span class="math inline">\(-z'\pi\)</span> 是 selection equation，<span class="math inline">\(\rho(x'\delta(y))\)</span> 是 selection sorting equation。与经典 Heckman 中一个常数相关系数不同，这里允许选择相关性随工资分布位置变化。</p>
+<p>排他变量来自 out-of-work income，即不工作时可获得的收入或福利相关指标。这类变量影响就业选择，因为它改变了工作相对于不工作的机会成本；但在作者设定中，控制劳动市场特征后，它不直接影响潜在工资分布。文章将英国 FES、EFS 和 LCFS 数据与 TAXBEN 模拟出的 out-of-work income 相结合，分解男女工资分布差异为 composition effect、wage structure effect、selection structure effect 和 selection sorting effect。</p>
+<p>这篇文章不适合作为第一篇 Heckman 入门案例，因为模型较技术化。但它适合放在本节末尾，告诉学生：Heckman 的基本思想仍然是「选择方程 + 结果方程 + 排他变量」，但现代文献已经把它扩展到结果分布。很多时候，样本选择不只是改变平均值，还会改变我们对不平等、分位数差距和分布排序的判断。</p>
+</section>
+<section id="顶刊写法的共同逻辑" class="level3" data-number="3.8.5">
+<h3 data-number="3.8.5" class="anchored" data-anchor-id="顶刊写法的共同逻辑"><span class="header-section-number">3.8.5</span> 顶刊写法的共同逻辑</h3>
+<p>这四篇文献的共同点不是都使用同一个命令，而是都清楚回答了三个问题。</p>
+<ul>
+<li>谁没有被观察到？</li>
+<li>为什么没有被观察到不是随机的？</li>
+<li>选择过程如何与结果方程区分开来？</li>
+</ul>
+<p>Blau et al.&nbsp;(2024) 和 Borjas and Edo (2026) 讨论的是就业者工资样本；Helpman et al.&nbsp;(2008) 讨论的是发生贸易的国家对样本；Chernozhukov et al.&nbsp;(2025) 讨论的是工资分布中被就业选择遮蔽的潜在工资。它们都说明，样本选择偏误的核心不是缺失观测本身，而是缺失机制与潜在结果相关。</p>
+<p>这也解释了为什么排他性变量不能作为装饰。婚姻、子女、家庭财富、进入监管成本、共同宗教、out-of-work income 等变量，只有在制度背景和经济行为上能够解释「进入样本」，同时又不直接决定「进入样本后的结果」，才有识别意义。若排他变量只是为了让软件能够运行，Heckman 模型就很难增加可信度。</p>
+<p>因此，读顶刊中的选择模型时，不必先问作者用了哪个命令，而应先问作者是否把样本进入机制说清楚。真正可借鉴的写法，是从制度和行为机制出发，把选择方程、结果方程和排他变量连成一个完整的识别叙述。</p>
+</section>
+</section>
+<section id="扩展阅读" class="level2" data-number="3.9">
+<h2 data-number="3.9" class="anchored" data-anchor-id="扩展阅读"><span class="header-section-number">3.9</span> 扩展阅读</h2>
+<p>下面这些推文可以帮助读者进一步学习样本选择、Heckman 及相关扩展模型。</p>
+<ul>
+<li>孙晓艺, 2026, <a href="https://www.lianxh.cn/details/1815.html">样本选择偏差：为什么按结果变量筛选样本会让 OLS 有偏？</a></li>
+<li>张少鹏, 2021, <a href="https://www.lianxh.cn/details/714.html">Stata：样本选择偏误与两部模型-twopm-L121</a></li>
+<li>徐云娇, 2021, <a href="https://www.lianxh.cn/details/626.html">arhomme：分位数回归中的样本选择问题-T202</a></li>
+<li>李琼琼, 2021, <a href="https://www.lianxh.cn/details/803.html">Stata：自选择偏误之双栏模型简介-(Double-hurdle-model)</a></li>
+<li>牛坤在, 2021, <a href="https://www.lianxh.cn/details/688.html">xtheckmanfe：面板Heckman模型的固定效应估计</a></li>
+<li>甘梓萦, 2026, <a href="https://www.lianxh.cn/details/1836.html">包含样本选择的双重差分法：DID with Sample Selection</a></li>
+<li>秦利宾, 2020, <a href="https://www.lianxh.cn/details/153.html">Heckman 模型：你用对了吗？</a></li>
+<li>章青慈, 2022, <a href="https://www.lianxh.cn/details/1082.html">Stata：广义Heckman两步法-gtsheckman</a></li>
+</ul>
+</section>
+<section id="从本章走向下一章" class="level2" data-number="3.10">
+<h2 data-number="3.10" class="anchored" data-anchor-id="从本章走向下一章"><span class="header-section-number">3.10</span> 从本章走向下一章</h2>
+<p>第三章讨论谁进入样本，谁被我们观察到。第四章将讨论另一个问题：即使样本已经确定，处理组和对照组之间仍然可能存在不可观测差异。</p>
+<p>这两个问题经常混在一起，但并不相同。样本选择关注的是进入观察样本的机制；遗漏变量和固定效应关注的是在给定样本中，比较对象是否还存在系统性差异。前者回答「谁被看见」，后者回答「看见以后能否比较」。</p>
+<p>政策评估需要同时处理这两个问题。只有先说明样本进入机制，再说明处理组和对照组的可比性，后续的 DID、DDD、合成控制或 DDML 才有清楚的识别基础。</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/lianxhcn\.github\.io\/ci-policy\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../lectures/02_policy_to_data.html" class="pagination-link" aria-label="政策如何进入数据">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">政策如何进入数据</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../lectures/04_fixed_effects.html" class="pagination-link" aria-label="固定效应：控制了什么">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">固定效应：控制了什么</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p><a href="https://www.lianxh.cn">lianxh.cn</a></p>
+</div>
+    <div class="nav-footer-right">
+<p>基于 <a href="https://quarto.org/">Quarto</a> 构建</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

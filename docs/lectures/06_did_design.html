@@ -1,0 +1,1994 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>6&nbsp; 双重差分：从 TWFE 到 CSDID – 因果推断：政策评估中的识别思维与实证设计</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../lectures/07_ddml.html" rel="next">
+<link href="../lectures/05_counterfactuals.html" rel="prev">
+<link href="../images/book-logo.png" rel="icon" type="image/png">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e8fb9d25728d58bfeac61b497e4a6629.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-57a92833092fd6dc0d7710b6bdfff9c5.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-7ef202e96c563d31d9e5226e4d6cabf9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-490ba4e843cb1303a232ed0c676384f2.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/01_policy_to_design.html"><strong>讲义</strong></a></li><li class="breadcrumb-item"><a href="../lectures/06_did_design.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">双重差分：从 TWFE 到 CSDID</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="https://lianxhcn.github.io/ci-policy/" class="sidebar-logo-link">
+      <img src="../images/book-logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Causal Inference</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/lianxhcn/ci-policy" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
+    <a href="https://www.lianxh.cn" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-house-fill"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🏠 前言</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../syllabus.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📌讲授计划</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../settings.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">🚀课前准备：环境配置</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text"><strong>讲义</strong></span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/01_policy_to_design.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">从政策背景到研究设计</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/02_policy_to_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">政策如何进入数据</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/03_sample_selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">样本选择偏误</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/04_fixed_effects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">固定效应：控制了什么</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/05_counterfactuals.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">反事实构造</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/06_did_design.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">双重差分：从 TWFE 到 CSDID</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/07_ddml.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">双重机器学习：DDML</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/08_ai_agent_workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">AI Agent 辅助实证研究</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/09_reading_list.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">阅读清单</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">附录</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/appendix/A02_government_guidance_fund.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">政府引导基金政策梳理笔记</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/appendix/A03_heckman_selection_literature.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Heckman 模型扩展阅读</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch03_heckman/heckman_practical_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Heckman 实操笔记</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch04_fixed_effects/fixed_effects_practical_notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">固定效应实操笔记</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch05_counterfactuals/A05_counterfactual_replication.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">加州禁烟：SCM/RCM/SDID</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch06_did/A06_did_method_selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">F</span>&nbsp; <span class="chapter-title">DID 方法与 Stata 实操</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../notebooks/ch07_ddml/A07_fwl_ddml.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">G</span>&nbsp; <span class="chapter-title">双重机器学习 Stata 实操</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../exercises/exercise_overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">练习概览</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#为什么-did-方法突然变多了" id="toc-为什么-did-方法突然变多了" class="nav-link active" data-scroll-target="#为什么-did-方法突然变多了"><span class="header-section-number">6.1</span> 为什么 DID 方法突然变多了</a></li>
+  <li><a href="#did看清两次差分" id="toc-did看清两次差分" class="nav-link" data-scroll-target="#did看清两次差分"><span class="header-section-number">6.2</span> 2×2 DID：看清「两次差分」</a></li>
+  <li><a href="#从两期到多期" id="toc-从两期到多期" class="nav-link" data-scroll-target="#从两期到多期"><span class="header-section-number">6.3</span> 从两期到多期</a></li>
+  <li><a href="#bacon-分解twfe-系数是什么的加权平均" id="toc-bacon-分解twfe-系数是什么的加权平均" class="nav-link" data-scroll-target="#bacon-分解twfe-系数是什么的加权平均"><span class="header-section-number">6.4</span> Bacon 分解：TWFE 系数是什么的加权平均</a>
+  <ul class="collapse">
+  <li><a href="#问题背景交错处理改变了比较对象" id="toc-问题背景交错处理改变了比较对象" class="nav-link" data-scroll-target="#问题背景交错处理改变了比较对象"><span class="header-section-number">6.4.1</span> 问题背景：交错处理改变了比较对象</a></li>
+  <li><a href="#核心结论" id="toc-核心结论" class="nav-link" data-scroll-target="#核心结论"><span class="header-section-number">6.4.2</span> 核心结论</a></li>
+  <li><a href="#有哪些-22-比较" id="toc-有哪些-22-比较" class="nav-link" data-scroll-target="#有哪些-22-比较"><span class="header-section-number">6.4.3</span> 有哪些 2×2 比较</a></li>
+  <li><a href="#权重怎么定手算一遍" id="toc-权重怎么定手算一遍" class="nav-link" data-scroll-target="#权重怎么定手算一遍"><span class="header-section-number">6.4.4</span> 权重怎么定：手算一遍</a></li>
+  <li><a href="#异质效应下负权重让符号翻转" id="toc-异质效应下负权重让符号翻转" class="nav-link" data-scroll-target="#异质效应下负权重让符号翻转"><span class="header-section-number">6.4.5</span> 异质效应下，负权重让符号翻转</a></li>
+  </ul></li>
+  <li><a href="#四类单位与谁能当对照" id="toc-四类单位与谁能当对照" class="nav-link" data-scroll-target="#四类单位与谁能当对照"><span class="header-section-number">6.5</span> 四类单位与「谁能当对照」</a></li>
+  <li><a href="#att-gt拆成一堆干净的小-did" id="toc-att-gt拆成一堆干净的小-did" class="nav-link" data-scroll-target="#att-gt拆成一堆干净的小-did"><span class="header-section-number">6.6</span> ATT (g,t)：拆成一堆干净的小 DID</a></li>
+  <li><a href="#加总的原则聚合口径就是目标参数" id="toc-加总的原则聚合口径就是目标参数" class="nav-link" data-scroll-target="#加总的原则聚合口径就是目标参数"><span class="header-section-number">6.7</span> 加总的原则：聚合口径就是目标参数</a></li>
+  <li><a href="#有协变量时怎么估raipwaipw" id="toc-有协变量时怎么估raipwaipw" class="nav-link" data-scroll-target="#有协变量时怎么估raipwaipw"><span class="header-section-number">6.8</span> 有协变量时怎么估：RA、IPW、AIPW</a>
+  <ul class="collapse">
+  <li><a href="#第四种思路wooldridge-的饱和-twfe" id="toc-第四种思路wooldridge-的饱和-twfe" class="nav-link" data-scroll-target="#第四种思路wooldridge-的饱和-twfe"><span class="header-section-number">6.8.1</span> 第四种思路：Wooldridge 的饱和 TWFE</a></li>
+  </ul></li>
+  <li><a href="#聚合的实战最低工资案例" id="toc-聚合的实战最低工资案例" class="nav-link" data-scroll-target="#聚合的实战最低工资案例"><span class="header-section-number">6.9</span> 聚合的实战：最低工资案例</a></li>
+  <li><a href="#插补反事实先预测-y-0再估效应" id="toc-插补反事实先预测-y-0再估效应" class="nav-link" data-scroll-target="#插补反事实先预测-y-0再估效应"><span class="header-section-number">6.10</span> 插补反事实：先预测 Y (0)，再估效应</a></li>
+  <li><a href="#事件研究的修正sunabraham" id="toc-事件研究的修正sunabraham" class="nav-link" data-scroll-target="#事件研究的修正sunabraham"><span class="header-section-number">6.11</span> 事件研究的修正：Sun–Abraham</a></li>
+  <li><a href="#平行趋势的现代理解" id="toc-平行趋势的现代理解" class="nav-link" data-scroll-target="#平行趋势的现代理解"><span class="header-section-number">6.12</span> 平行趋势的现代理解</a></li>
+  <li><a href="#ddd什么时候需要第三重差异" id="toc-ddd什么时候需要第三重差异" class="nav-link" data-scroll-target="#ddd什么时候需要第三重差异"><span class="header-section-number">6.13</span> DDD：什么时候需要第三重差异</a></li>
+  <li><a href="#各估计量放在一起比一比" id="toc-各估计量放在一起比一比" class="nav-link" data-scroll-target="#各估计量放在一起比一比"><span class="header-section-number">6.14</span> 各估计量放在一起比一比</a></li>
+  <li><a href="#一篇论文里的证据架构" id="toc-一篇论文里的证据架构" class="nav-link" data-scroll-target="#一篇论文里的证据架构"><span class="header-section-number">6.15</span> 一篇论文里的证据架构</a></li>
+  <li><a href="#方法选择表与通向第七章" id="toc-方法选择表与通向第七章" class="nav-link" data-scroll-target="#方法选择表与通向第七章"><span class="header-section-number">6.16</span> 方法选择表与通向第七章</a></li>
+  <li><a href="#参考文献与延伸阅读" id="toc-参考文献与延伸阅读" class="nav-link" data-scroll-target="#参考文献与延伸阅读"><span class="header-section-number">6.17</span> 参考文献与延伸阅读</a></li>
+  <li><a href="#图形来源索引" id="toc-图形来源索引" class="nav-link" data-scroll-target="#图形来源索引"><span class="header-section-number">6.18</span> 图形来源索引</a>
+  <ul class="collapse">
+  <li><a href="#软件与资料入口" id="toc-软件与资料入口" class="nav-link" data-scroll-target="#软件与资料入口"><span class="header-section-number">6.18.1</span> 软件与资料入口</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/01_policy_to_design.html"><strong>讲义</strong></a></li><li class="breadcrumb-item"><a href="../lectures/06_did_design.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">双重差分：从 TWFE 到 CSDID</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">双重差分：从 TWFE 到 CSDID</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+本章核心判断
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>虽然现在有很多新的 DID 估计方法，但基本处理思路是相同的：把 TWFE 拆成一堆干净的 2×2 小 DID，剔除坏比较，再按明确的研究问题重新加权聚合。理解了这个「拆开—加权」框架，各类的命令就能统一起来。</p>
+<p>应用过程中，我们要关注四件事：政策何时发生、处理状态是否吸收、有效对照组从哪里来、目标参数究竟是哪一种 ATT。</p>
+</div>
+</div>
+<p>第五章讨论反事实从哪里来：ITSA、DID、RDD、SCM、RCM、SDID，都在回答「如果没有政策，处理组本来会怎样」。本章把镜头推近，只看 DID 这一族。</p>
+<p>本章假设读者只熟悉最基本的 2×2 双重差分——两组、两期、一个交互项。其余的交错处理、Bacon 分解、group-time ATT、RA/IPW/AIPW、事件研究修正，我们都从这个 2×2 出发一步步搭起来，不预设任何背景。读完本章，你应当能回答三个问题：一个 DID 系数究竟来自哪些均值？交错处理下 TWFE 到底混入了哪些比较、为什么会出错？当处理效应存在异质性时，现代 DID 估计量分别在修正什么、该怎么选？</p>
+<p>全章沿用前几章符号。<span class="math inline">\(i\)</span> 表示个体，<span class="math inline">\(t\)</span> 表示时期，<span class="math inline">\(Y_{it}(1)\)</span>、<span class="math inline">\(Y_{it}(0)\)</span> 是潜在结果，<span class="math inline">\(D_{it}\)</span> 是处理状态，<span class="math inline">\(\alpha_i\)</span>、<span class="math inline">\(\lambda_t\)</span> 是个体和时间固定效应。两个新符号：<span class="math inline">\(G_i=g\)</span> 表示个体 <span class="math inline">\(i\)</span> <strong>首次</strong>接受处理的时期是 <span class="math inline">\(g\)</span> (从不处理记 <span class="math inline">\(G_i=\infty\)</span>，软件里常记为 <span class="math inline">\(g=0\)</span>)；<span class="math inline">\(ATT(g,t)\)</span> 表示「<span class="math inline">\(g\)</span> 期首次受处理的这一批个体，在第 <span class="math inline">\(t\)</span> 期的平均处理效应」。注意 <span class="math inline">\(g\)</span> 是一个<strong>组别标签</strong>，用首次处理的时点来给这组命名——所有 2004 年首次受处理的县，构成 <span class="math inline">\(g=2004\)</span> 这一组。</p>
+<section id="为什么-did-方法突然变多了" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="为什么-did-方法突然变多了"><span class="header-section-number">6.1</span> 为什么 DID 方法突然变多了</h2>
+<p>一个常见困惑是：同一份面板、同一个政策，换一个 DID 命令，结果就变了，有时连正负号都不一样。这不是软件出错，而是这些命令并不在做同一件事——它们对「拿谁和谁比」「对照组从哪来」「聚合权重怎么定」有不同定义。</p>
+<p>过去很多政策评估论文用双向固定效应模型 (TWFE)：</p>
+<p><span id="eq-cipolicy-did-twfe"><span class="math display">\[
+Y_{it}=\alpha_i+\lambda_t+\beta D_{it}+\varepsilon_{it}
+\tag{6.1}\]</span></span></p>
+<p><span class="math inline">\(D_{it}=1\)</span> 表示个体 <span class="math inline">\(i\)</span> 在第 <span class="math inline">\(t\)</span> 期处于处理中。若所有处理组在同一时点进入政策、且处理效应同质，<span class="math inline">\(\beta\)</span> 有清楚含义：处理组相对对照组在政策前后的平均变化差。</p>
+<p>现实往往不是这样。很多政策<strong>分批推进</strong>：试点先在一部分城市实施、几年后扩展；规制先覆盖大企业、再覆盖中小企业；最低工资调整、环保监测站铺设、金融监管试点，都常呈分批结构。此时 <span class="math inline">\(D_{it}\)</span> 不再是简单的前后虚拟变量，而混合了不同处理批次和不同处理后时长。更麻烦的是，处理效应通常不是常数：政策第一年、第二年、第三年的效应可能不同，早试点城市和晚试点城市可能不同。于是 <a href="#eq-cipolicy-did-twfe" class="quarto-xref">式&nbsp;<span>6.1</span></a> 里一个 <span class="math inline">\(\beta\)</span> 被迫承担太多——它要同时代表不同组、不同年、不同比较。</p>
+<p>这一节先给结论，后面几节逐步证明：<strong>交错处理 + 异质效应下，TWFE 的</strong> <span class="math inline">\(\beta\)</span> 不再是一个干净的平均政策效应，而是许多 2×2 比较的加权平均，其中混入了坏比较、甚至可能出现负权重。现代 DID 方法之所以增多，不是为了造命令，而是为了修同一个问题：把有效比较重新定义清楚。</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+本章路线
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>2×2 DID 给出最干净的基准 → 多期与交错处理带来什么新问题 → Bacon 分解把 TWFE 彻底拆开、看清坏在哪 → 用 <span class="math inline">\(ATT(g,t)\)</span> 重建现代 DID 的共同语言 → 聚合口径就是目标参数：四类聚合的权重公式 → RA / IPW / AIPW 与饱和 TWFE 在有协变量时怎么估单格效应 → 最低工资案例：把每个聚合值拆回格子逐一核账 → 插补法、事件研究修正、平行趋势敏感性、DDD → 一篇论文的证据架构与方法选择表。</p>
+</div>
+</div>
+</section>
+<section id="did看清两次差分" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="did看清两次差分"><span class="header-section-number">6.2</span> 2×2 DID：看清「两次差分」</h2>
+<p>复杂 DID 的所有麻烦，都是这个最干净的 2×2 在多期、分批、异质场景下被打散的结果。为了理清它背后的机理，我们先把它讲透：一个 DID 系数，到底来自哪四个均值。</p>
+<p>两组两期：处理组在政策后受处理，对照组始终不受处理。<span class="math inline">\(Treat_i=1\)</span> 标记处理组，<span class="math inline">\(Post_t=1\)</span> 标记政策后。最基础的 DID 回归是：</p>
+<p><span id="eq-cipolicy-did-did2"><span class="math display">\[
+y_{it}=\alpha+\theta_1 Treat_i+\theta_2 Post_t+\gamma (Treat_i\times Post_t)+\varepsilon_{it}
+\tag{6.2}\]</span></span></p>
+<p>真正关心的是交互项 <span class="math inline">\(\gamma\)</span>。把四个组别—时期的条件均值写出来 (<span class="math inline">\(C_0,C_1\)</span> 是控制组政策前后，<span class="math inline">\(Y_0,Y_1\)</span> 是处理组政策前后)，列成 <a href="#tbl-cipolicy-did-did2-means" class="quarto-xref">表&nbsp;<span>6.1</span></a>：</p>
+<div id="tbl-cipolicy-did-did2-means" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-cipolicy-did-did2-means-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;6.1: 2×2 DID 的四格均值
+</figcaption>
+<div aria-describedby="tbl-cipolicy-did-did2-means-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th style="text-align: right;">政策前</th>
+<th style="text-align: right;">政策后</th>
+<th style="text-align: right;">前后变化</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>控制组</td>
+<td style="text-align: right;"><span class="math inline">\(C_0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(C_1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(C_1-C_0\)</span></td>
+</tr>
+<tr class="even">
+<td>处理组</td>
+<td style="text-align: right;"><span class="math inline">\(Y_0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(Y_1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(Y_1-Y_0\)</span></td>
+</tr>
+<tr class="odd">
+<td>组间差异</td>
+<td style="text-align: right;"><span class="math inline">\(Y_0-C_0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(Y_1-C_1\)</span></td>
+<td style="text-align: right;"><span class="math inline">\((Y_1-C_1)-(Y_0-C_0)\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>三个系数各有身份：<span class="math inline">\(\theta_1=Y_0-C_0\)</span> 是政策前两组的水平差 (不是政策效应，只是两组本来就不同)；<span class="math inline">\(\theta_2=C_1-C_0\)</span> 是控制组的时间变化 (控制组没受政策，用它刻画共同时间趋势)；交互项：</p>
+<p><span id="eq-cipolicy-did-gamma"><span class="math display">\[
+\gamma=(Y_1-C_1)-(Y_0-C_0)=(Y_1-Y_0)-(C_1-C_0)
+\tag{6.3}\]</span></span></p>
+<p>两种写法等价：左边是「政策后组间差」减「政策前组间差」，右边是「处理组前后变化」减「控制组前后变化」。DID 的核心不是拿 <span class="math inline">\(Y_1\)</span> 比 <span class="math inline">\(C_1\)</span> (混入政策前的水平差)，也不是只看 <span class="math inline">\(Y_1-Y_0\)</span> (混入时间趋势)，而是<strong>用控制组的同期变化，替处理组扣掉本来就会发生的共同趋势</strong>。</p>
+<p>图 <a href="#fig-cipolicy-did-did-2x2" class="quarto-xref">图&nbsp;<span>6.1</span></a> 把这四个均值和反事实点画在一起。反事实由此清楚：处理组政策后若没有政策，本会从 <span class="math inline">\(Y_0\)</span> 沿控制组趋势走到 <span class="math inline">\(Y_0+(C_1-C_0)\)</span>；实际到了 <span class="math inline">\(Y_1\)</span>，二者之差就是 DID：</p>
+<p><span id="eq-cipolicy-did-did2-cf"><span class="math display">\[
+Y_1-[Y_0+(C_1-C_0)]=(Y_1-Y_0)-(C_1-C_0)
+\tag{6.4}\]</span></span></p>
+<div id="fig-cipolicy-did-did-2x2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-did-did-2x2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/DID-two-period-03-base_C0.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-did-did-2x2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;6.1: 2×2 DID 的四个均值与处理组反事实：控制组斜率给出共同时间趋势，处理组偏离这条趋势的部分就是政策效应
+</figcaption>
+</figure>
+</div>
+<p>经典例子是 Card and Krueger (1994)：1992 年新泽西上调最低工资、宾夕法尼亚没有，<span class="math inline">\(Treat_i\)</span> 是「是否新泽西」、<span class="math inline">\(Post_t\)</span> 是「是否调薪后」，交互项系数就是最低工资对就业的 DID 估计。处理组、对照组、政策前后、交互项含义全都一目了然——没有一处要猜「在跟谁比」。而这种清晰的比较结构，正是交错处理场景下会被打破的。</p>
+<p>动手验证只需 20 行。造一个两组两期面板，真实政策效应设为 <span class="math inline">\(+3\)</span>，看交互项能否还原它、三个系数是否各归其位：</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">clear</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> <span class="dv">seed</span> 20260708</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> <span class="kw">obs</span> 200</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> id    = <span class="dt">_n</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> treat = id &gt; 100                       <span class="co">// 后 100 个为处理组</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>expand 2</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">bysort</span> id: <span class="kw">gen</span> <span class="kw">post</span> = <span class="dt">_n</span> - 1               <span class="co">// 0=政策前, 1=政策后</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>* DGP: 基线 10 + 组间差 2 + 时间趋势 4 + 政策效应 3</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="kw">gen</span> <span class="fu">y</span> = 10 + 2*treat + 4*<span class="kw">post</span> + 3*(treat*<span class="kw">post</span>) + rnormal(0,1)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="kw">table</span> <span class="kw">post</span> treat, stat(<span class="kw">mean</span> <span class="fu">y</span>) nformat(%6.2f)   <span class="co">// 四格均值</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="kw">reg</span> <span class="fu">y</span> i.treat##i.<span class="kw">post</span>, <span class="kw">vce</span>(<span class="kw">robust</span>)              <span class="co">// 交互项应还原 3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>回归表中 <code>1.treat</code> 是 <span class="math inline">\(\theta_1\)</span> (组间水平差，<span class="math inline">\(\approx2\)</span>)，<code>1.post</code> 是 <span class="math inline">\(\theta_2\)</span> (控制组时间趋势，<span class="math inline">\(\approx4\)</span>)，<code>1.treat#1.post</code> 是 <span class="math inline">\(\gamma\)</span> (双重差分，<span class="math inline">\(\approx3\)</span>)；四格均值可手算验证 <span class="math inline">\((Y_1-Y_0)-(C_1-C_0)\approx3\)</span>。完整解读见附录 G。</p>
+</section>
+<section id="从两期到多期" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="从两期到多期"><span class="header-section-number">6.3</span> 从两期到多期</h2>
+<p>前面的 2×2 只有两期。真实的政策评估几乎总是多期面板：政策实施前有若干期、实施后也有若干期。多期的意义在于两点——事前的多期数据用于直观判断平行趋势，事后的多期数据用于估计政策的动态效应 (第一年、第二年……分别多大)。</p>
+<p>把 <a href="#eq-cipolicy-did-did2" class="quarto-xref">式&nbsp;<span>6.2</span></a> 沿相对政策时间展开，就得到多期 DID (事件研究) 设定。设政策在 <span class="math inline">\(t^*\)</span> 期实施，令 <span class="math inline">\(k=t-t^*\)</span> 为相对政策时间：</p>
+<p><span id="eq-cipolicy-did-multi-did"><span class="math display">\[
+Y_{it}=\alpha_i+\lambda_t+\sum_{k\neq -1}\delta_k\,(Treat_i\times \mathbf 1\{t-t^*=k\})+\varepsilon_{it}
+\tag{6.5}\]</span></span></p>
+<p>以政策前一期 <span class="math inline">\(k=-1\)</span> 作为基准 (系数归一化为零)。这里两组系数的含义要分开看：</p>
+<ul>
+<li><strong>事前系数</strong> <span class="math inline">\(\delta_{k}\,(k&lt;-1)\)</span>：政策实施之前处理组相对对照组的差异。若平行趋势成立，我们<strong>预期这些系数不显著</strong>——政策没来，两组不该有系统性差异。事前系数是否接近零，是对平行趋势的一个直观 (虽不严谨) 检验。</li>
+<li><strong>事后系数</strong> <span class="math inline">\(\delta_{k}\,(k\ge 0)\)</span>：政策实施后第 <span class="math inline">\(k\)</span> 期的处理效应估计，即 <span class="math inline">\(\widehat{ATT}_{k}\)</span>。它们连起来就是政策效应的动态路径。</li>
+</ul>
+<p>图 <a href="#fig-cipolicy-did-multi" class="quarto-xref">图&nbsp;<span>6.2</span></a> 是一个标准、干净的多期 DID 结构：处理组在某一时点进入政策并保持，对照组始终不变。它没有什么特别之处，只是把「事前几期、事后几期」这件事画清楚。</p>
+<div id="fig-cipolicy-did-multi" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-did-multi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/DID-multi-period-01.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-did-multi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;6.2: 标准的多期 DID 结构：事前若干期用于判断平行趋势，事后若干期用于估计动态效应
+</figcaption>
+</figure>
+</div>
+<p>一个经典应用是 Beck, Levine and Levkov (2010) 对美国银行业跨州分支管制放松的研究：不同州在不同年份放松管制，作者用多期 DID 估计放松管制对收入不平等的动态影响。图 <a href="#fig-cipolicy-did-bblll" class="quarto-xref">图&nbsp;<span>6.3</span></a> 是该文的事件研究图，事前系数大致平坦、事后逐步显现效应，正是上面两组系数含义的实证呈现。</p>
+<div id="fig-cipolicy-did-bblll" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-did-bblll-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/Big-Bad-Bank%E5%B9%B6%E4%B8%8D%E7%A8%B3%E5%81%A5DID%E5%85%83%E8%80%81%E7%BA%A7%E6%96%87%E7%8C%AE%E7%9A%84%E8%84%86%E5%BC%B1_%E9%AB%98%E5%90%9B_fig03.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-did-bblll-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;6.3: Beck, Levine and Levkov (2010) 的多期 DID 事件研究图
+</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+延伸阅读
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Beck, T., Levine, R., &amp; Levkov, A. (2010). Big bad banks? The winners and losers from bank deregulation in the United States. <em>Journal of Finance</em>, 65 (5), 1637-1667. <a href="https://doi.org/10.1111/j.1540-6261.2010.01589.x">Link</a>, <a href="https://dataverse.nl/dataset.xhtml?persistentId=hdl:10411/15996">Data &amp; Prog</a>.</li>
+<li>安贤娟, 2020, <a href="https://www.lianxh.cn/details/165.html">Big Bad Banks：多期 DID 经典论文介绍</a>.</li>
+<li>高君, 2025, <a href="https://www.lianxh.cn/details/1548.html">Big-Bad-Bank 并不稳健：DID 元老级文献的脆弱</a>.</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="bacon-分解twfe-系数是什么的加权平均" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="bacon-分解twfe-系数是什么的加权平均"><span class="header-section-number">6.4</span> Bacon 分解：TWFE 系数是什么的加权平均</h2>
+<section id="问题背景交错处理改变了比较对象" class="level3" data-number="6.4.1">
+<h3 data-number="6.4.1" class="anchored" data-anchor-id="问题背景交错处理改变了比较对象"><span class="header-section-number">6.4.1</span> 问题背景：交错处理改变了比较对象</h3>
+<p>上一节是最干净的情形——所有处理组在同一时点进入政策。但多期 DID 常被误解成「把两期 DID 多跑几次」，在多数情况下，这个理解都是不准确的。区别在于处理时点：若处理在<strong>同一时点</strong>发生，多期数据只是多了政策前趋势检验和政策后动态展示，比较对象不变；若处理在<strong>不同时间</strong>发生 (交错处理，staggered adoption)，多期数据改变了比较对象本身。</p>
+<p>图 <a href="#fig-cipolicy-did-staggered-three-units" class="quarto-xref">图&nbsp;<span>6.4</span></a> 先把交错结构画成示意图：从不处理组给出一条干净的基准路径；早处理组进入政策后，路径已被政策改变；晚处理组在进入之前，仍可在某些时间窗口中充当对照。所有新麻烦都出在这些窗口之间的切换上。</p>
+<div id="fig-cipolicy-did-staggered-three-units" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-did-staggered-three-units-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch06_fig02_staggered_three_units_pen_v3.png" class="img-fluid figure-img" style="width:90.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-did-staggered-three-units-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;6.4: 交错处理下的三组时间路径：早处理组进入政策后，其路径已被政策改变
+</figcaption>
+</figure>
+</div>
+<blockquote class="blockquote">
+<p>图源：本章绘制。</p>
+</blockquote>
+<p>为便于理解，举个简单的例子：三个个体，十期。<span class="math inline">\(id=1\)</span> 从不处理，<span class="math inline">\(id=2\)</span> 在 <span class="math inline">\(t=5\)</span> 进入，<span class="math inline">\(id=3\)</span> 在 <span class="math inline">\(t=8\)</span> 进入，处理效应分别是 2 和 4。图 <a href="#fig-cipolicy-did-bacon-data" class="quarto-xref">图&nbsp;<span>6.5</span></a> 是这份数据的折线。此处，假设处理一旦发生就不可逆 (吸收性处理)。</p>
+<div id="fig-cipolicy-did-bacon-data" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-did-bacon-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/bacon%E5%88%86%E8%A7%A3_%E5%BA%B7%E5%B8%8C_fig_1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-did-bacon-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;6.5: Bacon 分解的三个体示例数据：id=1 从不处理，id=2 在 t=5 进入(效应 2)，id=3 在 t=8 进入(效应 4)
+</figcaption>
+</figure>
+</div>
+<blockquote class="blockquote">
+<p>Source: 康希, 2024, <a href="https://www.lianxh.cn/details/1347.html">Stata-DID：异质性多期估计方法-Bacon分解</a>. 生成图形的 Stata 代码可以在本文中查到。</p>
+</blockquote>
+<p>因为处理是吸收性的，<span class="math inline">\(D_{it}\)</span> 从 0 变 1 之后一直是 1，<span class="math inline">\(g\)</span> 就是它首次变 1 的那一期。多期 TWFE 仍写作 <a href="#eq-cipolicy-did-twfe" class="quarto-xref">式&nbsp;<span>6.1</span></a> ，但此刻它内部的比较远比 2×2 复杂：任意两个个体、任意两段时间，只要一个「相对更晚变化」，就能凑出一个 2×2 DID。</p>
+<p>新麻烦从这里来。2×2 里「谁是处理组、谁是对照组」毫无歧义；但在图 <a href="#fig-cipolicy-did-bacon-data" class="quarto-xref">图&nbsp;<span>6.5</span></a> 中，当 <span class="math inline">\(id=3\)</span> 晚期进入、需要对照时，有两种选择：一是用从不处理的 <span class="math inline">\(id=1\)</span> (干净)，二是用<strong>已经处理了一段时间的</strong> <span class="math inline">\(id=2\)</span>。后者是问题根源——一个已被政策改变过的单位，还能当「没有政策会怎样」的基准吗？TWFE 不替你区分这两种比较，它把它们全塞进一个 <span class="math inline">\(\beta\)</span>。要看清这个 <span class="math inline">\(\beta\)</span> 混了什么，需要 Goodman-Bacon 分解。</p>
+</section>
+<section id="核心结论" class="level3" data-number="6.4.2">
+<h3 data-number="6.4.2" class="anchored" data-anchor-id="核心结论"><span class="header-section-number">6.4.2</span> 核心结论</h3>
+<p>Goodman-Bacon (2021) 证明：交错处理下的 TWFE 系数，精确地等于所有可能的 2×2 DID 的加权平均。搞清「有哪些 2×2」「权重怎么定」，后面的方法就都能统一理解。</p>
+</section>
+<section id="有哪些-22-比较" class="level3" data-number="6.4.3">
+<h3 data-number="6.4.3" class="anchored" data-anchor-id="有哪些-22-比较"><span class="header-section-number">6.4.3</span> 有哪些 2×2 比较</h3>
+<p>沿用上面的三个体例子把所有两两比较数清楚，它们归成三类。用 <span class="math inline">\(T^e\)</span> 记早处理组 (<span class="math inline">\(id=2\)</span>)、<span class="math inline">\(T^l\)</span> 记晚处理组 (<span class="math inline">\(id=3\)</span>)、<span class="math inline">\(U\)</span> 记从不处理组 (<span class="math inline">\(id=1\)</span>)：</p>
+<ul>
+<li><strong>处理组 vs 从不处理组</strong>(<span class="math inline">\(T\)</span> vs <span class="math inline">\(U\)</span>)：任一处理组和 <span class="math inline">\(id=1\)</span> 比。干净。</li>
+<li><strong>早处理组 vs 晚处理组的未处理期</strong>(<span class="math inline">\(T^e\)</span> vs <span class="math inline">\(C^l\)</span>)：<span class="math inline">\(t&lt;8\)</span> 时 <span class="math inline">\(id=3\)</span> 还没进入，拿它当 <span class="math inline">\(id=2\)</span> 的对照。干净。</li>
+<li><strong>晚处理组 vs 早处理组的已处理期</strong>(<span class="math inline">\(T^l\)</span> vs <span class="math inline">\(C^e\)</span>)：<span class="math inline">\(t\ge5\)</span> 后 <span class="math inline">\(id=2\)</span> 已处理，拿它当 <span class="math inline">\(id=3\)</span> 的对照。<strong>这就是坏比较</strong>——对照组自己已经被政策掰弯了。</li>
+</ul>
+<p>图 <a href="#fig-cipolicy-did-bacon-split" class="quarto-xref">图&nbsp;<span>6.6</span></a> 把这几组比较逐一画出来，每张子图对应上面一类。</p>
+<div id="fig-cipolicy-did-bacon-split" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-did-bacon-split-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/bacon%E5%88%86%E8%A7%A3_%E5%BA%B7%E5%B8%8C_fig_7.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-did-bacon-split-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;6.6: 四类 2×2 比较的拆解：早 vs 晚未处理期、晚 vs 早已处理期、以及各组 vs 从不处理组
+</figcaption>
+</figure>
+</div>
+<p>于是 TWFE 系数是这些 2×2 的加权和：</p>
+<p><span id="eq-cipolicy-did-bacon"><span class="math display">\[
+\widehat{\beta}^{TWFE}=\sum_{j}s_{jU}\widehat{\beta}_{jU}+\sum_{e}\sum_{l&gt;e}\big (s_{el}\widehat{\beta}_{el}+s_{le}\widehat{\beta}_{le}\big)
+\tag{6.6}\]</span></span></p>
+</section>
+<section id="权重怎么定手算一遍" class="level3" data-number="6.4.4">
+<h3 data-number="6.4.4" class="anchored" data-anchor-id="权重怎么定手算一遍"><span class="header-section-number">6.4.4</span> 权重怎么定：手算一遍</h3>
+<p>这是关键，也是「基于什么原则加总」的答案。先给 TWFE 系数的另一种等价写法。令 <span class="math inline">\(\tilde D_{it}\)</span> 是处理变量 <span class="math inline">\(D_{it}\)</span> 对个体和时间固定效应做「双向去均值」(残差化) 后的值，则 TWFE 系数是一个用 <span class="math inline">\(\tilde D_{it}\)</span> 加权的结果：</p>
+<p><span id="eq-cipolicy-did-twfe-resid"><span class="math display">\[
+\tilde D_{it}=D_{it}-\bar D_{i\cdot}-\bar D_{\cdot t}+\bar D_{\cdot\cdot},\qquad
+\widehat{\beta}^{TWFE}=\frac{\sum_i\sum_t \tilde D_{it}\,Y_{it}}{\sum_i\sum_t \tilde D_{it}^2}
+\tag{6.7}\]</span></span></p>
+<p>Goodman-Bacon 的贡献，是证明了 <a href="#eq-cipolicy-did-twfe-resid" class="quarto-xref">式&nbsp;<span>6.7</span></a> 这个看似整体的分式，可以被<strong>精确地重新组织</strong>成一组 2×2 DID 的加权平均：</p>
+<p><span id="eq-cipolicy-did-bacon-sum"><span class="math display">\[
+\widehat{\beta}^{TWFE}=\sum_{k}s_k\,\widehat{\beta}^{\,2\times2}_k,\qquad \sum_k s_k=1
+\tag{6.8}\]</span></span></p>
+<p>这里的下标 <span class="math inline">\(k\)</span> <strong>不是时间、也不是个体，而是给「每一对可比的组合」编的号</strong>：<span class="math inline">\(k\)</span> 索引的是一个具体的 2×2 比较 (比如「早处理组 vs 从不处理组」是一个 <span class="math inline">\(k\)</span>，「晚处理组 vs 早处理组已处理期」是另一个 <span class="math inline">\(k\)</span>)。<span class="math inline">\(\widehat{\beta}^{\,2\times2}_k\)</span> 是第 <span class="math inline">\(k\)</span> 对比较单独算出的 2×2 DID，<span class="math inline">\(s_k\)</span> 是它在总系数里占的权重。所以 TWFE 系数不是某个单一比较，而是把所有这些 2×2 按 <span class="math inline">\(s_k\)</span> 混合的结果。</p>
+<p>关键问题因此变成：<span class="math inline">\(s_k\)</span> 怎么来的？把 <a href="#eq-cipolicy-did-twfe-resid" class="quarto-xref">式&nbsp;<span>6.7</span></a> 的分子按不同比较拆开、再各自除以分母 <span class="math inline">\(\hat V^D=\frac{1}{NT}\sum_i\sum_t\tilde D_{it}^2\)</span> (处理变量残差化后的总方差，本例 <span class="math inline">\(N=3,T=10\)</span>，<span class="math inline">\(\hat V^D=0.0733\)</span>)，每一对比较的权重就浮现出来。权重公式表面复杂，但主干是两个因素相乘：</p>
+<p><span id="eq-cipolicy-did-bacon-weight"><span class="math display">\[
+s_k\;\propto\;\underbrace{n_k (1-n_k)}_{\text{子样本相对大小}}\times\underbrace{\bar D_k (1-\bar D_k)}_{\text{处理方差}}
+\tag{6.9}\]</span></span></p>
+<p>其中下标 <span class="math inline">\(k\)</span> 仍指第 <span class="math inline">\(k\)</span> 对比较；<span class="math inline">\(n_k\)</span> 是这对比较里两组占总样本的相对份额，<span class="math inline">\(\bar D_k\)</span> 是这对比较中「处理组处于处理状态」的时间占比。两个因素的含义：</p>
+<ul>
+<li><strong>子样本相对大小</strong> <span class="math inline">\(n_k(1-n_k)\)</span>：一对比较里两组样本越均衡 (<span class="math inline">\(n_k\)</span> 接近 <span class="math inline">\(1/2\)</span>)，权重越高；某处理组很小，它参与的比较就被压低。</li>
+<li><strong>处理方差</strong> <span class="math inline">\(\bar D_k(1-\bar D_k)\)</span>：<span class="math inline">\(\bar D_k\)</span> 越接近 <span class="math inline">\(1/2\)</span>——也就是<strong>处理时点大致落在样本中段</strong>——方差越大、权重越高；处理时点太靠边 (很早或很晚进入) 的组，权重反而低。这一点后面很重要：<strong>居中进入的组，恰恰是坏比较的高发区，却拿到最高权重</strong>。</li>
+</ul>
+<p>全部权重之和恰为 1 (<a href="#eq-cipolicy-did-bacon-sum" class="quarto-xref">式&nbsp;<span>6.8</span></a>)，所以 <span class="math inline">\(\widehat{\beta}^{TWFE}\)</span> 是一个不折不扣的加权平均。</p>
+<p>把数字代进去。本例三组样本各 <span class="math inline">\(1/3\)</span>，早处理组处理时间占比 <span class="math inline">\(\bar D_e=6/10\)</span>、晚处理组 <span class="math inline">\(\bar D_l=3/10\)</span>。按 Goodman-Bacon 的三条权重公式 (早 vs 晚、晚 vs 早、各组 vs 从不处理)，算出：早 vs 晚权重 <span class="math inline">\(0.182\)</span>、晚 vs 早权重 <span class="math inline">\(0.136\)</span>、两个处理组各自 vs 从不处理的比较合计 <span class="math inline">\(0.682\)</span>，三者之和恰为 1。对应的三块效应，<code>bacondecomp</code> 给出：vs 从不处理 <span class="math inline">\(2.93\)</span>、早 vs 晚 <span class="math inline">\(2\)</span>、晚 vs 早 <span class="math inline">\(4\)</span>。加权平均：</p>
+<p><span id="eq-cipolicy-did-bacon-check"><span class="math display">\[
+2.93\times0.682+2\times0.182+4\times0.136=2.91
+\tag{6.10}\]</span></span></p>
+<p>与 TWFE 直接跑出的 <span class="math inline">\(\widehat{\beta}^{DD}=2.91\)</span> 分毫不差。图 <a href="#fig-cipolicy-did-bacon-plot" class="quarto-xref">图&nbsp;<span>6.7</span></a> 是 <code>bacondecomp</code> 的可视化，每个点是一个 2×2，横轴权重、纵轴效应。</p>
+<div id="fig-cipolicy-did-bacon-plot" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-did-bacon-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/bacon%E5%88%86%E8%A7%A3_%E5%BA%B7%E5%B8%8C_fig_2.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-did-bacon-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;6.7: Bacon 分解图：每个点是一个 2×2 DID，横轴是权重、纵轴是估计值
+</figcaption>
+</figure>
+</div>
+<p>这张图和上面的手算数据、<code>bacondecomp</code> 的完整调用代码，见康希 (2024) 的推文与本章附录 G；在 Stata 中安装后一行 <code>bacondecomp y treat, ddetail</code> 即可复现分解表与此图。</p>
+<p>这个例子里效应同质、方向一致，还没出问题。它的价值是让你亲眼看到：<strong>TWFE 不是一个单一比较，而是一组比较的加权平均</strong>。</p>
+</section>
+<section id="异质效应下负权重让符号翻转" class="level3" data-number="6.4.5">
+<h3 data-number="6.4.5" class="anchored" data-anchor-id="异质效应下负权重让符号翻转"><span class="header-section-number">6.4.5</span> 异质效应下，负权重让符号翻转</h3>
+<p>坏比较到底伤不伤人，取决于效应是否异质。图 <a href="#fig-cipolicy-did-heterdid-homogeneous" class="quarto-xref">图&nbsp;<span>6.8</span></a> 中处理效应同质：任何组、任何时点的效应都是同一个数，即便拿已处理组当对照，多扣掉的部分也是常数，方向不会乱。图 <a href="#fig-cipolicy-did-heterdid-bad-good" class="quarto-xref">图&nbsp;<span>6.9</span></a> 中效应随组别和暴露时长增长：已处理组的观测路径 (实线) 被政策越掰越弯、离自身反事实 (虚线) 越来越远，拿它当对照，扣除的就不再是共同趋势，而是别人的政策效应。</p>
+<div id="fig-cipolicy-did-heterdid-homogeneous" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-did-heterdid-homogeneous-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch06_diliu_homo_effects_groups_time.png" class="img-fluid figure-img" style="width:85.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-did-heterdid-homogeneous-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;6.8: 同质处理效应下，任意时点的组间差都等于同一个效应，坏比较的危害大为缓解
+</figcaption>
+</figure>
+</div>
+<blockquote class="blockquote">
+<p>图源：Di Liu, <em>Heterogeneous Difference-in-Differences in Stata</em>, Stata Webinar slides, p.7。</p>
+</blockquote>
+<div id="fig-cipolicy-did-heterdid-bad-good" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-did-heterdid-bad-good-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch06_diliu_heter_effects_groups_time.png" class="img-fluid figure-img" style="width:85.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-did-heterdid-bad-good-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;6.9: 异质处理效应下，已处理组的路径已被政策掰弯，不能再充当无政策反事实
+</figcaption>
+</figure>
+</div>
+<blockquote class="blockquote">
+<p>图源：Di Liu, <em>Heterogeneous Difference-in-Differences in Stata</em>, Stata Webinar slides, p.8/p.28。</p>
+</blockquote>
+<p>接下来把这个直觉推到极端。把例子换成 30 个个体、处理时点随机散布、且处理效应随暴露时间递增 (真实效应处处为正)。图 <a href="#fig-cipolicy-did-bacon-heter" class="quarto-xref">图&nbsp;<span>6.10</span></a> 是这份数据的折线——所有线都往上走，效应显然为正。</p>
+<div id="fig-cipolicy-did-bacon-heter" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-did-bacon-heter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/bacon%E5%88%86%E8%A7%A3_%E5%BA%B7%E5%B8%8C_fig_8.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-did-bacon-heter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;6.10: 异质效应模拟数据：30 个个体、处理时点随机、效应随时间递增，所有处理效应都为正
+</figcaption>
+</figure>
+</div>
+<p>可 TWFE 却给出 <span class="math inline">\(\widehat{\beta}=-25.9\)</span>，与「效应普遍为正」正好相反。Bacon 分解揭示原因：那些「晚 vs 早」的坏比较，效应估出来大幅为负 (如 <span class="math inline">\(-127\)</span>、<span class="math inline">\(-121.5\)</span>)，且因处理时点居中、方差大，被 <a href="#eq-cipolicy-did-bacon-weight" class="quarto-xref">式&nbsp;<span>6.9</span></a> 赋予可观权重 (如 <span class="math inline">\(16\%\)</span>)。这些带负号的坏比较把总系数硬生生拖成了负数。</p>
+<p><strong>负权重的来源</strong>也在这里显现出来。de Chaisemartin and D’Haultfœuille (2020) 从另一个角度说明同一问题：TWFE 系数是组别—时期效应的加权和，其中某些权重可能为负。负权重不是软件真给某些观测乘了负样本量，而是<strong>固定效应残差化之后</strong>，一些组别—时期效应在总系数里以反方向进入。当已处理组当对照、且其效应还在增长时，<a href="#eq-cipolicy-did-twfe-resid" class="quarto-xref">式&nbsp;<span>6.7</span></a> 分子里对应项的符号翻转，等效于一个负权重。极端情况下，即便每个真实效应都为正，TWFE 也可能为负。</p>
+<p>到这里，DID 的问题被彻底定性：<strong>TWFE 不是错在公式，而是错在权重</strong>——它给坏比较 (尤其处理时点居中的坏比较) 分配了不该有的分量。这句话直接决定了现代方法的解法：不抛弃「拆成 2×2 再加权」这个框架，而是<strong>在框架内把坏比较剔除、把权重换成有意义的</strong>。</p>
+<p>必须强调：<strong>Bacon 分解是诊断工具，不是修正工具</strong>。它告诉你 TWFE 由哪些比较组成、坏比较占多大权重，但它本身不给新的稳健 ATT。诊断之后，要转向现代 DID 估计量。</p>
+</section>
+</section>
+<section id="四类单位与谁能当对照" class="level2" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="四类单位与谁能当对照"><span class="header-section-number">6.5</span> 四类单位与「谁能当对照」</h2>
+<p>进入具体方法前，先把「什么是好对照、什么是坏对照」用一张表固定下来。它是上一节坏比较分析的落地版，后面每个方法都要用。</p>
+<div id="tbl-cipolicy-did-units" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-cipolicy-did-units-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;6.2: 交错处理下的四类单位
+</figcaption>
+<div aria-describedby="tbl-cipolicy-did-units-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>类型</th>
+<th>含义</th>
+<th>能否作对照</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Never-treated</td>
+<td>样本期内从不接受处理</td>
+<td>最干净的对照，但仍需平行趋势</td>
+</tr>
+<tr class="even">
+<td>Not-yet-treated</td>
+<td>当前尚未处理，未来会处理</td>
+<td>在它<strong>尚未处理的时期</strong>可作对照</td>
+</tr>
+<tr class="odd">
+<td>Already-treated</td>
+<td>当前已经处理</td>
+<td><strong>不能</strong>当作无政策反事实</td>
+</tr>
+<tr class="even">
+<td>Always-treated</td>
+<td>进入样本前已处理</td>
+<td>缺可观测处理前期，通常识别不了</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>一句话总结，也是全章红线：<strong>对照只能来自 never-treated 或 not-yet-treated，绝不能是 already-treated</strong>。Bacon 分解中的「坏比较」，本质就是违反了这条红线。现代方法的第一步，无一例外都是把 already-treated 踢出对照池。</p>
+<p>图 <a href="#fig-cipolicy-did-valid-controls" class="quarto-xref">图&nbsp;<span>6.11</span></a> 把四类单位放在同一条时间线上：在任一比较时点，never-treated 与当前尚未处理的 not-yet-treated 站在线的安全一侧；already-treated 与 always-treated 已暴露于政策，出局。</p>
+<div id="fig-cipolicy-did-valid-controls" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-did-valid-controls-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch06_fig03_valid_controls_timeline_pen_v3.png" class="img-fluid figure-img" style="width:90.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-did-valid-controls-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;6.11: 比较时点上的有效对照与无效对照
+</figcaption>
+</figure>
+</div>
+<blockquote class="blockquote">
+<p>图源：本章绘制。</p>
+</blockquote>
+</section>
+<section id="att-gt拆成一堆干净的小-did" class="level2" data-number="6.6">
+<h2 data-number="6.6" class="anchored" data-anchor-id="att-gt拆成一堆干净的小-did"><span class="header-section-number">6.6</span> ATT (g,t)：拆成一堆干净的小 DID</h2>
+<p>现代 DID 的共同语言是 <span class="math inline">\(ATT(g,t)\)</span>。与其把所有组、所有期压成一个 <span class="math inline">\(\beta\)</span>，不如先估每一个定义清楚的组别—时期效应，再按研究问题聚合。</p>
+<p><span id="eq-cipolicy-did-attgt"><span class="math display">\[
+ATT (g,t)=E[Y_{it}(1)-Y_{it}(0)\mid G_i=g]
+\tag{6.11}\]</span></span></p>
+<p>它表示第 <span class="math inline">\(g\)</span> 期首次受处理的组，在第 <span class="math inline">\(t\)</span> 期的平均处理效应 (<span class="math inline">\(t\ge g\)</span> 是处理后，<span class="math inline">\(t&lt;g\)</span> 用于检查政策前走势)。用从不处理组作对照、满足平行趋势时，它就是一个干净的 2×2，基期取处理前一期 <span class="math inline">\(g-1\)</span>：</p>
+<p><span id="eq-cipolicy-did-attgt-never"><span class="math display">\[
+ATT (g,t)=\underbrace{E[Y_{it}-Y_{i,g-1}\mid G_i=g]}_{g\text{ 组的变化}}-\underbrace{E[Y_{it}-Y_{i,g-1}\mid G_i=\infty]}_{\text{从不处理组的变化}}
+\tag{6.12}\]</span></span></p>
+<p>若 never-treated 不够，可用 not-yet-treated (<span class="math inline">\(G_i&gt;t\)</span>，当前尚未处理) 作对照：</p>
+<p><span id="eq-cipolicy-did-attgt-notyet"><span class="math display">\[
+ATT (g,t)=E[Y_{it}-Y_{i,g-1}\mid G_i=g]-E[Y_{it}-Y_{i,g-1}\mid G_i&gt;t]
+\tag{6.13}\]</span></span></p>
+<p>无论哪种，对照永远是当前未受政策影响的单位，<a href="#tbl-cipolicy-did-units" class="quarto-xref">表&nbsp;<span>6.2</span></a> 里的坏比较从定义上就进不来。这就是它相对 TWFE 的根本改进——不是换个更花哨的公式，而是<strong>从源头只保留干净比较</strong>。每个 <span class="math inline">\(ATT(g,t)\)</span> 都清楚交代了处理组是谁、对照组是谁、基期哪期、目标哪期。</p>
+<p>图 <a href="#fig-cipolicy-did-attgt-matrix" class="quarto-xref">图&nbsp;<span>6.12</span></a> 画出这张矩阵：行是首次处理时间 <span class="math inline">\(g\)</span>，列是日历时间 <span class="math inline">\(t\)</span>；橙色格子 (<span class="math inline">\(t\ge g\)</span>) 是可估的处理后效应，灰色格子对应处理前时期。现代 DID 的纪律是：先把橙色格子一个个估出来，再决定怎么聚合。</p>
+<div id="fig-cipolicy-did-attgt-matrix" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-did-attgt-matrix-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch06_fig04_attgt_matrix_pen_v3.png" class="img-fluid figure-img" style="width:90.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-did-attgt-matrix-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;6.12: 组别—时期处理效应矩阵：先拆开，再按研究目标聚合
+</figcaption>
+</figure>
+</div>
+<blockquote class="blockquote">
+<p>图源：本章绘制。</p>
+</blockquote>
+<p>估出这张矩阵后，下一步是聚合。</p>
+</section>
+<section id="加总的原则聚合口径就是目标参数" class="level2" data-number="6.7">
+<h2 data-number="6.7" class="anchored" data-anchor-id="加总的原则聚合口径就是目标参数"><span class="header-section-number">6.7</span> 加总的原则：聚合口径就是目标参数</h2>
+<p>这里最常犯的错误，是把聚合理解成软件选项。实际上，<strong>聚合口径就是目标参数</strong>——你要回答哪个问题，就沿哪个方向加总 (<a href="#tbl-cipolicy-did-agg" class="quarto-xref">表&nbsp;<span>6.3</span></a>)。</p>
+<div id="tbl-cipolicy-did-agg" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-cipolicy-did-agg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;6.3: ATT (g,t) 的四类聚合
+</figcaption>
+<div aria-describedby="tbl-cipolicy-did-agg-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>聚合口径</th>
+<th>加总方向</th>
+<th>权重原则</th>
+<th>回答的问题</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Overall ATT</td>
+<td>所有处理后格子</td>
+<td><strong>按组规模加权</strong>(非等权)</td>
+<td>总体平均政策效应多大</td>
+</tr>
+<tr class="even">
+<td>Group/Cohort ATT</td>
+<td>固定 <span class="math inline">\(g\)</span>、沿 <span class="math inline">\(t\)</span> 加总</td>
+<td>组内处理后各期的观测比例</td>
+<td>哪批处理更有效</td>
+</tr>
+<tr class="odd">
+<td>Calendar ATT</td>
+<td>固定 <span class="math inline">\(t\)</span>、沿 <span class="math inline">\(g\)</span> 加总</td>
+<td>该期在治各组按规模加权</td>
+<td>某年政策总体影响多大</td>
+</tr>
+<tr class="even">
+<td>Event/Dynamic ATT</td>
+<td>固定 <span class="math inline">\(e=t-g\)</span> 加总</td>
+<td>同一暴露时长的组按规模加权</td>
+<td>处理后第 <span class="math inline">\(e\)</span> 期效应如何</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>四类聚合共享同一个数学骨架：任何聚合都是全体 <span class="math inline">\(ATT(g,t)\)</span> 的一次加权平均，</p>
+<p><span id="eq-cipolicy-did-agg-general"><span class="math display">\[
+\theta=\sum_{g\in\mathbf G}\sum_{t=2}^{T}\underbrace{w(g,t)}_{\text{权重}}\,ATT(g,t)
+\tag{6.14}\]</span></span></p>
+<p>选哪种聚合，就是选哪组权重 <span class="math inline">\(w(g,t)\)</span>。四类口径的权重分别是 (Liu 2023)：</p>
+<p><strong>按暴露时长聚合 (event study)</strong>。令 <span class="math inline">\(e=t-g\)</span> 为暴露时长，把暴露了同样久的格子合起来：</p>
+<p><span id="eq-cipolicy-did-agg-event"><span class="math display">\[
+\theta(e)=\sum_{g\in\mathbf G}\underbrace{\mathbf 1(g+e\le T)\,\Pr(G=g\mid g+e\le T)}_{\text{能观测到第 }e\text{ 期的各组所占比例}}\,ATT(g,g+e)
+\tag{6.15}\]</span></span></p>
+<p>指示函数 <span class="math inline">\(\mathbf 1(g+e\le T)\)</span> 说明一个交错处理特有的事实：<strong>越靠后的暴露期，能活到那一期的组越少</strong>，可用信息越少、区间越宽。</p>
+<p><strong>按队列聚合 (cohort)</strong>。固定 <span class="math inline">\(g\)</span>，把该组处理后各期的效应平均：</p>
+<p><span id="eq-cipolicy-did-agg-cohort"><span class="math display">\[
+\theta(g)=\sum_{t=g}^{T}\underbrace{\Pr(G=g\mid G=g,\ t\ge g)}_{\text{该组处理后各期观测所占比例}}\,ATT(g,t)
+\tag{6.16}\]</span></span></p>
+<p>平衡面板下即处理后各期的等权平均。它回答：早处理的批次是否收效更大？</p>
+<p><strong>按日历时间聚合 (calendar)</strong>。固定 <span class="math inline">\(t\)</span>，把该年<strong>已经在治</strong>的各组按规模合起来：</p>
+<p><span id="eq-cipolicy-did-agg-time"><span class="math display">\[
+\theta(t)=\sum_{g\in\mathbf G}\mathbf 1(t\ge g)\,\Pr(G=g\mid G\le t)\,ATT(g,t)
+\tag{6.17}\]</span></span></p>
+<p>条件 <span class="math inline">\(G\le t\)</span> 划定了「第 <span class="math inline">\(t\)</span> 年谁在治」的范围。它回答：政策效应是否随宏观年景变化？</p>
+<p><strong>总体聚合 (overall)</strong>。把所有处理后格子按组规模加权成一个数：</p>
+<p><span id="eq-cipolicy-did-agg-overall"><span class="math display">\[
+\theta=\frac{1}{\kappa}\sum_{g\in\mathbf G}\sum_{t=2}^{T}\mathbf 1(t\ge g)\,\Pr(G=g\mid G\le T)\,ATT(g,t)
+\tag{6.18}\]</span></span></p>
+<p>其中 <span class="math inline">\(\kappa\)</span> 是归一化常数，使权重之和为 1。</p>
+<p>必须讲清一个实操中一定会撞到、也最易误解的点：<strong>overall ATT 不是把所有格子等权平均，而是按各组规模 (观测数) 加权</strong> (<a href="#eq-cipolicy-did-agg-overall" class="quarto-xref">式&nbsp;<span>6.18</span></a> 中的 <span class="math inline">\(\Pr(G=g\mid G\le T)\)</span>)。原因是各 <span class="math inline">\(g\)</span> 组的单位数不同、能观测到的处理后期数也不同。若等权，一个只有几个单位、只处理一年的小组，会和一个单位众多、处理多年的大组占同等分量，既不代表总体、又被小样本噪声主导。按规模加权，才让 overall ATT 逼近「随机抽一个处理过的单位—时期，其处理效应的期望」这个有意义的总体参数。</p>
+<p>从这个角度看 <code>csdid</code> 的逻辑就很清楚：它不先给一个总系数，而是先估一组 <span class="math inline">\(ATT(g,t)\)</span>，再用 <code>estat simple</code>、<code>estat group</code>、<code>estat calendar</code>、<code>estat event</code> 沿不同方向聚合——每个命令选项背后就是上面的一组权重 <span class="math inline">\(w(g,t)\)</span>。你必须先想清论文要回答哪个问题，再决定怎么聚，而不是看哪个聚合最显著就报哪个。</p>
+<p>理解了「拆成干净 2×2 + 主动选权重加总」这一个框架，接下来的方法就只是它的不同侧重：<code>csdid</code> 是直接实现；RA/IPW/AIPW 深挖单格效应在有协变量时怎么估；<code>did_imputation</code> 换一条路径构造同样的干净效应；Sun–Abraham 专治事件研究版的坏比较。它们有相同的理论基础，但在不同的应用场景下有不同的实现方式。</p>
+</section>
+<section id="有协变量时怎么估raipwaipw" class="level2" data-number="6.8">
+<h2 data-number="6.8" class="anchored" data-anchor-id="有协变量时怎么估raipwaipw"><span class="header-section-number">6.8</span> 有协变量时怎么估：RA、IPW、AIPW</h2>
+<p>前面以无条件平行趋势为基础。但现实中，处理组和对照组在政策前往往有可观察差异：城市规模、产业结构、收入、人口、基准结果。若我们认为平行趋势只有在<strong>控制协变量</strong> <span class="math inline">\(X_i\)</span> 后才成立，就进入条件平行趋势：</p>
+<p><span id="eq-cipolicy-did-cond-pt"><span class="math display">\[
+E[Y_{it}(0)-Y_{i,g-1}(0)\mid G_i=g,X_i]=E[Y_{it}(0)-Y_{i,g-1}(0)\mid C_i=1,X_i]
+\tag{6.19}\]</span></span></p>
+<p><span class="math inline">\(C_i=1\)</span> 表示可用对照组 (never-treated 或 not-yet-treated)。在这个设定下有三种标准估计思路，它们既是 <code>csdid</code> 的 <code>method()</code> 选项，也是理解双重稳健的钥匙。这三者与经典因果推断里的 RA、IPW、IPWRA 一脉相承，若想系统了解其一般框架，可参考段义学 (2023) [因果推断中的 RA, IPW, IPWRA](<a href="https://www.lianxh.cn/details/1268.html" class="uri">https://www.lianxh.cn/details/1268.html</a>)。</p>
+<p><strong>回归调整 (RA，regression adjustment)</strong> 的做法可以拆成三步：</p>
+<ol type="1">
+<li><strong>在对照组上拟合结果模型</strong>：用可用对照组 (<span class="math inline">\(C_i=1\)</span>) 估计「无政策时，结果变化如何随协变量变化」，得到 <span class="math inline">\(m_{g,t}(X_i)=E[Y_{it}-Y_{i,g-1}\mid C_i=1,X_i]\)</span>；</li>
+<li><strong>把这个规律外推到处理组</strong>：对每个处理组单位，代入它自己的协变量 <span class="math inline">\(X_i\)</span>，算出它「若不处理本会发生的变化」的预测值 <span class="math inline">\(m_{g,t}(X_i)\)</span>；</li>
+<li><strong>实际变化减预测变化</strong>：用处理组的实际变化减去这个预测的反事实变化，得到效应。</li>
+</ol>
+<p>写成公式：</p>
+<p><span id="eq-cipolicy-did-ra"><span class="math display">\[
+m_{g,t}(X_i)=E[Y_{it}-Y_{i,g-1}\mid C_i=1,X_i],\qquad
+ATT^{RA}(g,t)=E[Y_{it}-Y_{i,g-1}\mid G_i=g]-E[m_{g,t}(X_i)\mid G_i=g]
+\tag{6.20}\]</span></span></p>
+<p>一句话直觉：在控制组里学「不同协变量水平下本来会发生什么」，把这个无政策变化预测给处理组。它只依赖<strong>结果模型</strong> <span class="math inline">\(m\)</span>。</p>
+<p><strong>逆概率加权 (IPW，inverse probability weighting)</strong>：估「一个单位有多像处理组」的倾向得分 <span class="math inline">\(p_g(X_i)\)</span> (logit 拟合)，给对照组里越像处理组的单位越高的权重，用加权后的对照组变化当反事实：</p>
+<p><span id="eq-cipolicy-did-ipw"><span class="math display">\[
+ATT^{IPW}(g,t)=E\!\left[\left (\frac{K_{ig}}{E[K_{ig}]}-\frac{\dfrac{p_g (X_i)C_i}{1-p_g (X_i)}}{E\!\left[\dfrac{p_g (X_i)C_i}{1-p_g (X_i)}\right]}\right)(Y_{it}-Y_{i,g-1})\right]
+\tag{6.21}\]</span></span></p>
+<p>其中 <span class="math inline">\(K_{ig}=\mathbf 1(G_i=g)\)</span>。直觉：不直接回归结果，而是把对照组「重新称重」，让它的协变量分布贴近处理组，再直接比变化。它只依赖<strong>倾向得分</strong> <span class="math inline">\(p\)</span>。</p>
+<p><strong>增强逆概率加权 (AIPW)</strong>：把 RA 和 IPW 合起来——对比 <a href="#eq-cipolicy-did-ipw" class="quarto-xref">式&nbsp;<span>6.21</span></a>，只在括号里多减一个结果回归项 <span class="math inline">\(m_{g,t}(X_i)\)</span>：</p>
+<p><span id="eq-cipolicy-did-aipw"><span class="math display">\[
+ATT^{AIPW}(g,t)=E\!\left[\left (\frac{K_{ig}}{E[K_{ig}]}-\frac{\dfrac{p_g (X_i)C_i}{1-p_g (X_i)}}{E\!\left[\dfrac{p_g (X_i)C_i}{1-p_g (X_i)}\right]}\right)\big (Y_{it}-Y_{i,g-1}-m_{g,t}(X_i)\big)\right]
+\tag{6.22}\]</span></span></p>
+<p>就这一处改动，带来<strong>双重稳健</strong>：结果模型 <span class="math inline">\(m\)</span> 和倾向得分 <span class="math inline">\(p\)</span>，<strong>只要有一个设定正确，ATT 就一致</strong>。</p>
+<p>为什么「其一正确即可」？关键在偏误结构。可以证明，AIPW 的偏误项正比于两个模型误差的<strong>乘积</strong>：</p>
+<p><span id="eq-cipolicy-did-dr-bias"><span class="math display">\[
+\text{Bias}\;\propto\;E\big[(\widehat p-p)\times (\widehat m-m)\big]
+\tag{6.23}\]</span></span></p>
+<p>这个乘积结构是双重稳健的全部秘密。倾向得分设对了，<span class="math inline">\(\widehat p-p=0\)</span>，乘积为零，哪怕 <span class="math inline">\(\widehat m\)</span> 错得离谱也无妨；反过来结果模型设对了，<span class="math inline">\(\widehat m-m=0\)</span>，乘积同样为零。只有两个<strong>同时</strong>错，两个误差才都非零、乘积才非零、偏误才出现。单个模型正确的概率本就不低，「两个同时错」的概率更小——AIPW 给了你两次做对的机会。这也是为什么 Stata 官方与多数教程默认推荐 AIPW；仅当倾向得分出现极端值 (<span class="math inline">\(p\)</span> 接近 0 或 1、权重爆炸) 时，才退回相对保守的 RA。</p>
+<p><code>drdid</code> 就是这套双重稳健估计在<strong>两期</strong>情形的 Stata 实现，<code>csdid ..., method(dripw)</code> 则把它用到每个 <span class="math inline">\(ATT(g,t)\)</span> 上。</p>
+<section id="第四种思路wooldridge-的饱和-twfe" class="level3" data-number="6.8.1">
+<h3 data-number="6.8.1" class="anchored" data-anchor-id="第四种思路wooldridge-的饱和-twfe"><span class="header-section-number">6.8.1</span> 第四种思路：Wooldridge 的饱和 TWFE</h3>
+<p>RA、IPW、AIPW 之外还有第四种殊途同归的估计思路。经典 TWFE 把处理压成一个系数：</p>
+<p><span id="eq-cipolicy-did-wooldridge-old"><span class="math display">\[
+y_{it}=\theta_t+\eta_i+\alpha D_{it}+\nu_{it}
+\tag{6.24}\]</span></span></p>
+<p>Wooldridge (2021) 的做法是把这一个 <span class="math inline">\(\alpha\)</span> <strong>饱和展开</strong>成每个「组别 <span class="math inline">\(g\)</span> × 时期 <span class="math inline">\(s\)</span>」一个单独系数，并允许它们与协变量、固定效应充分交互：</p>
+<p><span id="eq-cipolicy-did-wooldridge-new"><span class="math display">\[
+y_{it}=\theta_t+\eta_i+\sum_{g\in\mathbf G}\sum_{s=g}^{T}\alpha_{g,s}\,\mathbf 1(G_i=g,\ t=s)+\nu_{it}
+\tag{6.25}\]</span></span></p>
+<p>每个 <span class="math inline">\(\alpha_{g,s}\)</span> 就是一个 <span class="math inline">\(ATT(g,s)\)</span>。这样，「饱和的 TWFE」也能得到与 CS 框架一致的、不受坏比较污染的组别—时期效应——它用 Mundlak 回归的形式，把「拆成干净 2×2」的思想装进一个大回归里。Stata 18 的 <code>xthdidregress</code> (面板) 与 <code>hdidregress</code> (重复截面) 把四种估计量收进同一命令：<code>ra</code>、<code>ipw</code>、<code>aipw</code> 对应本节三式，<code>twfe</code> 即 <a href="#eq-cipolicy-did-wooldridge-new" class="quarto-xref">式&nbsp;<span>6.25</span></a>。</p>
+<p>图 <a href="#fig-cipolicy-did-heter-estimators" class="quarto-xref">图&nbsp;<span>6.13</span></a> 回到最简单的两组两期，展示四种估计量的<strong>共同目标</strong>：处理组第二期那个观测不到的无处理反事实 <span class="math inline">\(Y^{treated,T=2}(0)\)</span> (红色虚线的终点)。写成均值分解：</p>
+<p><span id="eq-cipolicy-did-canonical-effects"><span class="math display">\[
+\text{Effects}=\underbrace{\big[Y^{treated,T=2}-Y^{treated,T=1}\big]}_{\text{处理组前后变化}}-\underbrace{\big[Y^{control,T=2}-Y^{control,T=1}\big]}_{\text{未处理组前后变化}}
+\tag{6.26}\]</span></span></p>
+<p>RA 用结果模型预测这条虚线，IPW 用加权对照组模拟它，AIPW 两条腿走路，饱和 TWFE 用充分交互的回归吸收它——四条路，一个终点。</p>
+<div id="fig-cipolicy-did-heter-estimators" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-did-heter-estimators-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch06_diliu_canonical_did_counterfactual.png" class="img-fluid figure-img" style="width:82.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-did-heter-estimators-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;6.13: 四种估计量的共同目标：估计处理组第二期观测不到的反事实 (红色虚线终点)
+</figcaption>
+</figure>
+</div>
+<blockquote class="blockquote">
+<p>图源：Di Liu, <em>Heterogeneous Difference-in-Differences in Stata</em>, Stata Webinar slides, p.4/p.26。</p>
+</blockquote>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+这套估计量的三条识别假设
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Stata 18 异质性 DID 命令 (亦即 CS 框架) 依赖三条假设 (Liu 2023, p.25)：<strong>无预期效应</strong>——处理前 <span class="math inline">\(t&lt;g\)</span> 时 <span class="math inline">\(E[y_{it}(g)\mid \mathbf x,G_i=g]=E[y_{it}(\infty)\mid \mathbf x,G_i=g]\)</span>，政策尚未落地就不该已经起作用；<strong>条件平行趋势</strong>——给定协变量后，<span class="math inline">\(E[y_{it}(\infty)-y_{i,t-1}(\infty)\mid\mathbf x,G_i=g]=E[y_{it}(\infty)-y_{i,t-1}(\infty)\mid\mathbf x,G_i=\infty]\)</span>；<strong>重叠假设</strong>——倾向得分远离 0 和 1，每个协变量水平上处理组都能找到可比对照。第一条在前文用 not-yet-treated 作对照时已隐含提过，这里给出正式形式。</p>
+</div>
+</div>
+<p><a href="#eq-cipolicy-did-dr-bias" class="quarto-xref">式&nbsp;<span>6.23</span></a> 的乘积结构还是<strong>通向第七章的桥</strong>。当协变量很多、<span class="math inline">\(m\)</span> 和 <span class="math inline">\(p\)</span> 的函数形式又未知时，我们会想用机器学习估这两个模型。机器学习为防过拟合会引入正则化偏误，让 <span class="math inline">\(\widehat m,\widehat p\)</span> 各自都不完全正确——但只要这两个偏误能被乘积结构压住 (各自收敛够快，乘积可忽略)，处理效应估计依然稳健。这个「用正交/乘积结构抵消一阶偏误」的思想，正是第七章双重机器学习 (DDML) 的核心。</p>
+</section>
+</section>
+<section id="聚合的实战最低工资案例" class="level2" data-number="6.9">
+<h2 data-number="6.9" class="anchored" data-anchor-id="聚合的实战最低工资案例"><span class="header-section-number">6.9</span> 聚合的实战：最低工资案例</h2>
+<p>上面的权重公式抽象，最好的检验方式是把每个聚合值<strong>拆回</strong> <span class="math inline">\(ATT(g,t)\)</span> 矩阵的格子里看。这一节用 Callaway and Sant’Anna (2021) 论文第五节的最低工资案例走一遍：结果变量是美国县级青年就业率 <code>lemp</code>，处理是州政府实施最低工资限制，数据覆盖 2002–2007 年，三个处理批次分别在 2004、2006、2007 年进入——一个标准的交错处理面板。用 Stata 18 的 <code>xthdidregress aipw</code> 控制协变量估出全部 <span class="math inline">\(6\text{ 年}\times3\text{ 组}=18\)</span> 个 <span class="math inline">\(ATT(g,t)\)</span> (标准误在州层面聚类)，再用 <code>estat aggregation</code> 沿三个方向聚合。命令与完整输出见严安冬 (2024)《Stata：异质性 DID 代码详解》；本章附录 G 的主线用 Stata 17 可跑的 <code>csdid</code> 覆盖同一框架。</p>
+<p>图 <a href="#fig-cipolicy-did-heter-atet" class="quarto-xref">图&nbsp;<span>6.14</span></a> 是 <code>estat atetplot</code> 给出的原始画像：每个面板是一个批次，虚线左侧为处理前、右侧为处理后。2004 与 2006 批次的处理后效应显著为负——最低工资限制降低了青年就业率。这 18 个格子就是下面三种聚合的全部原料。</p>
+<div id="fig-cipolicy-did-heter-atet" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-did-heter-atet-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch06_diliu_atetplot_sci.png" class="img-fluid figure-img" style="width:88.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-did-heter-atet-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;6.14: 各批次 ATET(g,t) 的原始画像：处理前系数围绕零波动，2004 与 2006 批次处理后转为负
+</figcaption>
+</figure>
+</div>
+<blockquote class="blockquote">
+<p>图源：Di Liu, <em>Heterogeneous Difference-in-Differences in Stata</em>, Stata Webinar slides, p.15。</p>
+</blockquote>
+<p><strong>按暴露时长聚合</strong> (<a href="#eq-cipolicy-did-agg-event" class="quarto-xref">式&nbsp;<span>6.15</span></a>，<code>estat aggregation, dynamic</code>)。图 <a href="#fig-cipolicy-did-heter-dynamic" class="quarto-xref">图&nbsp;<span>6.15</span></a> 中，<span class="math inline">\(e=3\)</span> 处的点约 <span class="math inline">\(-0.21\)</span>。它其实只是<strong>一个格子</strong>：数据止于 2007 年，三个批次中只有 2004 批次能被观测到暴露第 3 期，所以 <span class="math inline">\(\theta(3)=ATT(2004,2007)=-0.208\)</span>，没有任何加权发生。而 <span class="math inline">\(e=1\)</span> 处约 <span class="math inline">\(-0.071\)</span>，是两个格子的加权：<span class="math inline">\(ATT(2004,2005)=-0.114\)</span> 与 <span class="math inline">\(ATT(2006,2007)=-0.051\)</span>，按两组规模加权 <span class="math inline">\(0.31\times(-0.114)+0.69\times(-0.051)\approx-0.071\)</span>，与输出分毫不差。这解释了动态图为什么越往右置信区间越宽——<a href="#eq-cipolicy-did-agg-event" class="quarto-xref">式&nbsp;<span>6.15</span></a> 里的 <span class="math inline">\(\mathbf 1(g+e\le T)\)</span> 把可用的组越筛越少。</p>
+<div id="fig-cipolicy-did-heter-dynamic" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-did-heter-dynamic-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch06_diliu_agg_dynamic.png" class="img-fluid figure-img" style="width:82.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-did-heter-dynamic-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;6.15: 按暴露时长聚合的事件研究图：右端各点由越来越少的格子支撑，区间随之变宽
+</figcaption>
+</figure>
+</div>
+<blockquote class="blockquote">
+<p>图源：Di Liu, <em>Heterogeneous Difference-in-Differences in Stata</em>, Stata Webinar slides, p.18。</p>
+</blockquote>
+<p><strong>按队列聚合</strong> (<a href="#eq-cipolicy-did-agg-cohort" class="quarto-xref">式&nbsp;<span>6.16</span></a>，<code>estat aggregation, cohort</code>)。图 <a href="#fig-cipolicy-did-heter-cohort" class="quarto-xref">图&nbsp;<span>6.16</span></a> 中 2004 批次的总效应为 <span class="math inline">\(-0.148\)</span>：它就是该组四个处理后格子的等权平均，<span class="math inline">\((-0.098-0.114-0.172-0.208)/4=-0.148\)</span>。三个批次对比清楚地显示，最早进入的 2004 批次效应最深——这正是「先行先试是否收效更大」这类问题需要的口径。</p>
+<div id="fig-cipolicy-did-heter-cohort" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-did-heter-cohort-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch06_diliu_agg_cohort.png" class="img-fluid figure-img" style="width:82.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-did-heter-cohort-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;6.16: 按队列聚合的批次效应：2004 批次效应最深
+</figcaption>
+</figure>
+</div>
+<blockquote class="blockquote">
+<p>图源：Di Liu, <em>Heterogeneous Difference-in-Differences in Stata</em>, Stata Webinar slides, p.19。</p>
+</blockquote>
+<p><strong>按日历时间聚合</strong> (<a href="#eq-cipolicy-did-agg-time" class="quarto-xref">式&nbsp;<span>6.17</span></a>，<code>estat aggregation, time</code>)。图 <a href="#fig-cipolicy-did-heter-time" class="quarto-xref">图&nbsp;<span>6.17</span></a> 中 2004 年的聚合值 <span class="math inline">\(-0.098\)</span> 与 <span class="math inline">\(ATT(2004,2004)\)</span> 完全相同——那一年只有 2004 批次在治，<a href="#eq-cipolicy-did-agg-time" class="quarto-xref">式&nbsp;<span>6.17</span></a> 的求和只剩一项。2006 年的 <span class="math inline">\(-0.060\)</span> 则是 <span class="math inline">\(ATT(2004,2006)=-0.172\)</span> 与 <span class="math inline">\(ATT(2006,2006)=-0.010\)</span> 按 <span class="math inline">\(0.31/0.69\)</span> 加权的结果。聚合值永远能拆回格子，这是「权重不是黑箱」的直接体现。</p>
+<div id="fig-cipolicy-did-heter-time" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-did-heter-time-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch06_diliu_agg_time.png" class="img-fluid figure-img" style="width:82.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-did-heter-time-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;6.17: 按日历时间聚合的年度效应：每个点都能拆回当年在治各组的格子
+</figcaption>
+</figure>
+</div>
+<blockquote class="blockquote">
+<p>图源：Di Liu, <em>Heterogeneous Difference-in-Differences in Stata</em>, Stata Webinar slides, p.20。</p>
+</blockquote>
+<p>三个维度合起来，才是「异质性处理效应」的完整画像。一篇严谨的政策评估论文，通常同时报告动态图 (看效应演化) 和分组结果 (看谁受益更多)，而不是压成一个 overall ATT 了事。</p>
+</section>
+<section id="插补反事实先预测-y-0再估效应" class="level2" data-number="6.10">
+<h2 data-number="6.10" class="anchored" data-anchor-id="插补反事实先预测-y-0再估效应"><span class="header-section-number">6.10</span> 插补反事实：先预测 Y (0)，再估效应</h2>
+<p>Borusyak, Jaravel and Spiess (2024) 走另一条路径：不从一组组 2×2 出发，而是先用未处理观测估无政策结果模型，再外推到处理组。设 <span class="math inline">\(Y_{it}(0)=\alpha_i+\lambda_t+u_{it}\)</span>，<strong>只用未处理观测</strong>(never-treated 和各单位处理前的期) 估 <span class="math inline">\(\alpha_i,\lambda_t\)</span>，得 <span class="math inline">\(\widehat Y_{it}(0)=\widehat\alpha_i+\widehat\lambda_t\)</span>；对处理组处理后观测，效应为 <span class="math inline">\(\widehat\tau_{it}=Y_{it}-\widehat Y_{it}(0)\)</span>，再按事件时间等聚合。</p>
+<p><code>did_imputation</code> 是它的实现。它与 <code>csdid</code> 的对照恰好呼应第五章：<code>csdid</code> 像加权对照 (SCM)——找干净的对照单位组合；<code>did_imputation</code> 像因子/回归预测 (RCM)——建一个模型把 <span class="math inline">\(Y(0)\)</span> 预测出来。同一族问题，两种反事实哲学。<code>did2s</code> (Gardner 2022) 可放在这一类附近：第一阶段只用固定效应和协变量解释结果、不含处理变量，第二阶段用净化后的结果估处理效应，既保留回归的简洁、又避免处理效应污染固定效应估计。</p>
+</section>
+<section id="事件研究的修正sunabraham" class="level2" data-number="6.11">
+<h2 data-number="6.11" class="anchored" data-anchor-id="事件研究的修正sunabraham"><span class="header-section-number">6.11</span> 事件研究的修正：Sun–Abraham</h2>
+<p>传统事件研究把 <a href="#eq-cipolicy-did-did2" class="quarto-xref">式&nbsp;<span>6.2</span></a> 沿相对时间展开：</p>
+<p><span id="eq-cipolicy-did-event"><span class="math display">\[
+Y_{it}=\alpha_i+\lambda_t+\sum_{k\neq-1}\beta_k\mathbf 1 (t-T_i=k)+\varepsilon_{it}
+\tag{6.27}\]</span></span></p>
+<p><span class="math inline">\(k=t-T_i\)</span> 是相对政策时点的距离，<span class="math inline">\(k=-1\)</span> 归一化为零。<span class="math inline">\(k&lt;0\)</span> 的 lead 看政策前趋势，<span class="math inline">\(k\ge0\)</span> 的 lag 看动态效应。但 Sun and Abraham (2021) 指出：交错处理下，某个 <span class="math inline">\(\beta_k\)</span> 会被<strong>其他队列</strong>的处理效应污染——这正是 Bacon 坏比较的事件研究版本，某个相对期的系数里混进了别的队列在该相对期的效应。所以<strong>事件研究不自动比静态 TWFE 更稳健</strong>。他们的 <code>eventstudyinteract</code> 按队列 (cohort) 分别估事件时间效应、再加权汇总，把污染切断。它与 <code>csdid</code> 的 <code>estat event</code> 殊途同归：都是先得到干净的、分队列的效应，再沿相对时间聚合。</p>
+</section>
+<section id="平行趋势的现代理解" class="level2" data-number="6.12">
+<h2 data-number="6.12" class="anchored" data-anchor-id="平行趋势的现代理解"><span class="header-section-number">6.12</span> 平行趋势的现代理解</h2>
+<p>现代 DID 修正了比较对象和聚合方式，但不能自动消除平行趋势问题——它只是让我们知道，在哪个比较上需要平行趋势。这一节讲这个假设该怎么对待，回应本书从第一章起的立场：<strong>假设是否站得住，比结果是否显著更重要</strong>。</p>
+<p><strong>第一，事前系数不显著，不等于平行趋势成立</strong>。政策前 lead 系数都不显著，很多人就宣布通过。但不显著只是「没有拒绝趋势差异为零」，不等于「证明趋势差异为零」。检验功效常不足：政策前期少、标准误大，即便趋势真的不同，也可能因检验没力气而无法拒绝。看不到差异，可能只是没看清。</p>
+<p><strong>第二，先做预检验、通过才继续，这个流程本身扭曲推断</strong>。Roth (2022) 指出，若流程是「先看事前系数、显著就换样本换窗口、不显著才报主结果」，最终报告的估计已经过筛选，常规置信区间不再有原来的覆盖率。pre-trend 检验应当作为诊断信息，而不是识别假设的证明。</p>
+<p><strong>第三，现代做法是敏感性分析，不是二元判定</strong>。Rambachan and Roth (2023) 的 honest DID 换了个问法：不问平行趋势是否严格成立 (无法证明)，而问——<strong>平行趋势要被违反到什么程度，结论才翻转？</strong> 做法：允许政策后趋势偏离，但限制它不超过政策前观测到的最大偏离的 <span class="math inline">\(\bar M\)</span> 倍，在此约束下算处理效应的稳健置信区间；再找临界的 <span class="math inline">\(\bar M\)</span> (breakdown value)——偏离多大，区间才开始包含零。<span class="math inline">\(\bar M\)</span> 越大，推翻结论所需的趋势违反越离谱，结论越可信。这把「平行趋势成立吗」这个无法回答的是非题，换成「结论对假设违反有多敏感」这个可量化的问题。附录用 <code>honestdid</code> 实际算出这个区间。</p>
+<p>平行趋势的可信度，最终来自<strong>政策机制</strong>而非模型里堆了多少固定效应。若政策按行政名单分批推进，要说明名单是否与未来结果变化有关；若企业自愿申请，要说明申请行为是否反映对未来的预期；若高污染地区先试点，要说明它们是否正处于不同的产业周期。这些制度细节，才是平行趋势可信与否的真正依据。</p>
+</section>
+<section id="ddd什么时候需要第三重差异" class="level2" data-number="6.13">
+<h2 data-number="6.13" class="anchored" data-anchor-id="ddd什么时候需要第三重差异"><span class="header-section-number">6.13</span> DDD：什么时候需要第三重差异</h2>
+<p>普通 DID 扣除了共同时间趋势，但有时还残留另一类差异趋势。比如处理地区和对照地区总体趋势相近，但政策主要作用于某类企业，而这类企业本身正经历全国性行业周期——普通 DID 可能把行业周期误当政策效应。DDD 的思路是再引入第三个维度，用一个 DID 去修正另一个 DID。</p>
+<p>设 <span class="math inline">\(A_i\)</span> 是处理地区、<span class="math inline">\(Post_t\)</span> 是政策后、<span class="math inline">\(S_i\)</span> 是敏感组 (高暴露组)。用均值写，DDD 是两个 DID 的差：</p>
+<p><span id="eq-cipolicy-did-ddd"><span class="math display">\[
+DDD=\underbrace{\big[(Y_{A,S,1}-Y_{A,S,0})-(Y_{A,N,1}-Y_{A,N,0})\big]}_{\text{处理地区内部的 DID}}-\underbrace{\big[(Y_{B,S,1}-Y_{B,S,0})-(Y_{B,N,1}-Y_{B,N,0})\big]}_{\text{对照地区内部的 DID}}
+\tag{6.28}\]</span></span></p>
+<p>图 <a href="#fig-cipolicy-did-ddd-two-did" class="quarto-xref">图&nbsp;<span>6.18</span></a> 把这个「两个 DID 之差」画成两个面板：左右各自是一个完整的 DID，DDD 关注的是两个 DID 之间的差。</p>
+<div id="fig-cipolicy-did-ddd-two-did" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-did-ddd-two-did-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ch06_fig05_ddd_two_did_difference_pen_v3.png" class="img-fluid figure-img" style="width:86.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-did-ddd-two-did-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;6.18: DDD：两个 DID 之差
+</figcaption>
+</figure>
+</div>
+<blockquote class="blockquote">
+<p>图源：本章绘制。</p>
+</blockquote>
+<p>逐层看它差掉什么。<strong>第一重</strong>(每个方括号内相减)：处理地区内部拿敏感组减不敏感组。若有某冲击当年同时打在处理地区所有人身上 (不分敏感与否)，这步把它差掉——它对两个子群影响相同，相减抵消。<strong>第二重</strong>(两方括号相减)：处理地区的组内 DID 减对照地区的组内 DID。若敏感组和不敏感组之间本就存在某种随时间变化的固有差异 (两地都一样)，这步把它差掉。两重之后，剩下的才是「政策专门作用于处理地区敏感组」的净效应。实际面板中通常加高维固定效应吸收低阶项 (个体、时间、地区×年份、行业×年份)，只留三重交互项 <span class="math inline">\(A_i\times Post_t\times S_i\)</span> 的系数。</p>
+<p>DDD 在本书里是三章合力讲的方法，到这里收口：第四章讲它的<strong>固定效应吸收结构</strong>(Lane 2025 的产业×年份、国家×年份、国家×产业三组高维 FE，让低阶项被吸收、只留三重交互)，第五章讲它作为<strong>反事实</strong>的直觉 (用一个 DID 修正另一个 DID)，本章讲它作为<strong>设计</strong>的适用条件与逐层扣除逻辑。Lane 的跨国 DDD 是最好的例子：韩国目标产业相对非目标产业的国内 DID 仍可能混入全球产业周期，于是引入「韩国 vs 其他国家」这第三重，把全球同产业走势也差掉，最终识别「韩国目标产业相对国际反事实的额外变化」。要提醒的是：<strong>DDD 不是把三重交互项丢进回归就自动更干净</strong>——第三维必须对应一个明确的竞争性解释或机制 (要差掉哪一类普通 DID 差不掉的污染？)，否则只是多一层不知道在控制什么的复杂度，还平白损失精度。</p>
+</section>
+<section id="各估计量放在一起比一比" class="level2" data-number="6.14">
+<h2 data-number="6.14" class="anchored" data-anchor-id="各估计量放在一起比一比"><span class="header-section-number">6.14</span> 各估计量放在一起比一比</h2>
+<p>进入数字对比前，先把前面几节的方法按思路归成三类 (<a href="#tbl-cipolicy-did-three-routes" class="quarto-xref">表&nbsp;<span>6.4</span></a>)——按思路分类，比按软件包记命令容易得多。</p>
+<div id="tbl-cipolicy-did-three-routes" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-cipolicy-did-three-routes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;6.4: 现代 DID 估计量的三条主要路线
+</figcaption>
+<div aria-describedby="tbl-cipolicy-did-three-routes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>路线</th>
+<th>代表方法</th>
+<th>解决的主要问题</th>
+<th>适合场景</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>组别—时期 ATT</td>
+<td><code>csdid</code>, <code>xthdidregress</code>, <code>eventstudyinteract</code>, <code>did_multiplegt</code></td>
+<td>剔除坏比较，明确 <span class="math inline">\(ATT(g,t)\)</span> 与聚合权重</td>
+<td>交错处理、动态效应、队列异质性</td>
+</tr>
+<tr class="even">
+<td>插补 / 两步</td>
+<td><code>did_imputation</code>, <code>did2s</code></td>
+<td>先估未处理反事实，再算处理效应</td>
+<td>事件研究、固定效应反事实构造</td>
+</tr>
+<tr class="odd">
+<td>双重稳健</td>
+<td><code>drdid</code>, RA / IPW / AIPW</td>
+<td>条件平行趋势下处理协变量</td>
+<td>协变量影响处理选择</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>把主要估计量放在同一份模拟数据上对比，最能看清它们的异同。下面的对比基于 Zevelev 的开源复现项目 <a href="https://github.com/azev77/Compare-DiD-Estimators">Compare-DiD-Estimators</a>，周嘉怡 (2023) [Stata：各种 DID 估计量的比较分析](<a href="https://www.lianxh.cn/details/1097.html" class="uri">https://www.lianxh.cn/details/1097.html</a>) 做了整理与讲解。它用 100 个体 × 15 期的面板，设两个案例：案例一处理效应<strong>同质</strong>(所有组都是 49)，案例二处理效应<strong>异质</strong>(早处理组 20、晚处理组 60)。</p>
+<p><strong>同质效应下 (案例一)</strong>，图 <a href="#fig-cipolicy-did-compare-homo" class="quarto-xref">图&nbsp;<span>6.19</span></a> 显示：TWFE、Sun–Abraham、Callaway–Sant’Anna、BJS 插补、<code>did2s</code>、堆叠回归，几乎所有方法都给出无偏的动态路径、彼此重合。这说明<strong>问题不在方法，而在异质性</strong>——效应同质时，老实的 TWFE 也没错。</p>
+<div id="fig-cipolicy-did-compare-homo" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-did-compare-homo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/DID%E5%A4%A7%E6%AF%94%E6%8B%BC_%E5%90%84%E7%A7%8D%E4%BC%B0%E8%AE%A1%E9%87%8F%E7%9A%84%E6%AF%94%E8%BE%83%E5%88%86%E6%9E%90_%E5%91%A8%E5%98%89%E6%80%A1_Fig06.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-did-compare-homo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;6.19: 同质处理效应下，各估计量的动态路径几乎重合、都无偏
+</figcaption>
+</figure>
+</div>
+<p><strong>异质效应下 (案例二)</strong>，图 <a href="#fig-cipolicy-did-compare-heter" class="quarto-xref">图&nbsp;<span>6.20</span></a> 显示分化：TWFE-OLS 和堆叠回归 (stackedev) 明显偏离真实动态路径，而 Callaway–Sant’Anna、Sun–Abraham、BJS 插补、<code>did2s</code> 都贴合真值。这张图把全章的核心结论可视化了：<strong>在异质效应下，是否只用干净比较、是否正确加权，决定了估计量偏还是不偏</strong>。</p>
+<div id="fig-cipolicy-did-compare-heter" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-did-compare-heter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/DID%E5%A4%A7%E6%AF%94%E6%8B%BC_%E5%90%84%E7%A7%8D%E4%BC%B0%E8%AE%A1%E9%87%8F%E7%9A%84%E6%AF%94%E8%BE%83%E5%88%86%E6%9E%90_%E5%91%A8%E5%98%89%E6%80%A1_Fig07.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-did-compare-heter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;6.20: 异质处理效应下，TWFE 和堆叠回归偏离真值，现代估计量贴合真值
+</figcaption>
+</figure>
+</div>
+<p>这也提醒一件事：不同估计量结果不一致时，先别急着挑一个报告，而要回到「它们各自在估哪个目标参数、用哪些比较、做了什么加权」——不一致本身往往就是异质性存在的信号。</p>
+</section>
+<section id="一篇论文里的证据架构" class="level2" data-number="6.15">
+<h2 data-number="6.15" class="anchored" data-anchor-id="一篇论文里的证据架构"><span class="header-section-number">6.15</span> 一篇论文里的证据架构</h2>
+<p>一篇成熟的 DID 论文可以用多种方法，但<strong>不是堆叠稳健性，而是让每种方法承担不同功能</strong>(<a href="#tbl-cipolicy-did-architecture" class="quarto-xref">表&nbsp;<span>6.5</span></a>)。</p>
+<div id="tbl-cipolicy-did-architecture" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-cipolicy-did-architecture-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;6.5: 一篇论文中的多方法分工
+</figcaption>
+<div aria-describedby="tbl-cipolicy-did-architecture-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>方法</th>
+<th>在论文中的角色</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>TWFE</td>
+<td>与既有文献可比的基准结果</td>
+</tr>
+<tr class="even">
+<td>Bacon 分解</td>
+<td>诊断 TWFE 是否混入大量坏比较</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(ATT(g,t)\)</span> / <code>csdid</code></td>
+<td>交错处理下的主估计或核心稳健性</td>
+</tr>
+<tr class="even">
+<td>Sun–Abraham 事件研究</td>
+<td>修正动态污染、展示效应路径</td>
+</tr>
+<tr class="odd">
+<td><code>drdid</code> / AIPW</td>
+<td>条件平行趋势下、协变量调整后的复核</td>
+</tr>
+<tr class="even">
+<td>BJS / <code>did_imputation</code></td>
+<td>用插补型反事实重估动态效应</td>
+</tr>
+<tr class="odd">
+<td>honest DID</td>
+<td>检查结论对平行趋势偏离的敏感性</td>
+</tr>
+<tr class="even">
+<td>DDD</td>
+<td>排除某一类明确的竞争性解释</td>
+</tr>
+<tr class="odd">
+<td>溢出与 SUTVA 检查</td>
+<td>守住无干扰、对照未被污染的边界</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>好的叙述不是「我们又用了若干方法，结果稳健」，而是逐一说明：TWFE 回答什么基准问题、Bacon 分解说明 TWFE 是否可信、group-time ATT 排除了哪些坏比较、事件研究展示了怎样的前后路径、双重稳健处理了哪些可观察差异、DDD 排除了哪类最主要的竞争性解释、敏感性分析说明结论需要多强的趋势偏离才翻转。可信度来自方法之间的分工和识别假设之间的互相支撑，而不是回归表的数量。Lane (2025) 正是这样：基准事件研究给形状、双重稳健复核、跨国 DDD 排除全球产业周期、pre-trend 和 SUTVA 守边界——当不同比较、不同目标参数、不同假设下结论方向一致时，可信的是整个证据架构，而非某个点估计。</p>
+</section>
+<section id="方法选择表与通向第七章" class="level2" data-number="6.16">
+<h2 data-number="6.16" class="anchored" data-anchor-id="方法选择表与通向第七章"><span class="header-section-number">6.16</span> 方法选择表与通向第七章</h2>
+<p>最后把全章收成一张表 (<a href="#tbl-cipolicy-did-choice" class="quarto-xref">表&nbsp;<span>6.6</span></a>)。它不是命令速查，而是研究设计检查表：从左到右，先看处理结构，再问关键问题，落到推荐入口。</p>
+<div id="tbl-cipolicy-did-choice" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-cipolicy-did-choice-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+表&nbsp;6.6: DID 方法选择表
+</figcaption>
+<div aria-describedby="tbl-cipolicy-did-choice-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>研究场景</th>
+<th>先问什么</th>
+<th>推荐入口</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>统一处理时点，never-treated 清楚</td>
+<td>政策前平行趋势是否可信？</td>
+<td>TWFE / 事件研究</td>
+</tr>
+<tr class="even">
+<td>两期 DID，协变量差异明显</td>
+<td>条件平行趋势是否更合理？</td>
+<td><code>drdid</code> / RA / IPW / AIPW</td>
+</tr>
+<tr class="odd">
+<td>多期、分批、处理后持续</td>
+<td>是否存在组别与时期异质效应？</td>
+<td><code>csdid</code> / <code>xthdidregress</code></td>
+</tr>
+<tr class="even">
+<td>分批处理，重点看动态</td>
+<td>传统 lead/lag 是否被其他队列污染？</td>
+<td><code>eventstudyinteract</code> / <code>csdid</code>+<code>estat event</code></td>
+</tr>
+<tr class="odd">
+<td>想用未处理样本预测反事实</td>
+<td>是否适合先估 <span class="math inline">\(Y(0)\)</span> 再插补？</td>
+<td><code>did_imputation</code> / <code>did2s</code></td>
+</tr>
+<tr class="even">
+<td>处理状态反复开关</td>
+<td>是否违反吸收性处理假设？</td>
+<td><code>did_multiplegt_dyn</code></td>
+</tr>
+<tr class="odd">
+<td>处理时点近似随机</td>
+<td>rollout 是否可视为随机？</td>
+<td><code>staggered</code></td>
+</tr>
+<tr class="even">
+<td>处理组少、对照趋势差</td>
+<td>普通 DID 是否已不可信？</td>
+<td>SCM / SDID (第五章)</td>
+</tr>
+<tr class="odd">
+<td>需扣除第三类差异趋势</td>
+<td>第三维是否对应明确机制？</td>
+<td>DDD</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>这张表与第四章的固定效应递进表、第五章的反事实代价表构成一组——三章各有一张「核心判断表」，都在回答同一个元问题：你的识别究竟建立在什么之上。第四章说固定效应在声明「拿谁和谁比」，第五章说反事实构造各有代价，本章说 DID 内部的方法选择也必须回到比较对象和目标参数。</p>
+<p><strong>通向第七章。</strong> <code>drdid</code> 和 AIPW 已把我们带到高维控制问题：若条件平行趋势需要控制大量协变量，结果模型 <span class="math inline">\(m\)</span> 和倾向得分 <span class="math inline">\(p\)</span> 该怎么估？普通线性模型可能太僵硬，机器学习又可能引入正则化偏误。怎样在灵活估计这两个辅助模型的同时，靠 <a href="#eq-cipolicy-did-dr-bias" class="quarto-xref">式&nbsp;<span>6.23</span></a> 的乘积结构把偏误压住、保证政策效应对第一阶段误差不敏感？这需要 FWL 定理、partial out、Neyman 正交性和双重机器学习 (DDML)。第七章从这里展开。</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+配套复现
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>本章各方法的完整 Stata 复现——2×2 四格均值、Bacon 分解三单位最小例子与权重手算、mpdta 上的 TWFE 诊断、<code>csdid</code> 的 <span class="math inline">\(ATT(g,t)\)</span> 与四类聚合、<code>drdid</code> 的 RA / IPW / 双重稳健对比、Sun–Abraham 与 BJS 事件研究、<code>honestdid</code> 敏感性——见 <strong>附录 G</strong>，每个模块后附输出解读与带复现资料的对口文献。Stata 18 内置的 <code>xthdidregress</code>/<code>hdidregress</code> 用法见严安冬 (2024)。附录提供 <code>.ipynb</code> 与 <code>.do</code> 两种格式，数据全部在线读取。</p>
+</div>
+</div>
+</section>
+<section id="参考文献与延伸阅读" class="level2" data-number="6.17">
+<h2 data-number="6.17" class="anchored" data-anchor-id="参考文献与延伸阅读"><span class="header-section-number">6.17</span> 参考文献与延伸阅读</h2>
+<ul>
+<li>Beck, T., Levine, R., &amp; Levkov, A. (2010). Big bad banks? The winners and losers from bank deregulation in the United States. <em>Journal of Finance</em>, 65 (5), 1637-1667. <a href="https://doi.org/10.1111/j.1540-6261.2010.01589.x">Link</a>, <a href="https://dataverse.nl/dataset.xhtml?persistentId=hdl:10411/15996">Data &amp; Prog</a>.</li>
+<li>Borusyak, K., Jaravel, X., &amp; Spiess, J. (2024). Revisiting event-study designs: Robust and efficient estimation. <em>Review of Economic Studies</em>, 91 (6), 3253-3285. <a href="https://doi.org/10.1093/restud/rdae007">Link</a>, <a href="https://arxiv.org/abs/2108.12419">PDF</a>.</li>
+<li>Callaway, B., &amp; Sant’Anna, P. H. C. (2021). Difference-in-differences with multiple time periods. <em>Journal of Econometrics</em>, 225 (2), 200-230. <a href="https://doi.org/10.1016/j.jeconom.2020.12.001">Link</a>, <a href="https://psantanna.com/files/Callaway_SantAnna_2020.pdf">PDF</a>.</li>
+<li>Card, D., &amp; Krueger, A. B. (1994). Minimum wages and employment: A case study of the fast-food industry in New Jersey and Pennsylvania. <em>American Economic Review</em>, 84 (4), 772-793. <a href="https://davidcard.berkeley.edu/papers/njmin-aer.pdf">PDF</a>.</li>
+<li>Cengiz, D., Dube, A., Lindner, A., &amp; Zipperer, B. (2019). The effect of minimum wages on low-wage jobs. <em>Quarterly Journal of Economics</em>, 134 (3), 1405-1454. <a href="https://doi.org/10.1093/qje/qjz014">Link</a>, <a href="https://doi.org/10.7910/DVN/TJCTC7">Data</a>.</li>
+<li>de Chaisemartin, C., &amp; D’Haultfoeuille, X. (2020). Two-way fixed effects estimators with heterogeneous treatment effects. <em>American Economic Review</em>, 110 (9), 2964-2996. <a href="https://doi.org/10.1257/aer.20181169">Link</a>.</li>
+<li>Liu, D. (2023). Heterogeneous Difference-in-Differences in Stata. Stata Webinar slides. <a href="https://www.stata.com/training/webinar_series/materials/hdidweb1.pdf">Slides</a>, <a href="https://www.stata.com/training/webinar_series/heterogeneous-difference-in-differences1/hetdid.mp4">Recording</a>.</li>
+<li>Gardner, J. (2022). Two-stage differences in differences. Working paper. <a href="https://arxiv.org/abs/2207.05943">PDF</a>.</li>
+<li>Goodman-Bacon, A. (2021). Difference-in-differences with variation in treatment timing. <em>Journal of Econometrics</em>, 225 (2), 254-277. <a href="https://doi.org/10.1016/j.jeconom.2021.03.014">Link</a>.</li>
+<li>Rambachan, A., &amp; Roth, J. (2023). A more credible approach to parallel trends. <em>Review of Economic Studies</em>, 90 (5), 2555-2591. <a href="https://doi.org/10.1093/restud/rdad018">Link</a>.</li>
+<li>Roth, J. (2022). Pretest with caution: Event-study estimates after testing for parallel trends. <em>American Economic Review: Insights</em>, 4 (3), 305-322. <a href="https://doi.org/10.1257/aeri.20210236">Link</a>.</li>
+<li>Sant’Anna, P. H. C., &amp; Zhao, J. (2020). Doubly robust difference-in-differences estimators. <em>Journal of Econometrics</em>, 219 (1), 101-122. <a href="https://doi.org/10.1016/j.jeconom.2020.06.003">Link</a>, <a href="https://arxiv.org/abs/1812.01723">PDF</a>.</li>
+<li>Sun, L., &amp; Abraham, S. (2021). Estimating dynamic treatment effects in event studies with heterogeneous treatment effects. <em>Journal of Econometrics</em>, 225 (2), 175-199. <a href="https://doi.org/10.1016/j.jeconom.2020.09.006">Link</a>.</li>
+<li>Wooldridge, J. M. (2021). Two-way fixed effects, the two-way Mundlak regression, and difference-in-differences estimators. Working paper. <a href="https://scholar.google.com/scholar?q=Two-way+fixed+effects+the+two-way+Mundlak+regression">Google</a>.</li>
+<li>康希, 2024, <a href="https://www.lianxh.cn/details/1347.html">Stata-DID：异质性多期估计方法-Bacon 分解</a>.</li>
+<li>严安冬， 2024, <a href="https://www.lianxh.cn/details/1399.html">Stata：异质性 DID 代码详解</a>.</li>
+<li>周嘉怡, 2023, <a href="https://www.lianxh.cn/details/1097.html">Stata：各种 DID 估计量的比较分析</a>.</li>
+</ul>
+</section>
+<section id="图形来源索引" class="level2" data-number="6.18">
+<h2 data-number="6.18" class="anchored" data-anchor-id="图形来源索引"><span class="header-section-number">6.18</span> 图形来源索引</h2>
+<p>本章使用三类图：本章为讲义绘制的钢笔风示意图；Di Liu 的 Stata Webinar 讲义原图 (自 slides 提取原生分辨率位图，亦即严安冬 2024 推文所据材料)；以及连享会既有推文材料。列出图源，便于后续修改时追溯。</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>图号</th>
+<th>图形内容</th>
+<th>图源</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#fig-cipolicy-did-did-2x2" class="quarto-xref">图&nbsp;<span>6.1</span></a></td>
+<td>2×2 DID 四均值与反事实</td>
+<td>本书图库 (<code>DID-two-period-03-base_C0.png</code>)</td>
+</tr>
+<tr class="even">
+<td><a href="#fig-cipolicy-did-multi" class="quarto-xref">图&nbsp;<span>6.2</span></a></td>
+<td>标准多期 DID 结构</td>
+<td>本书图库 (<code>DID-multi-period-01.png</code>)</td>
+</tr>
+<tr class="odd">
+<td><a href="#fig-cipolicy-did-bblll" class="quarto-xref">图&nbsp;<span>6.3</span></a></td>
+<td>Beck-Levine-Levkov 事件研究图</td>
+<td>高君 (2025)，<a href="https://www.lianxh.cn/details/1548.html">Big-Bad-Bank 并不稳健</a></td>
+</tr>
+<tr class="even">
+<td><a href="#fig-cipolicy-did-staggered-three-units" class="quarto-xref">图&nbsp;<span>6.4</span></a>, <a href="#fig-cipolicy-did-valid-controls" class="quarto-xref">图&nbsp;<span>6.11</span></a>, <a href="#fig-cipolicy-did-attgt-matrix" class="quarto-xref">图&nbsp;<span>6.12</span></a>, <a href="#fig-cipolicy-did-ddd-two-did" class="quarto-xref">图&nbsp;<span>6.18</span></a></td>
+<td>交错三组路径、有效对照时间线、<span class="math inline">\(ATT(g,t)\)</span> 矩阵、DDD 两个 DID 之差</td>
+<td>本章绘制 (钢笔风示意图)</td>
+</tr>
+<tr class="odd">
+<td><a href="#fig-cipolicy-did-bacon-data" class="quarto-xref">图&nbsp;<span>6.5</span></a>, <a href="#fig-cipolicy-did-bacon-split" class="quarto-xref">图&nbsp;<span>6.6</span></a>, <a href="#fig-cipolicy-did-bacon-plot" class="quarto-xref">图&nbsp;<span>6.7</span></a>, <a href="#fig-cipolicy-did-bacon-heter" class="quarto-xref">图&nbsp;<span>6.10</span></a></td>
+<td>Bacon 分解系列</td>
+<td>康希 (2024)，<a href="https://www.lianxh.cn/details/1347.html">Stata-DID：Bacon 分解</a>，编译自 Asjad Naqvi, <a href="https://asjadnaqvi.github.io/DiD/docs/code/06_02_bacon/">Bacon decomposition</a></td>
+</tr>
+<tr class="even">
+<td><a href="#fig-cipolicy-did-heterdid-homogeneous" class="quarto-xref">图&nbsp;<span>6.8</span></a>, <a href="#fig-cipolicy-did-heterdid-bad-good" class="quarto-xref">图&nbsp;<span>6.9</span></a>, <a href="#fig-cipolicy-did-heter-atet" class="quarto-xref">图&nbsp;<span>6.14</span></a>, <a href="#fig-cipolicy-did-heter-dynamic" class="quarto-xref">图&nbsp;<span>6.15</span></a>, <a href="#fig-cipolicy-did-heter-cohort" class="quarto-xref">图&nbsp;<span>6.16</span></a>, <a href="#fig-cipolicy-did-heter-time" class="quarto-xref">图&nbsp;<span>6.17</span></a>, <a href="#fig-cipolicy-did-heter-estimators" class="quarto-xref">图&nbsp;<span>6.13</span></a></td>
+<td>同质/异质效应对照、最低工资案例 ATET 及三类聚合、四估计量共同目标</td>
+<td>Di Liu (2023)，<em>Heterogeneous DID in Stata</em>，Stata Webinar slides，p.4–28</td>
+</tr>
+<tr class="odd">
+<td><a href="#fig-cipolicy-did-compare-homo" class="quarto-xref">图&nbsp;<span>6.19</span></a>, <a href="#fig-cipolicy-did-compare-heter" class="quarto-xref">图&nbsp;<span>6.20</span></a></td>
+<td>多估计量同框对比</td>
+<td>周嘉怡 (2023)，<a href="https://www.lianxh.cn/details/1097.html">各种 DID 估计量的比较分析</a>，示例来自 <a href="https://github.com/azev77/Compare-DiD-Estimators">Compare-DiD-Estimators</a></td>
+</tr>
+</tbody>
+</table>
+<section id="软件与资料入口" class="level3" data-number="6.18.1">
+<h3 data-number="6.18.1" class="anchored" data-anchor-id="软件与资料入口"><span class="header-section-number">6.18.1</span> 软件与资料入口</h3>
+<ul>
+<li>Asjad Naqvi, DiD 方法地图与示例：<a href="https://asjadnaqvi.github.io/DiD/" class="uri">https://asjadnaqvi.github.io/DiD/</a>；其中 Bacon decomposition 页面：<a href="https://asjadnaqvi.github.io/DiD/docs/code/06_02_bacon/" class="uri">https://asjadnaqvi.github.io/DiD/docs/code/06_02_bacon/</a></li>
+<li>Pedro Sant’Anna, DiD Resources (理论、课程与 checklist 索引)：<a href="https://psantanna.com/did-resources/" class="uri">https://psantanna.com/did-resources/</a></li>
+<li>Fernando Rios-Avila, <code>csdid</code> / <code>drdid</code> 等 Stata 包：<a href="https://github.com/friosavila/stpackages" class="uri">https://github.com/friosavila/stpackages</a></li>
+<li>Stata, Heterogeneous difference-in-differences (Stata 18 官方页)：<a href="https://www.stata.com/new-in-stata/heterogeneous-difference-in-differences/" class="uri">https://www.stata.com/new-in-stata/heterogeneous-difference-in-differences/</a></li>
+<li>Albert Alex Zevelev, Compare-DiD-Estimators (多估计量模拟对比)：<a href="https://github.com/azev77/Compare-DiD-Estimators" class="uri">https://github.com/azev77/Compare-DiD-Estimators</a></li>
+<li>Kyle Butts, <code>did2s</code> (Stata 版)：<a href="https://github.com/kylebutts/did2s_stata" class="uri">https://github.com/kylebutts/did2s_stata</a></li>
+<li>Mauricio Cáceres Bravo, <code>honestdid</code> (Stata 版)：<a href="https://github.com/mcaceresb/stata-honestdid" class="uri">https://github.com/mcaceresb/stata-honestdid</a></li>
+<li>段义学, 2023, <a href="https://www.lianxh.cn/details/1268.html">因果推断中的 RA, IPW, IPWRA</a></li>
+</ul>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/lianxhcn\.github\.io\/ci-policy\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../lectures/05_counterfactuals.html" class="pagination-link" aria-label="反事实构造">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">反事实构造</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../lectures/07_ddml.html" class="pagination-link" aria-label="双重机器学习：DDML">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">双重机器学习：DDML</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p><a href="https://www.lianxh.cn">lianxh.cn</a></p>
+</div>
+    <div class="nav-footer-right">
+<p>基于 <a href="https://quarto.org/">Quarto</a> 构建</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
