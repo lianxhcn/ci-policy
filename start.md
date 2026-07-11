@@ -6,8 +6,8 @@
 
 &emsp;
 
-- **在线讲义：** https://lianxhcn.github.io/ci-policy/
-- **GitHub 仓库：** https://github.com/lianxhcn/ci-policy
+- **在线讲义：** <https://lianxhcn.github.io/ci-policy/>
+- **GitHub 仓库：** <https://github.com/lianxhcn/ci-policy>
 
 &emsp;
 
@@ -21,7 +21,7 @@
 
 建议优先通过在线版本阅读讲义：
 
-https://lianxhcn.github.io/ci-policy/
+<https://lianxhcn.github.io/ci-policy/>
 
 如果希望进一步练习实证分析流程，可以将课程仓库 [fork 到自己的 GitHub 账号](https://github.com/lianxhcn/ci-policy) 中，并根据需要保存到本地进行学习。
 
@@ -40,7 +40,7 @@ https://lianxhcn.github.io/ci-policy/
 
 更多使用说明：
 
-https://lianxhcn.github.io/ci-policy/intro.html
+<https://lianxhcn.github.io/ci-policy/intro.html>
 
 
 ## 2. 课前准备
@@ -56,7 +56,7 @@ https://lianxhcn.github.io/ci-policy/intro.html
 
 完整配置说明：
 
-https://lianxhcn.github.io/ci-policy/settings.html
+<https://lianxhcn.github.io/ci-policy/settings.html>
 
 
 ## 3. 课程交流微信群

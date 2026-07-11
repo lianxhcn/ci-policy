@@ -368,8 +368,8 @@ window.Quarto = {
 <p>政策文件不能直接进入回归。真正进入模型的，是研究者根据政策对象、执行时间、数据层级和识别逻辑构造出来的 <code>Treat</code>、<code>Post</code>、<code>Exposure</code>、样本边界和结果变量。</p>
 </div>
 </div>
-<p>第一章讨论了为什么政策背景会决定研究设计。第二章继续向前推进一步：政策背景已经被理解之后，它怎样进入数据？</p>
-<p>很多论文在这一步走得太快。政策文件刚介绍完，下一页就出现了：</p>
+<p>第一章讨论了为什么政策背景会决定研究设计。本章探讨政策背景如何与数据关联起来？</p>
+<p>很多论文在这一步走得太快。政策文件刚介绍完，就列出如下模型设定：</p>
 <p><span id="eq-cipolicy-policy-to-data-simple-did"><span class="math display">\[
 Y_{it}=\alpha+\beta(\operatorname{Treat}_{i}\times \operatorname{Post}_{t})+\mu_i+\lambda_t+\varepsilon_{it}
 \tag{2.1}\]</span></span></p>
@@ -421,9 +421,21 @@ Y_{it}=\alpha+\beta(\operatorname{Treat}_{i}\times \operatorname{Post}_{t})+\mu_
 </section>
 <section id="lane-2025从-hci-政策到行业面板" class="level2" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="lane-2025从-hci-政策到行业面板"><span class="header-section-number">2.2</span> Lane (2025)：从 HCI 政策到行业面板</h2>
+<div id="fig-cipolicy-background-lane-2025" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cipolicy-background-lane-2025-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ci-policy-Lane-2025-intro-outline.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cipolicy-background-lane-2025-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+图&nbsp;2.1: Lane (2025)：从政策背景到研究设计
+</figcaption>
+</figure>
+</div>
 <p>韩国 HCI drive 的政策事实可以先压缩成几句话：1973 年，韩国政府启动重化工业驱动，重点支持钢铁、有色金属、造船、机械、电子和石化六大战略部门；1979 年后，随着政治和经济环境变化，政策进入调整阶段。Lane (<a href="https://doi.org/10.1093/qje/qjaf025">2025</a>) 使用韩国制造业普查、UN COMTRADE 贸易数据、韩国银行投入产出表和政策立法文书，研究这项产业政策是否促进目标产业发展，并是否通过投入产出网络影响下游产业。该文的复现包公开于 <a href="https://doi.org/10.7910/DVN/VJECHN">Harvard Dataverse</a>。</p>
 <p>这些信息已经足够说明，HCI 政策进入数据不是一步完成的。它至少经历了下面这条链条：</p>
-<pre class="text"><code>政策法案 → 目标产业 → 行业分类代码 → 行业面板 → 事件时间 → 结果变量 → 估计方程</code></pre>
+<blockquote class="blockquote">
+<p>政策法案 → 目标产业 → 行业分类代码 → 行业面板 → 事件时间 → 结果变量 → 估计方程</p>
+</blockquote>
 <section id="从目标产业到处理组" class="level3" data-number="2.2.1">
 <h3 data-number="2.2.1" class="anchored" data-anchor-id="从目标产业到处理组"><span class="header-section-number">2.2.1</span> 从目标产业到处理组</h3>
 <p>HCI drive 的直接对象是六大战略产业。研究者不能简单地把韩国制造业整体作为处理组，也不能把所有重工业都视为处理组。处理组必须来自政策文件中被明确支持的产业，并进一步映射到可观测的行业分类代码。</p>
@@ -439,12 +451,12 @@ Y_{it}=\alpha+\beta(\operatorname{Treat}_{i}\times \operatorname{Post}_{t})+\mu_
 <ul>
 <li>研究数据是行业面板；</li>
 <li>需要把政策产业映射到韩国行业分类；</li>
-<li>行业层面的处理变量可以记为 <code>HCI_i</code>。</li>
+<li>行业层面的处理变量可以记为 <span class="math inline">\(HCI_i\)</span>。</li>
 </ul></li>
 <li><strong>变量层面</strong>
 <ul>
-<li>若行业 <code>i</code> 属于 HCI 目标产业，则 <code>HCI_i = 1</code>；</li>
-<li>若行业 <code>i</code> 不属于目标产业，则 <code>HCI_i = 0</code>；</li>
+<li>若行业 <span class="math inline">\(i\)</span> 属于 HCI 目标产业，则 <span class="math inline">\(HCI_i = 1\)</span>；</li>
+<li>若行业 <span class="math inline">\(i\)</span> 不属于目标产业，则 <span class="math inline">\(HCI_i = 0\)</span>；</li>
 <li>这个变量在行业维度上固定，但会与年份交互形成政策处理状态。</li>
 </ul></li>
 </ul>
@@ -512,7 +524,7 @@ Lane 案例中的数据入口
 </section>
 <section id="从政策目标到结果变量" class="level3" data-number="2.2.4">
 <h3 data-number="2.2.4" class="anchored" data-anchor-id="从政策目标到结果变量"><span class="header-section-number">2.2.4</span> 从政策目标到结果变量</h3>
-<p>HCI 政策的目标不是笼统地提高韩国 GDP。它的政策对象是特定战略产业，作用机制包括产业扩张、学习效应、投资支持、出口能力形成和上下游联动。因此，结果变量也应围绕这些目标展开。</p>
+<p>虽然 HCI 政策的最终目标是地提高韩国 GDP，但它的政策对象是特定战略产业，作用机制包括产业扩张、学习效应、投资支持、出口能力形成和上下游联动。因此，结果变量也应围绕这些细分目标展开。</p>
 <ul>
 <li><strong>产业扩张</strong>
 <ul>
@@ -557,7 +569,7 @@ Lane 案例中的数据入口
 </section>
 <section id="从-lane-案例提炼一般规则" class="level2" data-number="2.3">
 <h2 data-number="2.3" class="anchored" data-anchor-id="从-lane-案例提炼一般规则"><span class="header-section-number">2.3</span> 从 Lane 案例提炼一般规则</h2>
-<p>Lane 案例并不是为了介绍一篇论文，而是为了把政策进入数据的规则讲清楚。</p>
+<p>基于上述分析，我们可以把政策进入数据的基本规则总结如下：</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 33%">
@@ -609,11 +621,11 @@ Lane 案例中的数据入口
 </tr>
 </tbody>
 </table>
-<p>这张表也给出第二章的核心判断：政策进入数据之前，研究者必须先把政策事实拆成可观察、可合并、可解释的变量。</p>
+<p>简言之，在政策进入数据之前，我们必须先把政策事实拆成可观察、可合并、可解释的变量。</p>
 </section>
 <section id="政策对象和数据单位不一致时exposure" class="level2" data-number="2.4">
 <h2 data-number="2.4" class="anchored" data-anchor-id="政策对象和数据单位不一致时exposure"><span class="header-section-number">2.4</span> 政策对象和数据单位不一致时：Exposure</h2>
-<p>在很多中国政策研究中，政策对象和数据单位并不一致。政策作用在产品、药品、行业、城市或名单上，而研究数据却是企业、上市公司、个人或城市面板。此时，简单的 <code>Treat</code> 往往不够，需要构造暴露度。</p>
+<p>多数情况下，政策对象和数据单位并不一致。政策作用在产品、药品、行业、城市或名单上，而研究数据却是企业、上市公司、个人或城市面板。此时，简单的 <code>Treat</code> 往往不够，需要构造暴露度。</p>
 <p>一个通用写法是：</p>
 <p><span id="eq-cipolicy-policy-to-data-exposure"><span class="math display">\[
 \operatorname{Exposure}_{i}=\sum_{k}s_{ik,0}\operatorname{Shock}_{k}
@@ -858,7 +870,7 @@ Y_{it}=\alpha+\beta(\operatorname{Eligible}_{i}\times\operatorname{Post}_{t})+X_
 </tr>
 </tbody>
 </table>
-<p>这张表不是形式审查，而是进入实证分析之前的最低限度。很多论文的问题并不出在模型估计，而是出在这张表的前几行。</p>
+<p>当然，在研究之初，我们不必完全按照上表的清单逐项检查，但要建立这种意识，以便对核心变量有清晰的界定。</p>
 </section>
 <section id="从本章走向后续章节" class="level2" data-number="2.8">
 <h2 data-number="2.8" class="anchored" data-anchor-id="从本章走向后续章节"><span class="header-section-number">2.8</span> 从本章走向后续章节</h2>

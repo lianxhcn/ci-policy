@@ -4,13 +4,18 @@ format: html
 ---
 
 ::: {.callout-important title="本章核心判断"}
-
 样本选择问题的关键不在于少了多少观测，而在于进入样本的规则是否与结果方程中的不可观测因素相关。研究者看到的数据，往往只是经过制度、市场、个体决策或数据可得性筛选后的样本。
 :::
 
 第二章讨论了政策如何进入数据。政策进入数据以后，我们还要追问另一个更基础的问题：哪些个体、企业、地区或项目真的被我们观察到了？
 
-很多经验研究看似有完整数据，实际上只观察到一部分对象。工资只在就业者中可见；企业绩效只在存活企业中可见；创新产出可能只在申请专利或披露研发信息的企业中可见；科创板研究中，最终上市企业已经经过申报、受理、问询、注册和发行等多重筛选；政府引导基金研究中，被投企业通常不是随机企业，而是基金管理人、地方政府和产业目标共同筛选出的对象。
+很多经验研究看似有完整数据，实际上只观察到一部分对象。比如：
+
+- 工资只在就业者中可见；
+- 企业绩效只在存活企业中可见；
+- 创新产出可能只在申请专利或披露研发信息的企业中可见；
+- 科创板研究中，最终上市企业已经经过申报、受理、问询、注册和发行等多重筛选；
+- 政府引导基金研究中，被投企业通常不是随机企业，而是基金管理人、地方政府和产业目标共同筛选出的对象。
 
 这类问题不能简单归结为「样本量变少」。真正的问题是：进入样本的机制是否改变了结果变量和解释变量之间的关系。
 
@@ -59,8 +64,6 @@ $$ {#eq-cipolicy-selection-conditional-error}
 这个例子给第三章定下基调：样本选择问题不是「数据少了」的问题，而是「谁被看见」的问题。
 
 ::: {.callout-note title="判断样本选择偏误的第一原则"}
-
-
 如果进入样本的规则只改变解释变量的分布，但没有改变误差项与解释变量之间的关系，OLS 未必有偏。若进入样本的规则依赖结果变量或结果方程中的不可观测因素，OLS 通常会出现偏误。
 :::
 
@@ -204,8 +207,6 @@ LR test of indep. eqns. (rho = 0): chi2(1) = 164.38  Prob > chi2 = 0.0000
 第三，看 `rho` 和独立性检验。输出中 `rho` 接近 1，且 `rho = 0` 的检验被拒绝，说明选择方程和结果方程中的不可观测因素存在显著相关。此时，把选择过程完全忽略掉，直接在就业女性样本中估计工资方程，就可能存在样本选择偏误。
 
 ::: {.callout-note title="Notebook 实操"}
-
-
 本书另附一个可运行 Notebook，用 nbstata 演示 `mroz.dta`、OLS、Heckman 极大似然估计、Heckman 两步法和 IMR 生成过程，见 [Heckman 实操笔记](../notebooks/ch03_heckman/heckman_practical_notes.html)。
 :::
 
@@ -226,8 +227,6 @@ Heckman 模型最容易被误用的地方，是排他性变量。选择方程中
 但是，这些变量能否作为排他性变量，不能只靠直觉。比如，6 岁以下子女数量可能影响女性是否工作，但它也可能影响工时、职业选择和工作地点；家庭收入可能影响劳动参与，但也可能与社会阶层、居住地和家庭网络相关，进而影响工资。研究者必须解释为什么这些变量主要通过选择过程影响结果，而不是直接进入结果方程。
 
 ::: {.callout-warning title="不要硬造排他性变量"}
-
-
 Heckman 模型不是靠命令自动修正偏误。选择方程和结果方程如何区分，排他性变量为什么有效，都需要制度背景和经济学逻辑支持。解释不清选择机制时，Heckman 只会把问题变得更复杂。
 :::
 
@@ -275,8 +274,6 @@ Heckman 模型不是靠命令自动修正偏误。选择方程和结果方程如
 这会影响 DID 的可比性。即使后续使用双向固定效应、事件研究、交错 DID 或合成控制法，研究者仍要先解释试点进入机制。否则，处理组和对照组政策前差异可能已经包含在进入机制中。
 
 ::: {.callout-tip title="政策评估中的样本选择问题"}
-
-
 看到「上市企业」「被投企业」「获批企业」「试点城市」「幸存企业」时，先不要急着估计政策效应。先问：这些对象是怎样进入样本的？未进入样本的对象是否可见？进入机制是否与潜在结果相关？
 :::
 
@@ -302,7 +299,7 @@ Heckman 模型适合处理一类特定问题：结果变量只在被选择样本
 
 ### 从 Mroz 到现代性别工资差距：Blau et al. (2024)
 
-- Blau, F. D., Kahn, L. M., Boboshko, N., & Comey, M. L. (2024). The impact of selection into the labor force on the gender wage gap. *Journal of Labor Economics*, 42(4), 1093–1133. [Link](https://doi.org/10.1086/725032), [PDF](https://www.nber.org/system/files/working_papers/w28855/w28855.pdf), [Data](https://www.openicpsr.org/openicpsr/project/210781/version/V1/view), [Google](https://scholar.google.com/scholar?q=The+Impact+of+Selection+into+the+Labor+Force+on+the+Gender+Wage+Gap).
+-   Blau, F. D., Kahn, L. M., Boboshko, N., & Comey, M. L. (2024). The impact of selection into the labor force on the gender wage gap. *Journal of Labor Economics*, 42(4), 1093–1133. [Link](https://doi.org/10.1086/725032), [PDF](https://www.nber.org/system/files/working_papers/w28855/w28855.pdf), [Data](https://www.openicpsr.org/openicpsr/project/210781/version/V1/view), [Google](https://scholar.google.com/scholar?q=The+Impact+of+Selection+into+the+Labor+Force+on+the+Gender+Wage+Gap).
 
 这篇文章可以看作 Mroz 女性工资案例的现代扩展。Mroz 例子告诉我们，工资只在就业女性中可见；Blau et al. (2024) 进一步追问：1981–2015 年美国性别工资差距的收敛，到底是潜在工资报价真的收敛，还是男女进入就业样本的方式发生了变化？如果女性劳动参与上升主要来自高教育、高潜在工资女性进入市场，观察到的性别工资差距可能被压低；如果低工资男性退出劳动力市场，观察到的男性平均工资也会被抬高。这些变化都会改变工资样本构成。
 
@@ -328,7 +325,7 @@ $$
 
 ### 政策冲击改变谁留在样本中：Borjas and Edo (2026)
 
-- Borjas, G. J., & Edo, A. (2026). Gender, selection into employment, and the wage impact of immigration. *Journal of Labor Economics*, 44(2), 515–552. [Link](https://doi.org/10.1086/732774), [PDF](https://gborjas.scholars.harvard.edu/sites/g/files/omnuum4696/files/2026-02/JOLE2026.pdf), [NBER](https://www.nber.org/papers/w28682), [Google](https://scholar.google.com/scholar?q=Gender+Selection+into+Employment+and+the+Wage+Impact+of+Immigration).
+-   Borjas, G. J., & Edo, A. (2026). Gender, selection into employment, and the wage impact of immigration. *Journal of Labor Economics*, 44(2), 515–552. [Link](https://doi.org/10.1086/732774), [PDF](https://gborjas.scholars.harvard.edu/sites/g/files/omnuum4696/files/2026-02/JOLE2026.pdf), [NBER](https://www.nber.org/papers/w28682), [Google](https://scholar.google.com/scholar?q=Gender+Selection+into+Employment+and+the+Wage+Impact+of+Immigration).
 
 这篇文章更接近因果推断课堂中的政策冲击问题。移民流入通常被理解为对本地劳动力市场的供给冲击。常规估计会比较移民流入较多地区和较少地区中本地劳动者工资的变化。但作者指出，这种估计有一个容易被忽略的问题：移民冲击不只影响工资，也可能影响本地人是否继续留在就业样本中。如果退出就业的本地人不是随机的，观察到的工资变化就会同时包含工资效应和样本构成变化。
 
@@ -354,7 +351,7 @@ $$
 
 ### 国际贸易中的零贸易流：Helpman et al. (2008)
 
-- Helpman, E., Melitz, M., & Rubinstein, Y. (2008). Estimating trade flows: Trading partners and trading volumes. *The Quarterly Journal of Economics*, 123(2), 441–487. [Link](https://doi.org/10.1162/qjec.2008.123.2.441), [PDF](https://melitz.scholars.harvard.edu/sites/g/files/omnuum5906/files/melitz/files/estimatingtradeflows_qje.pdf), [Homepage](https://melitz.scholars.harvard.edu/publications/estimating-trade-flows-trading-partners-and-trading-volumes), [Google](https://scholar.google.com/scholar?q=Estimating+Trade+Flows+Trading+Partners+and+Trading+Volumes).
+-   Helpman, E., Melitz, M., & Rubinstein, Y. (2008). Estimating trade flows: Trading partners and trading volumes. *The Quarterly Journal of Economics*, 123(2), 441–487. [Link](https://doi.org/10.1162/qjec.2008.123.2.441), [PDF](https://melitz.scholars.harvard.edu/sites/g/files/omnuum5906/files/melitz/files/estimatingtradeflows_qje.pdf), [Homepage](https://melitz.scholars.harvard.edu/publications/estimating-trade-flows-trading-partners-and-trading-volumes), [Google](https://scholar.google.com/scholar?q=Estimating+Trade+Flows+Trading+Partners+and+Trading+Volumes).
 
 这篇文章虽然早于近十年，但非常适合讲样本选择问题如何跳出劳动经济学。传统引力模型通常只在正贸易流样本中估计双边贸易量，即只使用已经发生贸易的国家对。Helpman et al. (2008) 指出，大量国家对之间的贸易额为零，这些零贸易流不是无关信息，而是反映了企业是否进入出口市场的选择过程。若只看正贸易流，研究者观察到的是经过出口进入筛选后的国家对样本。
 
@@ -380,7 +377,7 @@ $$
 
 ### 从均值校正到分布校正：Chernozhukov et al. (2025)
 
-- Chernozhukov, V., Fernández-Val, I., & Luo, S. (2025). Distribution regression with sample selection and UK wage decomposition. *Journal of Political Economy*, 133(12), 3952–3992. [Link](https://doi.org/10.1086/738148), [PDF](https://www.cemmap.ac.uk/wp-content/uploads/2023/04/CWP0923-Distribution-regression-with-sample-selection-and-UK-wage-decomposition.pdf), [Replication Package](https://doi.org/10.7910/DVN/JOQBNQ), [Data](https://doi.org/10.5255/UKDA-SN-9355-1), [Google](https://scholar.google.com/scholar?q=Distribution+Regression+with+Sample+Selection+and+UK+Wage+Decomposition).
+-   Chernozhukov, V., Fernández-Val, I., & Luo, S. (2025). Distribution regression with sample selection and UK wage decomposition. *Journal of Political Economy*, 133(12), 3952–3992. [Link](https://doi.org/10.1086/738148), [PDF](https://www.cemmap.ac.uk/wp-content/uploads/2023/04/CWP0923-Distribution-regression-with-sample-selection-and-UK-wage-decomposition.pdf), [Replication Package](https://doi.org/10.7910/DVN/JOQBNQ), [Data](https://doi.org/10.5255/UKDA-SN-9355-1), [Google](https://scholar.google.com/scholar?q=Distribution+Regression+with+Sample+Selection+and+UK+Wage+Decomposition).
 
 经典 Heckman 模型主要处理条件均值：在控制选择以后，解释变量如何影响平均工资或平均结果。Chernozhukov et al. (2025) 代表了另一个方向：研究者不仅关心平均工资差距，也关心整个工资分布上的差距。比如，女性在工资分布低端、中位数和高端的选择机制可能不同；如果只校正均值，就会遗漏 sticky floor 和 glass ceiling 等分布差异。
 
@@ -402,9 +399,9 @@ $$
 
 这四篇文献的共同点不是都使用同一个命令，而是都清楚回答了三个问题。
 
-- 谁没有被观察到？
-- 为什么没有被观察到不是随机的？
-- 选择过程如何与结果方程区分开来？
+-   谁没有被观察到？
+-   为什么没有被观察到不是随机的？
+-   选择过程如何与结果方程区分开来？
 
 Blau et al. (2024) 和 Borjas and Edo (2026) 讨论的是就业者工资样本；Helpman et al. (2008) 讨论的是发生贸易的国家对样本；Chernozhukov et al. (2025) 讨论的是工资分布中被就业选择遮蔽的潜在工资。它们都说明，样本选择偏误的核心不是缺失观测本身，而是缺失机制与潜在结果相关。
 

@@ -11,13 +11,13 @@ number-sections: false
 
 ## 简介
 
-*生成日期：{{< meta date >}}*
+*生成日期：*{{< meta date >}}
 
 本讲义的主题是「因果推断：政策评估中的识别思维与实证设计」。它不把因果推断写成模型名称的清单，而是从政策评估中最常见的工作流程出发：先理解政策目标和实施机制，再判断政策如何进入数据，随后识别样本选择、遗漏变量、反事实构造和设定偏误等问题。
 
 全书围绕一条主线展开：
 
-```text
+``` text
 政策目标 → 政策实施机制 → 数据形成机制 → 识别威胁 → 研究设计 → 估计方法 → 结果解释
 ```
 
@@ -54,6 +54,6 @@ number-sections: false
 -   如果希望寻找更多中国政策冲击案例，可访问 [China Policy Shocks](https://lianxhcn.github.io/china-policy-shocks/) 及其 [政策汇编页](https://lianxhcn.github.io/china-policy-shocks/appendix_policy_list.html)。阅读时可重点关注政策对象、冲击时间、数据合并键和识别设计是否清楚。
 -   讲义中难免错漏之处，还请不吝指出：[arlionn\@163.com](mailto:arlionn@163.com){.email}。也可以在本书 GitHub 仓库提交 [issues](https://github.com/lianxhcn/ci-policy/issues)。
 
----
+------------------------------------------------------------------------
 
 [主页](https://www.lianxh.cn) \| [课程](https://www.lianxh.cn/details/17.html) \| [书稿](https://www.lianxh.cn/Books.html) \| [推文](https://www.lianxh.cn/blogs/all.html) \| [资料](https://www.lianxh.cn/share.html)
