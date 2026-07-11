@@ -350,19 +350,34 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>政策背景不是论文前面的装饰性介绍，而是研究设计本身的一部分。政策为什么出台、作用于谁、怎样执行、如何进入数据，会直接决定变量设定、样本选择、识别策略和结果解释。</p>
+<p>一个好的研究设计必须建立在政策背景的深入讨论之上。政策为什么出台、作用于谁、怎样执行、如何进入数据，会直接决定变量设定、样本选择、识别策略和结果解释。</p>
 </div>
 </div>
-<p>很多政策评估论文一开始就进入模型。看到分批试点，就想到 DID；看到只有一个处理地区，就想到合成控制法；看到样本不完整，就想到 Heckman；看到控制变量很多，就想到 DDML。方法本身没有问题，问题在于顺序往往倒了。</p>
-<p>政策评估首先要回答的，不是用哪一种估计方法，而是这项政策本身到底发生了什么。政策为什么出台？它想改变谁的行为？它通过什么工具发挥作用？政策对象能否和数据样本对应起来？政策实施是不是分批推进？第一批试点和后续批次是否可比？政策有没有提前预期、外溢影响或并发改革？</p>
-<p>这些问题不是写作背景，而是识别设计的前提。</p>
-<p>本章从两个例子进入。第一个例子是 Lane (2025) 对韩国重化工业政策的研究。韩国 1973–1979 年的重化工业驱动 (Heavy and Chemical Industry Drive, HCI drive) 有相对清楚的政策背景、目标产业、政策窗口和后续调整过程。正是这些政策事实，使研究者能够进一步构造处理组、政策时点、动态效应和产业链溢出分析。</p>
-<p>第二个例子是政府引导基金研究。这个例子更接近许多经管研究者的真实选题过程：先拿到一份数据，再逐步阅读政策文件、访谈行业人士、理解政策工具属性，最后不断修正研究问题。最初的研究问题可能是政府引导基金是否促进企业创新、融资或产出；进一步理解地方政府设立引导基金的制度目标后，研究问题可能转向产业链安全、供应链韧性和地方优势产业培育。</p>
-<p>这两个例子共同说明一个基本事实：好的政策评估，不是从回归方程开始，而是从政策事实调查开始。</p>
+<p>进行政策评估时，很多人是从方法入手的：</p>
+<ul>
+<li>看到分批试点，就想到 DID；</li>
+<li>看到只有一个处理地区，就想到合成控制法；</li>
+<li>看到样本不完整，就想到 Heckman；</li>
+<li>看到控制变量很多，就想到 DDML。</li>
+</ul>
+<p>然而，政策评估首先要回答的，不是用哪一种估计方法，而是这项政策本身到底发生了什么。</p>
+<ul>
+<li>政策为什么出台？</li>
+<li>它想改变谁的行为？</li>
+<li>它通过什么工具发挥作用？</li>
+<li>政策对象能否和数据样本对应起来？</li>
+<li>政策实施是不是分批推进？第一批试点和后续批次是否可比？</li>
+<li>政策有没有提前预期、外溢影响或并发改革？</li>
+</ul>
+<p>这些问题是识别设计的前提。本章利用两个例子来解释二者的关联。你会发现：好的政策评估，不是从回归方程开始，而是从政策事实调查开始的。</p>
+<ul>
+<li>第一个例子是 Lane (2025) 对韩国重化工业政策的研究。韩国 1973–1979 年的重化工业驱动 (Heavy and Chemical Industry Drive, HCI drive) 有相对清楚的政策背景、目标产业、政策窗口和后续调整过程。正是这些政策事实，使研究者能够进一步构造处理组、政策时点、动态效应和产业链溢出分析。</li>
+<li>第二个例子是政府引导基金研究。这个例子更接近于日常的真实选题过程：先拿到一份数据，再逐步阅读政策文件、访谈行业人士、理解政策工具属性，最后不断修正研究问题。最初的研究问题可能是政府引导基金是否促进企业创新、融资或产出；进一步理解地方政府设立引导基金的制度目标后，研究问题可能转向产业链安全、供应链韧性和地方优势产业培育。</li>
+</ul>
 <section id="lane-2025政策背景如何进入研究设计" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="lane-2025政策背景如何进入研究设计"><span class="header-section-number">1.1</span> Lane (2025)：政策背景如何进入研究设计</h2>
-<p>Lane (2025) 研究韩国 1973–1979 年 HCI drive 对工业化的影响。这项政策并不是一个笼统的产业升级口号，而是韩国政府在 1970 年代特定安全、国防和工业化背景下推出的重大战略。政策重点支持钢铁、有色金属、造船、机械、电子和石化六大战略部门，并在 1979 年以后随着政治和经济环境变化进入调整阶段。</p>
-<p><a href="#fig-cipolicy-background-lane-2025" class="quarto-xref">图&nbsp;<span>1.1</span></a> 将这条逻辑压缩成一张图。左侧是政策发生的历史背景和时间线，中间是目标产业和数据映射，右侧是识别策略与结果变量。沿着这张图看，读者可以看到一篇政策评估论文如何从政策事实一步步走向研究设计。</p>
+<p>Lane (2025) 研究韩国 1973–1979 年 HCI drive 对工业化的影响。这项政策并不是一个笼统的产业升级口号，而是韩国政府在 1970 年代特定安全、国防和工业化背景下推出的重大战略。政策重点支持钢铁、有色金属、造船、机械、电子和石化六大战略部门，并在 1979 年以后随着政治和经济环境变化进入调整阶段。作者详细讨论了这个政策的发生过程，进而以此为基础有针对性地进行了研究设计。</p>
+<p><a href="#fig-cipolicy-background-lane-2025" class="quarto-xref">图&nbsp;<span>1.1</span></a> 展示了从从政策事实一步步走向研究设计的思考过程。左侧是政策发生的历史背景和时间线；中间是目标产业和数据映射；右侧是识别策略与结果变量。</p>
 <div id="fig-cipolicy-background-lane-2025" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-cipolicy-background-lane-2025-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -384,15 +399,17 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
+<blockquote class="blockquote">
 <p>政策背景 → 目标产业 → 行业面板 → 动态效应 → 产业链溢出 → 结果解释</p>
+</blockquote>
 </div>
 </div>
-<p>这项政策之所以能够进入严肃的经验研究，是因为它至少在四个方面具有清楚边界。</p>
-<p>第一，政策事实相对清楚。HCI drive 有明确的政策启动背景、政策实施阶段、重点产业范围和后续调整过程。研究者面对的不是一个模糊的「国家支持工业化」，而是一个可以追踪的政策 episode。</p>
-<p>第二，处理对象相对清楚。政策支持的是特定战略产业，而不是所有制造业部门。只有先确定哪些行业属于政策目标部门，研究者才能进一步界定处理组。</p>
-<p>第三，政策时间相对清楚。1973 年政策启动，1979 年以后政策进入自由化和调整阶段。这个时间结构使研究者可以区分政策实施期、政策退出后的持续效应和动态产业反应。</p>
-<p>第四，数据映射相对清楚。政策支持的是行业，研究者需要将政策文件中的目标产业与行业分类、制造业普查数据、贸易数据和投入产出表对应起来。只有完成这种映射，政策才能从历史事实变成可估计的处理变量。</p>
-<p>从这个角度看，Lane (2025) 的研究设计并不是从 DID 公式中生长出来的，而是从政策事实中生长出来的。政策支持哪些产业，决定了处理组；政策何时启动和调整，决定了时间窗口；政策是否可能通过投入产出网络影响下游部门，决定了为什么不能只看目标产业自身；政策是否可能培育动态比较优势，决定了为什么要关注出口 RCA、TFP 和政策退出后的持续效应。</p>
+<p>Lane (2025) 选择 HCI 作为研究对象，有如下几个基本特征：</p>
+<p><strong>第一，政策事实相对清楚</strong>。HCI drive 有明确的政策启动背景、政策实施阶段、重点产业范围和后续调整过程。研究者面对的不是一个模糊的「国家支持工业化」，而是一个可以追踪的政策 episode。</p>
+<p><strong>第二，处理对象相对清楚</strong>。政策支持的是特定战略产业，而不是所有制造业部门。只有先确定哪些行业属于政策目标部门，研究者才能进一步界定处理组。</p>
+<p><strong>第三，政策时间相对清楚</strong>。1973 年政策启动，1979 年以后政策进入自由化和调整阶段。这个时间结构使研究者可以区分政策实施期、政策退出后的持续效应和动态产业反应。</p>
+<p><strong>第四，数据映射相对清楚</strong>。政策支持的是行业，研究者需要将政策文件中的目标产业与行业分类、制造业普查数据、贸易数据和投入产出表对应起来。只有完成这种映射，政策才能从历史事实变成可估计的处理变量。</p>
+<p>可见，Lane (2025) 的研究设计并不是简单套用 DID 估计方法，而是从政策事实中生长出来的。政策支持哪些产业，决定了处理组；政策何时启动和调整，决定了时间窗口；政策是否可能通过投入产出网络影响下游部门，决定了为什么不能只看目标产业自身；政策是否可能培育动态比较优势，决定了为什么要关注出口 RCA、TFP 和政策退出后的持续效应。</p>
 <p>通过这个例子可以看出，政策背景不能只写成历史叙述。它要回答后面研究设计中的具体问题：</p>
 <ul>
 <li>为什么这些产业是处理组；</li>
@@ -406,7 +423,7 @@ window.Quarto = {
 </section>
 <section id="政府引导基金研究问题如何从政策事实中长出来" class="level2" data-number="1.2">
 <h2 data-number="1.2" class="anchored" data-anchor-id="政府引导基金研究问题如何从政策事实中长出来"><span class="header-section-number">1.2</span> 政府引导基金：研究问题如何从政策事实中长出来</h2>
-<p>另一个例子是政府引导基金。<a href="#fig-cipolicy-background-government-fund" class="quarto-xref">图&nbsp;<span>1.2</span></a> 展示了这个研究问题逐步形成的过程：从数据和最初直觉出发，经过政策文件、管理办法、新闻公告、申报指南和访谈核查，最终把研究问题从企业层面的创新、融资和绩效，推进到产业链层面的协同、韧性和长期发展。</p>
+<p>另一个例子是政府引导基金。<a href="#fig-cipolicy-background-government-fund" class="quarto-xref">图&nbsp;<span>1.2</span></a> 展示了这个研究问题的形成过程：从数据和最初直觉出发，经过政策文件、管理办法、新闻公告、申报指南和访谈核查，最终把研究问题从企业层面的创新、融资和绩效，推进到产业链层面的协同、韧性和长期发展。</p>
 <div id="fig-cipolicy-background-government-fund" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-cipolicy-background-government-fund-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -473,8 +490,8 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
-<p>这个例子说明，研究问题不是从数据中自动出现的。数据只是入口，真正决定研究问题的是政策属性、制度目标和执行过程。只有理解政府为什么设立这类基金、基金如何筛选产业、地方政府如何表达政策目标，研究者才可能判断应该看企业创新、融资表现，还是进一步看产业链协同和地方产业发展。</p>
-<p>这也解释了为什么政策评估需要访谈和事实调查。政策文件告诉我们制度设计，行业人士的经验告诉我们政策在现实中如何被理解、如何被使用、哪里存在摩擦。对政府引导基金而言，不同从业者可能有完全不同的看法：有人认为这类资金程序复杂、约束很多、使用效率有限；也有人认为它在特定地区和特定产业中具有很强的引导作用。研究者不能把这些看法直接当成结论，但这些信息会帮助我们提出更准确的问题。</p>
+<p>从这个例子可以看出，数据只是入口，真正决定研究问题的是政策属性、制度目标和执行过程。只有理解政府为什么设立这类基金、基金如何筛选产业、地方政府如何表达政策目标，研究者才可能判断应该看企业创新、融资表现，还是进一步看产业链协同和地方产业发展。</p>
+<p>这也解释了为什么政策评估需要访谈和事实调查。政策文件告诉我们制度设计，行业人士的经验告诉我们政策在现实中如何被理解、如何被使用、哪里存在摩擦。对政府引导基金而言，不同从业者可能有完全不同的看法：有人认为这类资金程序复杂、约束很多、使用效率有限；也有人认为它在特定地区和特定产业中具有很强的引导作用。虽然这些信息都有片面性，但会帮助我们提出更准确的问题。</p>
 </section>
 <section id="政策背景不是铺垫而是研究设计的起点" class="level2" data-number="1.3">
 <h2 data-number="1.3" class="anchored" data-anchor-id="政策背景不是铺垫而是研究设计的起点"><span class="header-section-number">1.3</span> 政策背景不是铺垫，而是研究设计的起点</h2>
@@ -528,8 +545,8 @@ window.Quarto = {
 <p>政策目标决定被解释变量。这个判断看似简单，但很多政策评估论文恰恰在这里出问题。</p>
 <p>同一政策可以有多个目标。以产业政策为例，政策目标可能包括技术升级、就业稳定、出口扩张、供应链安全、地方税收、区域平衡和生产率提升。如果研究者不先判断政策最核心的目标是什么，就很容易在数据库中寻找一组容易获得的结果变量，然后把显著结果包装成政策效果。</p>
 <p>这会带来两个问题。</p>
-<p>第一，结果变量可能偏离政策目标。比如一项政策本意是增强供应链安全，论文却只看被投企业专利数量；这并非不能研究，但需要解释为什么专利是供应链安全的关键中间结果。否则，研究问题就会变窄。</p>
-<p>第二，多个结果变量可能缺少结构。比如同一篇文章同时看创新、融资、产出、就业、出口和污染，但没有说明这些变量之间的机制关系。结果看起来很丰富，实际上只是结果罗列。</p>
+<p><strong>第一，结果变量可能偏离政策目标</strong>。比如一项政策本意是增强供应链安全，论文却只看被投企业专利数量；这并非不能研究，但需要解释为什么专利是供应链安全的关键中间结果。否则，研究问题就会变窄。</p>
+<p><strong>第二，多个结果变量可能缺少结构</strong>。比如同一篇文章同时看创新、融资、产出、就业、出口和污染，但没有说明这些变量之间的机制关系。结果看起来很丰富，实际上只是结果罗列。</p>
 <p>更好的做法是先把政策目标拆成若干层次：</p>
 <table class="caption-top table">
 <colgroup>
@@ -540,36 +557,36 @@ window.Quarto = {
 </colgroup>
 <thead>
 <tr class="header">
-<th>政策目标</th>
-<th>可观察结果变量</th>
-<th>可能机制</th>
-<th>需要注意的问题</th>
+<th style="text-align: left;">政策目标</th>
+<th style="text-align: left;">可观察结果变量</th>
+<th style="text-align: left;">可能机制</th>
+<th style="text-align: left;">需要注意的问题</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>缓解融资约束</td>
-<td>融资成本、贷款可得性、债务期限</td>
-<td>降低外部融资摩擦</td>
-<td>融资改善可能来自选择进入</td>
+<td style="text-align: left;">缓解融资约束</td>
+<td style="text-align: left;">融资成本、贷款可得性、债务期限</td>
+<td style="text-align: left;">降低外部融资摩擦</td>
+<td style="text-align: left;">融资改善可能来自选择进入</td>
 </tr>
 <tr class="even">
-<td>促进创新</td>
-<td>专利、研发投入、新产品收入</td>
-<td>增加研发资源和风险承担</td>
-<td>专利质量和数量要区分</td>
+<td style="text-align: left;">促进创新</td>
+<td style="text-align: left;">专利、研发投入、新产品收入</td>
+<td style="text-align: left;">增加研发资源和风险承担</td>
+<td style="text-align: left;">专利质量和数量要区分</td>
 </tr>
 <tr class="odd">
-<td>推动产业升级</td>
-<td>产出、TFP、出口 RCA</td>
-<td>学习效应和规模扩张</td>
-<td>需要区分短期扩张和长期效率</td>
+<td style="text-align: left;">推动产业升级</td>
+<td style="text-align: left;">产出、TFP、出口 RCA</td>
+<td style="text-align: left;">学习效应和规模扩张</td>
+<td style="text-align: left;">需要区分短期扩张和长期效率</td>
 </tr>
 <tr class="even">
-<td>增强供应链韧性</td>
-<td>订单波动、交付稳定、上下游协同</td>
-<td>降低链上摩擦和局部冲击放大</td>
-<td>需要网络或配对层面数据</td>
+<td style="text-align: left;">增强供应链韧性</td>
+<td style="text-align: left;">订单波动、交付稳定、上下游协同</td>
+<td style="text-align: left;">降低链上摩擦、放大局部冲击</td>
+<td style="text-align: left;">需要网络或配对层面数据</td>
 </tr>
 </tbody>
 </table>
@@ -616,48 +633,48 @@ window.Quarto = {
 </colgroup>
 <thead>
 <tr class="header">
-<th>政策工具</th>
-<th>直接改变什么</th>
-<th>可能结果变量</th>
-<th>识别风险</th>
+<th style="text-align: left;">政策工具</th>
+<th style="text-align: left;">直接改变什么</th>
+<th style="text-align: left;">可能结果变量</th>
+<th style="text-align: left;">识别风险</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>财政补贴</td>
-<td>企业现金流和项目成本</td>
-<td>投资、研发、产出</td>
-<td>补贴对象可能被筛选</td>
+<td style="text-align: left;">财政补贴</td>
+<td style="text-align: left;">企业现金流和项目成本</td>
+<td style="text-align: left;">投资、研发、产出</td>
+<td style="text-align: left;">补贴对象可能被筛选</td>
 </tr>
 <tr class="even">
-<td>税收优惠</td>
-<td>实际税负</td>
-<td>利润、投资、创新</td>
-<td>税负差异可能反映企业盈利结构</td>
+<td style="text-align: left;">税收优惠</td>
+<td style="text-align: left;">实际税负</td>
+<td style="text-align: left;">利润、投资、创新</td>
+<td style="text-align: left;">税负差异可能反映企业盈利结构</td>
 </tr>
 <tr class="odd">
-<td>低息信贷</td>
-<td>融资成本</td>
-<td>债务结构、资本开支</td>
-<td>信贷支持与企业信用质量相关</td>
+<td style="text-align: left;">低息信贷</td>
+<td style="text-align: left;">融资成本</td>
+<td style="text-align: left;">债务结构、资本开支</td>
+<td style="text-align: left;">信贷支持与企业信用质量相关</td>
 </tr>
 <tr class="even">
-<td>低价供地</td>
-<td>土地要素成本</td>
-<td>固定资产投资、产能扩张</td>
-<td>地块位置和地方招商策略影响估计</td>
+<td style="text-align: left;">低价供地</td>
+<td style="text-align: left;">土地要素成本</td>
+<td style="text-align: left;">固定资产投资、产能扩张</td>
+<td style="text-align: left;">地块位置和地方招商策略影响估计</td>
 </tr>
 <tr class="odd">
-<td>政府采购</td>
-<td>需求保障</td>
-<td>销售收入、进入概率</td>
-<td>采购对象选择可能非随机</td>
+<td style="text-align: left;">政府采购</td>
+<td style="text-align: left;">需求保障</td>
+<td style="text-align: left;">销售收入、进入概率</td>
+<td style="text-align: left;">采购对象选择可能非随机</td>
 </tr>
 <tr class="even">
-<td>产业链配套</td>
-<td>上下游协同</td>
-<td>交付稳定、订单波动</td>
-<td>需要网络数据支持</td>
+<td style="text-align: left;">产业链配套</td>
+<td style="text-align: left;">上下游协同</td>
+<td style="text-align: left;">交付稳定、订单波动</td>
+<td style="text-align: left;">需要网络数据支持</td>
 </tr>
 </tbody>
 </table>
@@ -842,7 +859,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>本章提出的四个初步判断–政策事实、处理边界、冲击时间和数据合并键是否清楚–也构成 <a href="https://lianxhcn.github.io/china-policy-shocks/">China Policy Shocks</a> 整理中国政策冲击的基本框架。该网站不只是政策名称清单；读者可以先从 <a href="https://lianxhcn.github.io/china-policy-shocks/appendix_policy_list.html">中国政策冲击汇编</a> 寻找与研究主题相关的候选政策，再检查其处理组如何定义、何时真正改变主体约束、能否与数据匹配，以及是否存在选择性进入、预期效应或外溢风险。</p>
+<p>本章提出的四个初步判断「政策事实、处理边界、冲击时间和数据合并键是否清楚」，也构成 <a href="https://lianxhcn.github.io/china-policy-shocks/">China Policy Shocks</a> 整理中国政策冲击的基本框架。该网站不只是政策名称清单；读者可以先从 <a href="https://lianxhcn.github.io/china-policy-shocks/appendix_policy_list.html">中国政策冲击汇编</a> 寻找与研究主题相关的候选政策，再检查其处理组如何定义、何时真正改变主体约束、能否与数据匹配，以及是否存在选择性进入、预期效应或外溢风险。</p>
 <p>政策汇编只能提供研究设计的起点，不能替代政策文件、事实调查和对反事实的实质判断。面对一个看似合适的政策，仍应沿着本章的逻辑追问：它是否足以支持一个可辩护的比较？</p>
 </div>
 </div>
