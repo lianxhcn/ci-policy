@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>附录 B — Heckman 模型扩展阅读 – 因果推断：政策评估中的识别思维与实证设计</title>
+<title>🍎讲义使用说明 – 因果推断：政策评估中的识别思维与实证设计</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,27 +23,27 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../../">
-<link href="../../notebooks/ch03_heckman/heckman_practical_notes.html" rel="next">
-<link href="../../lectures/appendix/A02_government_guidance_fund.html" rel="prev">
-<link href="../../images/book-logo.png" rel="icon" type="image/png">
-<script src="../../site_libs/quarto-html/quarto.js"></script>
-<script src="../../site_libs/quarto-html/popper.min.js"></script>
-<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-e8fb9d25728d58bfeac61b497e4a6629.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-57a92833092fd6dc0d7710b6bdfff9c5.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-7ef202e96c563d31d9e5226e4d6cabf9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-490ba4e843cb1303a232ed0c676384f2.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./syllabus.html" rel="next">
+<link href="./index.html" rel="prev">
+<link href="./images/book-logo.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-e8fb9d25728d58bfeac61b497e4a6629.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-57a92833092fd6dc0d7710b6bdfff9c5.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-7ef202e96c563d31d9e5226e4d6cabf9.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-490ba4e843cb1303a232ed0c676384f2.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -72,37 +72,8 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-sidebar floating">
@@ -114,7 +85,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../lectures/appendix/A02_government_guidance_fund.html">附录</a></li><li class="breadcrumb-item"><a href="../../lectures/appendix/A03_heckman_selection_literature.html"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Heckman 模型扩展阅读</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./start.html">🍎讲义使用说明</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -129,10 +100,10 @@ window.Quarto = {
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="https://lianxhcn.github.io/ci-policy/" class="sidebar-logo-link">
-      <img src="../../images/book-logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      <img src="./images/book-logo.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="../../">Causal Inference</a> 
+      <a href="./">Causal Inference</a> 
         <div class="sidebar-tools-main tools-wide">
     <a href="https://github.com/lianxhcn/ci-policy" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
     <a href="https://www.lianxh.cn" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-house-fill"></i></a>
@@ -154,25 +125,25 @@ window.Quarto = {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">🏠 前言</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../start.html" class="sidebar-item-text sidebar-link">
+  <a href="./start.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">🍎讲义使用说明</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../syllabus.html" class="sidebar-item-text sidebar-link">
+  <a href="./syllabus.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">📌讲授计划</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../settings.html" class="sidebar-item-text sidebar-link">
+  <a href="./settings.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">🚀课前准备：环境配置</span></a>
   </div>
 </li>
@@ -187,55 +158,55 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../lectures/01_policy_to_design.html" class="sidebar-item-text sidebar-link">
+  <a href="./lectures/01_policy_to_design.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">从政策背景到研究设计</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../lectures/02_policy_to_data.html" class="sidebar-item-text sidebar-link">
+  <a href="./lectures/02_policy_to_data.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">政策如何进入数据</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../lectures/03_sample_selection.html" class="sidebar-item-text sidebar-link">
+  <a href="./lectures/03_sample_selection.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">样本选择偏误</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../lectures/04_fixed_effects.html" class="sidebar-item-text sidebar-link">
+  <a href="./lectures/04_fixed_effects.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">固定效应：控制了什么</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../lectures/05_counterfactuals.html" class="sidebar-item-text sidebar-link">
+  <a href="./lectures/05_counterfactuals.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">反事实构造</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../lectures/06_did_design.html" class="sidebar-item-text sidebar-link">
+  <a href="./lectures/06_did_design.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">双重差分：从 TWFE 到 CSDID</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../lectures/07_ddml.html" class="sidebar-item-text sidebar-link">
+  <a href="./lectures/07_ddml.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">双重机器学习：DDML</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../lectures/08_ai_agent_workflow.html" class="sidebar-item-text sidebar-link">
+  <a href="./lectures/08_ai_agent_workflow.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">AI Agent 辅助实证研究</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../lectures/09_reading_list.html" class="sidebar-item-text sidebar-link">
+  <a href="./lectures/09_reading_list.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">阅读清单</span></span></a>
   </div>
 </li>
@@ -252,49 +223,49 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../lectures/appendix/A02_government_guidance_fund.html" class="sidebar-item-text sidebar-link">
+  <a href="./lectures/appendix/A02_government_guidance_fund.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">政府引导基金政策梳理笔记</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../lectures/appendix/A03_heckman_selection_literature.html" class="sidebar-item-text sidebar-link active">
+  <a href="./lectures/appendix/A03_heckman_selection_literature.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Heckman 模型扩展阅读</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../notebooks/ch03_heckman/heckman_practical_notes.html" class="sidebar-item-text sidebar-link">
+  <a href="./notebooks/ch03_heckman/heckman_practical_notes.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Heckman 实操笔记</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../notebooks/ch04_fixed_effects/fixed_effects_practical_notes.html" class="sidebar-item-text sidebar-link">
+  <a href="./notebooks/ch04_fixed_effects/fixed_effects_practical_notes.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">固定效应实操笔记</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../notebooks/ch05_counterfactuals/A05_counterfactual_replication.html" class="sidebar-item-text sidebar-link">
+  <a href="./notebooks/ch05_counterfactuals/A05_counterfactual_replication.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">加州禁烟：SCM/RCM/SDID</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../notebooks/ch06_did/A06_did_method_selection.html" class="sidebar-item-text sidebar-link">
+  <a href="./notebooks/ch06_did/A06_did_method_selection.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">F</span>&nbsp; <span class="chapter-title">DID 方法与 Stata 实操</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../notebooks/ch07_ddml/A07_fwl_ddml.html" class="sidebar-item-text sidebar-link">
+  <a href="./notebooks/ch07_ddml/A07_fwl_ddml.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">G</span>&nbsp; <span class="chapter-title">双重机器学习 Stata 实操</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../exercises/exercise_overview.html" class="sidebar-item-text sidebar-link">
+  <a href="./exercises/exercise_overview.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">练习概览</span></span></a>
   </div>
 </li>
@@ -310,32 +281,18 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#按学科分类" id="toc-按学科分类" class="nav-link active" data-scroll-target="#按学科分类"><span class="header-section-number">B.1</span> 按学科分类</a>
-  <ul class="collapse">
-  <li><a href="#劳动经济学工资只在就业者中可见" id="toc-劳动经济学工资只在就业者中可见" class="nav-link" data-scroll-target="#劳动经济学工资只在就业者中可见"><span class="header-section-number">B.1.1</span> 劳动经济学：工资只在就业者中可见</a></li>
-  <li><a href="#国际贸易零贸易流和贸易伙伴选择" id="toc-国际贸易零贸易流和贸易伙伴选择" class="nav-link" data-scroll-target="#国际贸易零贸易流和贸易伙伴选择"><span class="header-section-number">B.1.2</span> 国际贸易：零贸易流和贸易伙伴选择</a></li>
-  <li><a href="#金融市场上市公司样本不是企业总体" id="toc-金融市场上市公司样本不是企业总体" class="nav-link" data-scroll-target="#金融市场上市公司样本不是企业总体"><span class="header-section-number">B.1.3</span> 金融市场：上市公司样本不是企业总体</a></li>
-  <li><a href="#会计研究heckman-误用和排他变量问题" id="toc-会计研究heckman-误用和排他变量问题" class="nav-link" data-scroll-target="#会计研究heckman-误用和排他变量问题"><span class="header-section-number">B.1.4</span> 会计研究：Heckman 误用和排他变量问题</a></li>
-  </ul></li>
-  <li><a href="#按-heckman-使用要点分类" id="toc-按-heckman-使用要点分类" class="nav-link" data-scroll-target="#按-heckman-使用要点分类"><span class="header-section-number">B.2</span> 按 Heckman 使用要点分类</a>
-  <ul class="collapse">
-  <li><a href="#经典两方程思想结果只在被选择样本中可见" id="toc-经典两方程思想结果只在被选择样本中可见" class="nav-link" data-scroll-target="#经典两方程思想结果只在被选择样本中可见"><span class="header-section-number">B.2.1</span> 经典两方程思想：结果只在被选择样本中可见</a></li>
-  <li><a href="#选择校正嵌入政策评估" id="toc-选择校正嵌入政策评估" class="nav-link" data-scroll-target="#选择校正嵌入政策评估"><span class="header-section-number">B.2.2</span> 选择校正嵌入政策评估</a></li>
-  <li><a href="#二元选择-正结果方程" id="toc-二元选择-正结果方程" class="nav-link" data-scroll-target="#二元选择-正结果方程"><span class="header-section-number">B.2.3</span> 二元选择 + 正结果方程</a></li>
-  <li><a href="#从均值选择到分布选择" id="toc-从均值选择到分布选择" class="nav-link" data-scroll-target="#从均值选择到分布选择"><span class="header-section-number">B.2.4</span> 从均值选择到分布选择</a></li>
-  <li><a href="#非-heckman-的选择机制论述" id="toc-非-heckman-的选择机制论述" class="nav-link" data-scroll-target="#非-heckman-的选择机制论述"><span class="header-section-number">B.2.5</span> 非 Heckman 的选择机制论述</a></li>
-  <li><a href="#heckman-误用警示" id="toc-heckman-误用警示" class="nav-link" data-scroll-target="#heckman-误用警示"><span class="header-section-number">B.2.6</span> Heckman 误用警示</a></li>
-  </ul></li>
-  <li><a href="#可复现材料备注" id="toc-可复现材料备注" class="nav-link" data-scroll-target="#可复现材料备注"><span class="header-section-number">B.3</span> 可复现材料备注</a></li>
+  <li><a href="#如何使用本讲义" id="toc-如何使用本讲义" class="nav-link active" data-scroll-target="#如何使用本讲义">1. 如何使用本讲义？</a></li>
+  <li><a href="#课前准备" id="toc-课前准备" class="nav-link" data-scroll-target="#课前准备">2. 课前准备</a></li>
+  <li><a href="#课程交流微信群" id="toc-课程交流微信群" class="nav-link" data-scroll-target="#课程交流微信群">3. 课程交流微信群</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../lectures/appendix/A02_government_guidance_fund.html">附录</a></li><li class="breadcrumb-item"><a href="../../lectures/appendix/A03_heckman_selection_literature.html"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Heckman 模型扩展阅读</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">附录 B — Heckman 模型扩展阅读</h1>
+<h1 class="title">🍎讲义使用说明</h1>
 </div>
 
 
@@ -352,98 +309,60 @@ window.Quarto = {
 </header>
 
 
-<p>本附录整理正文未完全展开的相关文献。分类不是为了把文献机械分箱，而是帮助读者把 Heckman 模型的不同使用场景区分开来：有些文献是经典就业选择，有些是分布和分位数扩展，有些只是说明样本选择机制，并不使用 Heckman 模型。读者应根据研究问题选择方法，不宜把 <code>heckman</code> 命令当作统一解法。</p>
-<section id="按学科分类" class="level2" data-number="B.1">
-<h2 data-number="B.1" class="anchored" data-anchor-id="按学科分类"><span class="header-section-number">B.1</span> 按学科分类</h2>
-<section id="劳动经济学工资只在就业者中可见" class="level3" data-number="B.1.1">
-<h3 data-number="B.1.1" class="anchored" data-anchor-id="劳动经济学工资只在就业者中可见"><span class="header-section-number">B.1.1</span> 劳动经济学：工资只在就业者中可见</h3>
-<p>劳动经济学是 Heckman 样本选择模型最经典的应用领域。原因很直接：研究者通常关心潜在工资报价，但工资只在就业者中被观察到。若劳动参与由能力、偏好、家庭照护责任、保留工资和就业机会共同决定，且这些不可观测因素也影响工资，直接用就业者工资样本估计工资方程就会产生偏误。</p>
-<p>代表文献：Blau et al.&nbsp;(<a href="https://doi.org/10.1086/725032">2024</a>)、Borjas and Edo (<a href="https://doi.org/10.1086/732774">2026</a>)、Arellano and Bonhomme (<a href="https://doi.org/10.3982/ECTA14030">2017</a>)、Chernozhukov et al.&nbsp;(<a href="https://doi.org/10.1086/738148">2025</a>)、Maasoumi and Wang (<a href="https://doi.org/10.1086/701788">2019</a>)。</p>
+<p><strong>作者：</strong> 连玉君 (中山大学) <strong>邮箱：</strong> <a href="mailto:arlionn@163.com" class="email">arlionn@163.com</a></p>
+<p> </p>
 <ul>
-<li><p>Blau, F. D., Kahn, L. M., Boboshko, N., &amp; Comey, M. L. (2024). The impact of selection into the labor force on the gender wage gap. <em>Journal of Labor Economics</em>, 42(4), 1093–1133. <a href="https://doi.org/10.1086/725032">Link</a>, <a href="https://www.nber.org/system/files/working_papers/w28855/w28855.pdf">PDF</a>, <a href="https://www.openicpsr.org/openicpsr/project/210781/version/V1/view">Data</a>, <a href="https://scholar.google.com/scholar?q=The+Impact+of+Selection+into+the+Labor+Force+on+the+Gender+Wage+Gap">Google</a>.</p>
-<p>这篇文献适合作为女性工资主案例的升级版。它的核心不是展示一个简单 Heckman 两步回归，而是系统比较多种选择校正策略。作者使用 PSID 长面板数据，尽量增加真实工资观测，再对仍然缺失的工资进行概率加权处理。它的教学价值在于提醒读者：观察工资差距的趋势，不一定等于潜在工资报价差距的趋势。若男女劳动参与模式本身发生变化，观察样本中的工资收敛可能被放大或缩小。开放材料方面，openICPSR 提供 supplementary data；公开页面中尚未核验到完整代码仓库。</p></li>
-<li><p>Borjas, G. J., &amp; Edo, A. (2026). Gender, selection into employment, and the wage impact of immigration. <em>Journal of Labor Economics</em>, 44(2), 515–552. <a href="https://doi.org/10.1086/732774">Link</a>, <a href="https://gborjas.scholars.harvard.edu/sites/g/files/omnuum4696/files/2026-02/JOLE2026.pdf">PDF</a>, <a href="https://www.nber.org/papers/w28682">NBER</a>, <a href="https://scholar.google.com/scholar?q=Gender+Selection+into+Employment+and+the+Wage+Impact+of+Immigration">Google</a>.</p>
-<p>这篇文献把样本选择带入政策冲击估计。移民流入不仅影响本地工资，也可能改变本地劳动者是否就业。作者发现，法国女性面对移民冲击时就业率明显下降，直接观察就业女性工资会低估负面工资效应。文章使用 Heckman-type selection correction，并与 shift-share 工具变量结合。对课堂教学而言，这篇的价值在于说明：处理变量外生并不自动解决 outcome sample 变化问题。即使政策冲击本身有外生来源，也要检查政策是否改变了谁留在结果样本中。公开主页中尚未核验到独立 replication package；作者主页和 NBER 页面提供论文版本。</p></li>
-<li><p>Arellano, M., &amp; Bonhomme, S. (2017). Quantile selection models with an application to understanding changes in wage inequality. <em>Econometrica</em>, 85(1), 1–28. <a href="https://doi.org/10.3982/ECTA14030">Link</a>, <a href="https://ifs.org.uk/publications/quantile-selection-models-application-understanding-changes-wage-inequality">Working Paper</a>, <a href="https://cemmap.ac.uk/wp-content/uploads/2020/08/CWP7515.pdf">PDF</a>, <a href="https://scholar.google.com/scholar?q=Quantile+Selection+Models+with+an+Application+to+Understanding+Changes+in+Wage+Inequality">Google</a>.</p>
-<p>这篇文献从方法上把样本选择从均值方程推广到分位数。传统 Heckman 校正关注 <span class="math inline">\(E(Y^{*}\mid X)\)</span>，但许多问题真正关心的是不同分位点上的工资差距和工资不平等。Arellano and Bonhomme (2017) 用 copula 描述选择误差和结果误差之间的依赖结构，从而校正 quantile regression 中的样本选择。它适合放在高级阅读中，不建议放入入门主文。学生需要先理解 Heckman 的均值校正，再看它如何扩展到分位数。</p></li>
-<li><p>Chernozhukov, V., Fernández-Val, I., &amp; Luo, S. (2025). Distribution regression with sample selection and UK wage decomposition. <em>Journal of Political Economy</em>, 133(12), 3952–3992. <a href="https://doi.org/10.1086/738148">Link</a>, <a href="https://www.cemmap.ac.uk/wp-content/uploads/2023/04/CWP0923-Distribution-regression-with-sample-selection-and-UK-wage-decomposition.pdf">PDF</a>, <a href="https://doi.org/10.7910/DVN/JOQBNQ">Replication Package</a>, <a href="https://doi.org/10.5255/UKDA-SN-9355-1">Data</a>, <a href="https://doc.ukdataservice.ac.uk/doc/9355/mrdoc/pdf/9355_readme.pdf">Readme</a>, <a href="https://scholar.google.com/scholar?q=Distribution+Regression+with+Sample+Selection+and+UK+Wage+Decomposition">Google</a>.</p>
-<p>这篇文献是 Heckman 思路的现代推广。它把结果方程从均值扩展为 distribution regression，在不同工资阈值上刻画潜在工资分布，并允许选择相关性随工资位置变化。文章的排他变量来自 out-of-work income，用于解释就业选择，但不直接进入潜在工资分布。它的复现材料较完整：作者主页列出 replication package，UK Data Service 提供数据和说明文件。它适合作为正文中的前沿案例，也适合作为附录中「从均值到分布」的代表文献。</p></li>
-<li><p>Maasoumi, E., &amp; Wang, L. (2019). The gender gap between earnings distributions. <em>Journal of Political Economy</em>, 127(5), 2438–2504. <a href="https://doi.org/10.1086/701788">Link</a>, <a href="https://hceconomics.uchicago.edu/sites/default/files/Maasoumi_Wang_gender-gaps.pdf">PDF</a>, <a href="https://scholar.google.com/scholar?q=The+Gender+Gap+between+Earnings+Distributions">Google</a>.</p>
-<p>这篇文献关注男女收入分布之间的差距，而不是单一均值或中位数差距。它与 Arellano and Bonhomme (2017)、Chernozhukov et al.&nbsp;(2025) 都属于工资分布方向。对教学而言，它可以用来说明：一旦研究对象从平均工资扩展到分布，样本选择问题也会变得更复杂，因为选择可能改变整个分布形状。它不如 Chernozhukov et al.&nbsp;(2025) 适合作为主案例，但适合放在分布选择文献中。</p></li>
+<li><strong>在线讲义：</strong> https://lianxhcn.github.io/ci-policy/</li>
+<li><strong>GitHub 仓库：</strong> https://github.com/lianxhcn/ci-policy</li>
 </ul>
-</section>
-<section id="国际贸易零贸易流和贸易伙伴选择" class="level3" data-number="B.1.2">
-<h3 data-number="B.1.2" class="anchored" data-anchor-id="国际贸易零贸易流和贸易伙伴选择"><span class="header-section-number">B.1.2</span> 国际贸易：零贸易流和贸易伙伴选择</h3>
-<p>国际贸易中的选择问题很直观。大量国家对之间没有贸易。若研究者只在正贸易流国家对中估计引力模型，就忽略了贸易伙伴形成这一选择过程。这里的样本选择不是个人是否就业，而是国家对之间是否发生贸易。</p>
-<p>代表文献：Helpman et al.&nbsp;(<a href="https://doi.org/10.1162/qjec.2008.123.2.441">2008</a>)。</p>
-<ul>
-<li><p>Helpman, E., Melitz, M., &amp; Rubinstein, Y. (2008). Estimating trade flows: Trading partners and trading volumes. <em>The Quarterly Journal of Economics</em>, 123(2), 441–487. <a href="https://doi.org/10.1162/qjec.2008.123.2.441">Link</a>, <a href="https://melitz.scholars.harvard.edu/sites/g/files/omnuum5906/files/melitz/files/estimatingtradeflows_qje.pdf">PDF</a>, <a href="https://melitz.scholars.harvard.edu/publications/estimating-trade-flows-trading-partners-and-trading-volumes">Homepage</a>, <a href="https://scholar.google.com/scholar?q=Estimating+Trade+Flows+Trading+Partners+and+Trading+Volumes">Google</a>.</p>
-<p>这篇文献是跨领域教学的最佳案例之一。文章先从异质性企业进入出口市场的理论出发，说明为什么有些国家对之间贸易额为零；再用第一阶段 Probit 估计是否发生贸易，第二阶段估计正贸易流的贸易量。它的排他变量包括企业进入监管成本和共同宗教指数。与传统 Heckman 不同，它还把 extensive margin 纳入第二阶段，因此不只是简单校正样本选择，还解释了出口企业数量变化如何影响贸易量。作者主页提供论文 PDF 和相关 religion 表格文件；尚未核验到完整代码仓库。</p></li>
-</ul>
-</section>
-<section id="金融市场上市公司样本不是企业总体" class="level3" data-number="B.1.3">
-<h3 data-number="B.1.3" class="anchored" data-anchor-id="金融市场上市公司样本不是企业总体"><span class="header-section-number">B.1.3</span> 金融市场：上市公司样本不是企业总体</h3>
-<p>金融研究中，很多样本已经经过制度筛选。上市公司不是企业总体，IPO 公司不是所有成长型企业，能长期留在交易所中的企业也不是随机企业。此类问题不一定要用 Heckman 模型处理，但必须在研究设计中正面说明。</p>
-<p>代表文献：Allen et al.&nbsp;(<a href="https://doi.org/10.1111/jofi.13312">2024</a>)。</p>
-<ul>
-<li><p>Allen, F., Qian, J., Shan, C., &amp; Zhu, J. L. (2024). Dissecting the long-term performance of the Chinese stock market. <em>Journal of Finance</em>, 79(2), 993–1054. <a href="https://doi.org/10.1111/jofi.13312">Link</a>, <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2880021">SSRN</a>, <a href="https://cf-jrc.econ.cuhk.edu.hk/wp-content/uploads/2024/06/PDF_QJLeiZhu-DissectingtheLong%E2%80%90TermPerformanceoftheChineseStockMarket.pdf">PDF</a>, <a href="https://scholar.google.com/scholar?q=Dissecting+the+Long-Term+Performance+of+the+Chinese+Stock+Market">Google</a>.</p>
-<p>这篇文献不属于 Heckman 方程应用，但适合作为「选择机制论述」的金融案例。文章研究中国 A 股长期表现，比较 A 股上市企业、境外上市中国企业、其他市场企业以及匹配的未上市中国企业。它提醒读者，上市样本本身就是制度筛选结果。对于科创板、注册制和 IPO 政策评估，不能把最终上市企业简单看作处理组总体。若研究者看不到申报失败、撤回、审核未通过、未上市但相似的企业，就必须重新定义估计对象。公开页面中可以访问 SSRN 和作者机构 PDF；尚未核验到公开 replication code。</p></li>
-</ul>
-</section>
-<section id="会计研究heckman-误用和排他变量问题" class="level3" data-number="B.1.4">
-<h3 data-number="B.1.4" class="anchored" data-anchor-id="会计研究heckman-误用和排他变量问题"><span class="header-section-number">B.1.4</span> 会计研究：Heckman 误用和排他变量问题</h3>
-<p>会计和公司金融研究中，Heckman 模型经常被当作自选择稳健性检验使用。问题是，很多研究并没有真正说明选择机制，也没有可信的排他变量。此时，Heckman 不是增强可信度，反而可能制造一种形式上的严谨。</p>
-<p>代表文献：Lennox et al.&nbsp;(<a href="https://doi.org/10.2308/accr-10195">2012</a>)。</p>
-<ul>
-<li><p>Lennox, C. S., Francis, J. R., &amp; Wang, Z. (2012). Selection models in accounting research. <em>The Accounting Review</em>, 87(2), 589–616. <a href="https://doi.org/10.2308/accr-10195">Link</a>, <a href="https://publications.aaahq.org/accounting-review/article/87/2/589/3388/Selection-Models-in-Accounting-Research">Publisher</a>, <a href="https://scholar.google.com/scholar?q=Selection+Models+in+Accounting+Research+Lennox+Francis+Wang">Google</a>.</p>
-<p>这篇文献是方法警示，不是应用案例。作者系统讨论会计研究中选择模型的使用问题，指出许多研究者把 Heckman 当作机械校正，忽视了排他变量、选择方程解释力、IMR 与核心解释变量共线性、以及模型对函数形式假设的敏感性。它适合放在「排他性变量不是装饰」之后，提醒读者：没有机制支撑的选择方程很难说服审稿人。若研究者只是为了回应「自选择问题」而加入 IMR，通常不能真正解决识别问题。</p></li>
-</ul>
+<p> </p>
 <hr>
-</section>
-</section>
-<section id="按-heckman-使用要点分类" class="level2" data-number="B.2">
-<h2 data-number="B.2" class="anchored" data-anchor-id="按-heckman-使用要点分类"><span class="header-section-number">B.2</span> 按 Heckman 使用要点分类</h2>
-<section id="经典两方程思想结果只在被选择样本中可见" class="level3" data-number="B.2.1">
-<h3 data-number="B.2.1" class="anchored" data-anchor-id="经典两方程思想结果只在被选择样本中可见"><span class="header-section-number">B.2.1</span> 经典两方程思想：结果只在被选择样本中可见</h3>
-<p>代表文献：Blau et al.&nbsp;(<a href="https://doi.org/10.1086/725032">2024</a>)、Borjas and Edo (<a href="https://doi.org/10.1086/732774">2026</a>)。</p>
-<p>这类文献最适合与 Mroz 数据例子搭配。教学重点是：先定义选择变量 <span class="math inline">\(D\)</span>，再定义潜在结果 <span class="math inline">\(Y^{*}\)</span>，最后说明为何 <span class="math inline">\(Y=Y^{*}\)</span> 只在 <span class="math inline">\(D=1\)</span> 时被观察到。排他变量通常来自家庭结构、非劳动收入、照护责任或财富约束。真正困难的地方不是写方程，而是说明这些变量为什么只影响劳动参与，不直接影响潜在工资。</p>
-</section>
-<section id="选择校正嵌入政策评估" class="level3" data-number="B.2.2">
-<h3 data-number="B.2.2" class="anchored" data-anchor-id="选择校正嵌入政策评估"><span class="header-section-number">B.2.2</span> 选择校正嵌入政策评估</h3>
-<p>代表文献：Borjas and Edo (<a href="https://doi.org/10.1086/732774">2026</a>)。</p>
-<p>这类文献适合讲 DID、IV 和 shift-share 之外的问题。即使冲击变量本身可以被视为外生，政策冲击仍可能改变谁留在样本中。若政策影响就业参与、上市申请、企业存活、信息披露或样本追踪，研究者需要区分「政策对结果的影响」和「政策对结果可见性的影响」。</p>
-</section>
-<section id="二元选择-正结果方程" class="level3" data-number="B.2.3">
-<h3 data-number="B.2.3" class="anchored" data-anchor-id="二元选择-正结果方程"><span class="header-section-number">B.2.3</span> 二元选择 + 正结果方程</h3>
-<p>代表文献：Helpman et al.&nbsp;(<a href="https://doi.org/10.1162/qjec.2008.123.2.441">2008</a>)。</p>
-<p>这类文献的结构是：第一阶段解释是否出现正结果，第二阶段解释正结果的规模。与女性工资相比，它更适合讲贸易、专利、投资、并购、融资、出口等存在大量零值或未进入状态的研究。需要注意的是，零值结果不一定都应该用 Heckman。若零值本身是结果变量的一部分，Poisson、PPML、two-part model 或 hurdle model 也可能更合适。Helpman et al.&nbsp;(2008) 的价值在于它把零贸易流和企业进入出口市场的理论机制连在一起。</p>
-</section>
-<section id="从均值选择到分布选择" class="level3" data-number="B.2.4">
-<h3 data-number="B.2.4" class="anchored" data-anchor-id="从均值选择到分布选择"><span class="header-section-number">B.2.4</span> 从均值选择到分布选择</h3>
-<p>代表文献：Arellano and Bonhomme (<a href="https://doi.org/10.3982/ECTA14030">2017</a>)、Maasoumi and Wang (<a href="https://doi.org/10.1086/701788">2019</a>)、Chernozhukov et al.&nbsp;(<a href="https://doi.org/10.1086/738148">2025</a>)。</p>
-<p>这类文献说明，样本选择不只是均值问题。如果研究者关心分位数、分布差距、不平等、顶部工资或底部工资，选择机制可能在分布不同位置产生不同影响。经典 Heckman 的一个相关系数和一个均值校正项太粗糙，未必能描述复杂选择。现代方法把选择校正扩展到 quantile regression 和 distribution regression，但代价是模型更技术化，对识别变量和样本规模要求更高。</p>
-</section>
-<section id="非-heckman-的选择机制论述" class="level3" data-number="B.2.5">
-<h3 data-number="B.2.5" class="anchored" data-anchor-id="非-heckman-的选择机制论述"><span class="header-section-number">B.2.5</span> 非 Heckman 的选择机制论述</h3>
-<p>代表文献：Allen et al.&nbsp;(<a href="https://doi.org/10.1111/jofi.13312">2024</a>)。</p>
-<p>并不是所有样本选择问题都要用 Heckman。若结果在处理组和对照组都可见，但处理组进入机制不随机，问题更接近处理效应识别、匹配、DID、合成控制或选择性进入政策的问题。上市公司样本、试点城市样本、被投企业样本、幸存企业样本都属于这一类。研究者需要先说明估计对象，再判断是否需要选择模型。</p>
-</section>
-<section id="heckman-误用警示" class="level3" data-number="B.2.6">
-<h3 data-number="B.2.6" class="anchored" data-anchor-id="heckman-误用警示"><span class="header-section-number">B.2.6</span> Heckman 误用警示</h3>
-<p>代表文献：Lennox et al.&nbsp;(<a href="https://doi.org/10.2308/accr-10195">2012</a>)。</p>
-<p>Heckman 模型最容易被误用为稳健性检验按钮。规范写法不是「我们使用 Heckman 修正自选择偏误，结果稳健」，而是要具体说明：选择方程解释什么？结果方程解释什么？排他变量是什么？为什么它影响选择而不直接影响结果？IMR 与核心解释变量是否高度共线？结果是否对选择方程设定敏感？这些问题比软件命令更重要。</p>
-</section>
-</section>
-<section id="可复现材料备注" class="level2" data-number="B.3">
-<h2 data-number="B.3" class="anchored" data-anchor-id="可复现材料备注"><span class="header-section-number">B.3</span> 可复现材料备注</h2>
-<p>本附录只列入已经核验到的公开材料链接。</p>
+<p>本讲义围绕因果推断与政策评估中的主要研究设计展开，结合理论介绍、案例分析和 Stata 实例，帮助学习者理解政策评估中的识别逻辑和实证分析方法。</p>
+<p>讲义内容仍在持续完善中。欢迎大家在学习过程中提出问题和修改建议，以帮助后续版本进一步优化。</p>
+<section id="如何使用本讲义" class="level2">
+<h2 class="anchored" data-anchor-id="如何使用本讲义">1. 如何使用本讲义？</h2>
+<p>建议优先通过在线版本阅读讲义：</p>
+<p>https://lianxhcn.github.io/ci-policy/</p>
+<p>如果希望进一步练习实证分析流程，可以将课程仓库 <a href="https://github.com/lianxhcn/ci-policy">fork 到自己的 GitHub 账号</a> 中，并根据需要保存到本地进行学习。</p>
+<p>课程仓库中：</p>
 <ul>
-<li>Blau et al.&nbsp;(<a href="https://doi.org/10.1086/725032">2024</a>): openICPSR 提供 supplementary data，页面显示项目 DOI 为 10.3886/E210781V1，并列出 <code>main_PSID.dta</code>。</li>
-<li>Chernozhukov et al.&nbsp;(<a href="https://doi.org/10.1086/738148">2025</a>): 作者主页列出 replication package 和 UK Data Service 数据链接；UKDS Readme 说明包括 Stata 数据、<code>Construction.do</code> 和整理后的 DRS 数据。</li>
-<li>Helpman et al.&nbsp;(<a href="https://doi.org/10.1162/qjec.2008.123.2.441">2008</a>): Marc Melitz 主页提供论文 PDF 和 religion 表格修正文件。</li>
-<li>Borjas and Edo (<a href="https://doi.org/10.1086/732774">2026</a>): 作者主页和 NBER 页面提供论文版本；尚未核验到独立公开 replication package。</li>
-<li>Arellano and Bonhomme (<a href="https://doi.org/10.3982/ECTA14030">2017</a>)、Maasoumi and Wang (<a href="https://doi.org/10.1086/701788">2019</a>)、Allen et al.&nbsp;(<a href="https://doi.org/10.1111/jofi.13312">2024</a>)、Lennox et al.&nbsp;(<a href="https://doi.org/10.2308/accr-10195">2012</a>): 本轮整理尚未核验到可直接下载的官方 replication package。后续若要做实操复现，可按论文主页、期刊 replication policy、Dataverse、openICPSR、AEA Data Editor、GitHub 和作者主页逐一检索。</li>
+<li><code>lectures</code> 文件夹保存课程讲义正文；</li>
+<li><code>notebooks</code> 文件夹保存部分可以交互运行的 Notebook 示例。</li>
 </ul>
+<p>对相关内容感兴趣的同学，可以提前运行 <code>notebooks</code> 文件夹中的示例代码，熟悉课程中的分析过程。</p>
+<p>学习过程中建议：</p>
+<ul>
+<li>按照章节顺序阅读，不建议只关注某一种具体方法；</li>
+<li>重点理解不同研究设计背后的识别逻辑，而不仅是命令使用；</li>
+<li>结合讲义中的代码进行实际操作，尝试修改参数和数据，加深理解。</li>
+</ul>
+<p>更多使用说明：</p>
+<p>https://lianxhcn.github.io/ci-policy/intro.html</p>
+</section>
+<section id="课前准备" class="level2">
+<h2 class="anchored" data-anchor-id="课前准备">2. 课前准备</h2>
+<p>为了保证课堂演示能够顺利进行，请提前完成软件安装和环境配置。</p>
+<p>建议准备：</p>
+<ul>
+<li>Stata（建议 Stata 17 或更高版本）；</li>
+<li>VS Code（用于代码编辑和 Notebook 演示）；</li>
+<li>Python 环境（部分扩展内容会涉及 Python 工具）；</li>
+<li>相关 Stata 外部命令安装。</li>
+</ul>
+<p>完整配置说明：</p>
+<p>https://lianxhcn.github.io/ci-policy/settings.html</p>
+</section>
+<section id="课程交流微信群" class="level2">
+<h2 class="anchored" data-anchor-id="课程交流微信群">3. 课程交流微信群</h2>
+<p>为了方便课程期间交流，以及后续答疑和讲义完善，建立了课程学习交流群。</p>
+<p>大家可以通过下面二维码加入：</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/wechat-qrcode.png" class="img-fluid figure-img"></p>
+<figcaption>微信群二维码</figcaption>
+</figure>
+</div>
+<p>欢迎大家在群内交流课程学习中的问题，也欢迎对讲义内容提出修改建议。由于讲义仍在持续完善中，大家的反馈将帮助后续版本进一步优化。</p>
 
 
 </section>
@@ -1017,13 +936,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../lectures/appendix/A02_government_guidance_fund.html" class="pagination-link" aria-label="政府引导基金政策梳理笔记">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">政府引导基金政策梳理笔记</span></span>
+      <a href="./index.html" class="pagination-link" aria-label="🏠 前言">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">🏠 前言</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../notebooks/ch03_heckman/heckman_practical_notes.html" class="pagination-link" aria-label="Heckman 实操笔记">
-        <span class="nav-page-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Heckman 实操笔记</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./syllabus.html" class="pagination-link" aria-label="📌讲授计划">
+        <span class="nav-page-text">📌讲授计划</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

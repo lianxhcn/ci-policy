@@ -35,6 +35,7 @@ book:
     right: "基于 [Quarto](https://quarto.org/) 构建"
   chapters:
     - index.qmd
+    - start.md
     - syllabus.qmd
     - settings.qmd
     - part: "**讲义**"
