@@ -50,6 +50,8 @@ book:
         - lectures/08_ai_agent_workflow.qmd
         - lectures/09_reading_list.qmd
   appendices:
+    - lectures/appendix/A01_hci_policy_background.qmd
+    - lectures/appendix/A01b_hci_chaebol_formation.qmd
     - lectures/appendix/A02_government_guidance_fund.qmd
     - lectures/appendix/A03_heckman_selection_literature.qmd
     - notebooks/ch03_heckman/heckman_practical_notes.ipynb

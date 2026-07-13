@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>附录 F — DID 方法与 Stata 实操 – 因果推断：政策评估中的识别思维与实证设计</title>
+<title>附录 H — DID 方法与 Stata 实操 – 因果推断：政策评估中的识别思维与实证设计</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -151,7 +151,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../lectures/appendix/A02_government_guidance_fund.html">附录</a></li><li class="breadcrumb-item"><a href="../../notebooks/ch06_did/A06_did_method_selection.html"><span class="chapter-number">F</span>&nbsp; <span class="chapter-title">DID 方法与 Stata 实操</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../lectures/appendix/A01_hci_policy_background.html">附录</a></li><li class="breadcrumb-item"><a href="../../notebooks/ch06_did/A06_did_method_selection.html"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">DID 方法与 Stata 实操</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -289,50 +289,62 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../../lectures/appendix/A01_hci_policy_background.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">韩国 HCI drive：政策背景、政策工具与亚洲四小龙</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../lectures/appendix/A01b_hci_chaebol_formation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">HCI drive 与韩国财阀的形成</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../../lectures/appendix/A02_government_guidance_fund.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">政府引导基金政策梳理笔记</span></span></a>
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">政府引导基金政策梳理笔记</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../lectures/appendix/A03_heckman_selection_literature.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Heckman 模型扩展阅读</span></span></a>
+ <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">Heckman 模型扩展阅读</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../notebooks/ch03_heckman/heckman_practical_notes.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Heckman 实操笔记</span></span></a>
+ <span class="menu-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">Heckman 实操笔记</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../notebooks/ch04_fixed_effects/fixed_effects_practical_notes.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">固定效应实操笔记</span></span></a>
+ <span class="menu-text"><span class="chapter-number">F</span>&nbsp; <span class="chapter-title">固定效应实操笔记</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../notebooks/ch05_counterfactuals/A05_counterfactual_replication.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">加州禁烟：SCM/RCM/SDID</span></span></a>
+ <span class="menu-text"><span class="chapter-number">G</span>&nbsp; <span class="chapter-title">加州禁烟：SCM/RCM/SDID</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../notebooks/ch06_did/A06_did_method_selection.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">F</span>&nbsp; <span class="chapter-title">DID 方法与 Stata 实操</span></span></a>
+ <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">DID 方法与 Stata 实操</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../notebooks/ch07_ddml/A07_fwl_ddml.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">G</span>&nbsp; <span class="chapter-title">双重机器学习 Stata 实操</span></span></a>
+ <span class="menu-text"><span class="chapter-number">I</span>&nbsp; <span class="chapter-title">双重机器学习 Stata 实操</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../exercises/exercise_overview.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">练习概览</span></span></a>
+ <span class="menu-text"><span class="chapter-number">J</span>&nbsp; <span class="chapter-title">练习概览</span></span></a>
   </div>
 </li>
       </ul>
@@ -347,26 +359,26 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#环境准备" id="toc-环境准备" class="nav-link active" data-scroll-target="#环境准备"><span class="header-section-number">F.1</span> 环境准备</a></li>
-  <li><a href="#did四个均值与一个交互项" id="toc-did四个均值与一个交互项" class="nav-link" data-scroll-target="#did四个均值与一个交互项"><span class="header-section-number">F.2</span> 2×2 DID：四个均值与一个交互项</a></li>
-  <li><a href="#bacon-分解三单位最小例子与权重手算" id="toc-bacon-分解三单位最小例子与权重手算" class="nav-link" data-scroll-target="#bacon-分解三单位最小例子与权重手算"><span class="header-section-number">F.3</span> Bacon 分解：三单位最小例子与权重手算</a></li>
-  <li><a href="#数据与处理时点结构" id="toc-数据与处理时点结构" class="nav-link" data-scroll-target="#数据与处理时点结构"><span class="header-section-number">F.4</span> 数据与处理时点结构</a></li>
-  <li><a href="#twfe-基准与-bacon-分解诊断" id="toc-twfe-基准与-bacon-分解诊断" class="nav-link" data-scroll-target="#twfe-基准与-bacon-分解诊断"><span class="header-section-number">F.5</span> TWFE 基准与 Bacon 分解诊断</a></li>
-  <li><a href="#csdid估计-attgt-再聚合" id="toc-csdid估计-attgt-再聚合" class="nav-link" data-scroll-target="#csdid估计-attgt-再聚合"><span class="header-section-number">F.6</span> <code>csdid</code>：估计 ATT(g,t) 再聚合</a></li>
-  <li><a href="#drdidraipw-与双重稳健的两期对比" id="toc-drdidraipw-与双重稳健的两期对比" class="nav-link" data-scroll-target="#drdidraipw-与双重稳健的两期对比"><span class="header-section-number">F.7</span> <code>drdid</code>：RA、IPW 与双重稳健的两期对比</a></li>
-  <li><a href="#现代事件研究修正可选模块" id="toc-现代事件研究修正可选模块" class="nav-link" data-scroll-target="#现代事件研究修正可选模块"><span class="header-section-number">F.8</span> 现代事件研究修正（可选模块）</a></li>
-  <li><a href="#honestdid平行趋势敏感性分析可选模块" id="toc-honestdid平行趋势敏感性分析可选模块" class="nav-link" data-scroll-target="#honestdid平行趋势敏感性分析可选模块"><span class="header-section-number">F.9</span> <code>honestdid</code>：平行趋势敏感性分析（可选模块）</a></li>
-  <li><a href="#多估计量同框对比图可选模块" id="toc-多估计量同框对比图可选模块" class="nav-link" data-scroll-target="#多估计量同框对比图可选模块"><span class="header-section-number">F.10</span> 多估计量同框对比图（可选模块）</a></li>
-  <li><a href="#方法与软件地图" id="toc-方法与软件地图" class="nav-link" data-scroll-target="#方法与软件地图"><span class="header-section-number">F.11</span> 方法与软件地图</a></li>
+  <li><a href="#环境准备" id="toc-环境准备" class="nav-link active" data-scroll-target="#环境准备"><span class="header-section-number">H.1</span> 环境准备</a></li>
+  <li><a href="#did四个均值与一个交互项" id="toc-did四个均值与一个交互项" class="nav-link" data-scroll-target="#did四个均值与一个交互项"><span class="header-section-number">H.2</span> 2×2 DID：四个均值与一个交互项</a></li>
+  <li><a href="#bacon-分解三单位最小例子与权重手算" id="toc-bacon-分解三单位最小例子与权重手算" class="nav-link" data-scroll-target="#bacon-分解三单位最小例子与权重手算"><span class="header-section-number">H.3</span> Bacon 分解：三单位最小例子与权重手算</a></li>
+  <li><a href="#数据与处理时点结构" id="toc-数据与处理时点结构" class="nav-link" data-scroll-target="#数据与处理时点结构"><span class="header-section-number">H.4</span> 数据与处理时点结构</a></li>
+  <li><a href="#twfe-基准与-bacon-分解诊断" id="toc-twfe-基准与-bacon-分解诊断" class="nav-link" data-scroll-target="#twfe-基准与-bacon-分解诊断"><span class="header-section-number">H.5</span> TWFE 基准与 Bacon 分解诊断</a></li>
+  <li><a href="#csdid估计-attgt-再聚合" id="toc-csdid估计-attgt-再聚合" class="nav-link" data-scroll-target="#csdid估计-attgt-再聚合"><span class="header-section-number">H.6</span> <code>csdid</code>：估计 ATT(g,t) 再聚合</a></li>
+  <li><a href="#drdidraipw-与双重稳健的两期对比" id="toc-drdidraipw-与双重稳健的两期对比" class="nav-link" data-scroll-target="#drdidraipw-与双重稳健的两期对比"><span class="header-section-number">H.7</span> <code>drdid</code>：RA、IPW 与双重稳健的两期对比</a></li>
+  <li><a href="#现代事件研究修正可选模块" id="toc-现代事件研究修正可选模块" class="nav-link" data-scroll-target="#现代事件研究修正可选模块"><span class="header-section-number">H.8</span> 现代事件研究修正（可选模块）</a></li>
+  <li><a href="#honestdid平行趋势敏感性分析可选模块" id="toc-honestdid平行趋势敏感性分析可选模块" class="nav-link" data-scroll-target="#honestdid平行趋势敏感性分析可选模块"><span class="header-section-number">H.9</span> <code>honestdid</code>：平行趋势敏感性分析（可选模块）</a></li>
+  <li><a href="#多估计量同框对比图可选模块" id="toc-多估计量同框对比图可选模块" class="nav-link" data-scroll-target="#多估计量同框对比图可选模块"><span class="header-section-number">H.10</span> 多估计量同框对比图（可选模块）</a></li>
+  <li><a href="#方法与软件地图" id="toc-方法与软件地图" class="nav-link" data-scroll-target="#方法与软件地图"><span class="header-section-number">H.11</span> 方法与软件地图</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../lectures/appendix/A02_government_guidance_fund.html">附录</a></li><li class="breadcrumb-item"><a href="../../notebooks/ch06_did/A06_did_method_selection.html"><span class="chapter-number">F</span>&nbsp; <span class="chapter-title">DID 方法与 Stata 实操</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../lectures/appendix/A01_hci_policy_background.html">附录</a></li><li class="breadcrumb-item"><a href="../../notebooks/ch06_did/A06_did_method_selection.html"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">DID 方法与 Stata 实操</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">附录 F — DID 方法与 Stata 实操</h1>
+<h1 class="title">附录 H — DID 方法与 Stata 实操</h1>
 </div>
 
 
@@ -390,8 +402,8 @@ window.Quarto = {
 <p><strong>与附录 G 的对称</strong>：附录 G 用加州禁烟（单一处理组）演示反事实构造；本附录用 mpdta（交错处理）演示 DID 方法选择。两个附录合起来覆盖政策评估的两大典型数据结构。</p>
 <p><strong>稳健性设计</strong>：核心命令（<code>csdid</code>、<code>drdid</code>）用官方文档的规范语法；版本敏感的命令（<code>eventstudyinteract</code>、<code>did_imputation</code>、<code>honestdid</code>）列为可选模块，用 <code>capture</code> 包裹，安装或语法失败不影响主线。</p>
 </blockquote>
-<section id="环境准备" class="level2" data-number="F.1">
-<h2 data-number="F.1" class="anchored" data-anchor-id="环境准备"><span class="header-section-number">F.1</span> 环境准备</h2>
+<section id="环境准备" class="level2" data-number="H.1">
+<h2 data-number="H.1" class="anchored" data-anchor-id="环境准备"><span class="header-section-number">H.1</span> 环境准备</h2>
 <p>首次运行安装外部命令。为避免课堂环境中断，安装用 <code>capture</code> 包裹、失败不报停。</p>
 <div id="0666aaa5" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">clear</span> <span class="ot">all</span></span>
@@ -429,8 +441,8 @@ Running D:\stata19/profile.do ...</code></pre>
 </div>
 </div>
 </section>
-<section id="did四个均值与一个交互项" class="level2" data-number="F.2">
-<h2 data-number="F.2" class="anchored" data-anchor-id="did四个均值与一个交互项"><span class="header-section-number">F.2</span> 2×2 DID：四个均值与一个交互项</h2>
+<section id="did四个均值与一个交互项" class="level2" data-number="H.2">
+<h2 data-number="H.2" class="anchored" data-anchor-id="did四个均值与一个交互项"><span class="header-section-number">H.2</span> 2×2 DID：四个均值与一个交互项</h2>
 <p>先用一份<strong>内置模拟数据</strong>把正文「2×2 DID」一节的四格均值验证一遍——不依赖外部链接，保证一定能跑通。真实数据 <code>mpdta</code> 从 G.3 开始用。</p>
 <p>我们造一个两组两期的面板：真实政策效应设为 <code>+3</code>。看回归的交互项系数能否还原它，以及三个系数是否分别对应「组间水平差」「时间趋势」「双重差分」。</p>
 <div id="39eff85a" class="cell" data-execution_count="2">
@@ -493,8 +505,8 @@ Linear regression                               Number of obs     =        400
 </ul>
 <p>正文用 Card and Krueger (1994) 的新泽西—宾夕法尼亚最低工资作为这个结构的经典实证例子；这里用模拟数据是为了让每个人都能一键复现四格均值。</p>
 </section>
-<section id="bacon-分解三单位最小例子与权重手算" class="level2" data-number="F.3">
-<h2 data-number="F.3" class="anchored" data-anchor-id="bacon-分解三单位最小例子与权重手算"><span class="header-section-number">F.3</span> Bacon 分解：三单位最小例子与权重手算</h2>
+<section id="bacon-分解三单位最小例子与权重手算" class="level2" data-number="H.3">
+<h2 data-number="H.3" class="anchored" data-anchor-id="bacon-分解三单位最小例子与权重手算"><span class="header-section-number">H.3</span> Bacon 分解：三单位最小例子与权重手算</h2>
 <p>这个模块复现正文「权重怎么定：手算一遍」的全部数字。数据就是正文的最小例子：3 个体 × 10 期，<span class="math inline">\(id=1\)</span> 从不处理，<span class="math inline">\(id=2\)</span> 在 <span class="math inline">\(t=5\)</span> 进入（效应 2），<span class="math inline">\(id=3\)</span> 在 <span class="math inline">\(t=8\)</span> 进入（效应 4），处理吸收、含共同时间趋势。目标：亲眼看到 TWFE 系数 2.91 如何被拆成三块 2×2、再按权重拼回来。</p>
 <div id="cell-7" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">clear</span></span>
@@ -591,8 +603,8 @@ Bacon Decomposition
 <li>Goodman-Bacon, A. (2021). Difference-in-differences with variation in treatment timing. <em>Journal of Econometrics</em>, 225(2), 254–277. 配套 Stata 命令 <code>bacondecomp</code>。本模块示例编译自 Asjad Naqvi 的 <a href="https://asjadnaqvi.github.io/DiD/docs/code/06_02_bacon/">Bacon decomposition 教学页</a>，中文详解见康希 (<a href="https://www.lianxh.cn/details/1347.html">2024</a>）。</li>
 </ul>
 </section>
-<section id="数据与处理时点结构" class="level2" data-number="F.4">
-<h2 data-number="F.4" class="anchored" data-anchor-id="数据与处理时点结构"><span class="header-section-number">F.4</span> 数据与处理时点结构</h2>
+<section id="数据与处理时点结构" class="level2" data-number="H.4">
+<h2 data-number="H.4" class="anchored" data-anchor-id="数据与处理时点结构"><span class="header-section-number">H.4</span> 数据与处理时点结构</h2>
 <p>现在载入真实的交错处理数据 <code>mpdta</code>。先不估计任何模型，只看清处理时点的结构——这一步决定了后面能用哪些方法。</p>
 <div id="a838a47d" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> https:<span class="co">//friosavila.github.io/playingwithstata/drdid/mpdta.dta, clear</span></span>
@@ -663,8 +675,8 @@ Panel variable: countyreal (strongly balanced)
 </ol>
 <p>注意区分两个变量：<code>first_treat</code> 是<strong>首次处理年份</strong>（时间不变，csdid 的 <code>gvar</code>），<code>treated</code> 是<strong>当期处理状态</strong>（随时间变，TWFE 的 <span class="math inline">\(D_{it}\)</span>）。混淆这两个是初学者最常见的错误。</p>
 </section>
-<section id="twfe-基准与-bacon-分解诊断" class="level2" data-number="F.5">
-<h2 data-number="F.5" class="anchored" data-anchor-id="twfe-基准与-bacon-分解诊断"><span class="header-section-number">F.5</span> TWFE 基准与 Bacon 分解诊断</h2>
+<section id="twfe-基准与-bacon-分解诊断" class="level2" data-number="H.5">
+<h2 data-number="H.5" class="anchored" data-anchor-id="twfe-基准与-bacon-分解诊断"><span class="header-section-number">H.5</span> TWFE 基准与 Bacon 分解诊断</h2>
 <p>先跑一个熟悉的 TWFE，作为<strong>基准</strong>（不是最终答案）。再用 Bacon 分解诊断这个系数背后混了哪些 2×2 比较。</p>
 <div id="b25d645c" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>* TWFE 基准</span>
@@ -743,8 +755,8 @@ Bacon Decomposition
 </ul>
 <p>Bacon 分解不修正 TWFE，它只诊断。修正靠下一节的 group-time ATT。</p>
 </section>
-<section id="csdid估计-attgt-再聚合" class="level2" data-number="F.6">
-<h2 data-number="F.6" class="anchored" data-anchor-id="csdid估计-attgt-再聚合"><span class="header-section-number">F.6</span> <code>csdid</code>：估计 ATT(g,t) 再聚合</h2>
+<section id="csdid估计-attgt-再聚合" class="level2" data-number="H.6">
+<h2 data-number="H.6" class="anchored" data-anchor-id="csdid估计-attgt-再聚合"><span class="header-section-number">H.6</span> <code>csdid</code>：估计 ATT(g,t) 再聚合</h2>
 <p>这是本附录的核心。<code>csdid</code> 的规范工作流是<strong>两步</strong>：先估计所有 group-time ATT，再用 <code>estat</code> 按需聚合。这个「先拆分、再聚合」的两步式，正好对应正文「加总的原则」一节的核心判断——聚合口径就是目标参数。</p>
 <div id="f56e346f" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> https:<span class="co">//friosavila.github.io/playingwithstata/drdid/mpdta.dta, clear</span></span>
@@ -921,8 +933,8 @@ Event Study:Dynamic effects
 <li>Callaway, B., &amp; Sant’Anna, P. H. C. (2021). Difference-in-differences with multiple time periods. <em>Journal of Econometrics</em>, 225(2), 200–230. 这是 <span class="math inline">\(ATT(g,t)\)</span> 框架的原始文献，本附录用的 <code>mpdta</code> 数据就来自其配套 R 包 <code>did</code>（<a href="https://bcallaway11.github.io/did/" class="uri">https://bcallaway11.github.io/did/</a>），R 与 Stata 结果可对照复现。读者写交错处理 DID 论文时，可直接以该文的估计与作图流程为范本。</li>
 </ul>
 </section>
-<section id="drdidraipw-与双重稳健的两期对比" class="level2" data-number="F.7">
-<h2 data-number="F.7" class="anchored" data-anchor-id="drdidraipw-与双重稳健的两期对比"><span class="header-section-number">F.7</span> <code>drdid</code>：RA、IPW 与双重稳健的两期对比</h2>
+<section id="drdidraipw-与双重稳健的两期对比" class="level2" data-number="H.7">
+<h2 data-number="H.7" class="anchored" data-anchor-id="drdidraipw-与双重稳健的两期对比"><span class="header-section-number">H.7</span> <code>drdid</code>：RA、IPW 与双重稳健的两期对比</h2>
 <p><code>drdid</code> 针对<strong>两期</strong> DID，演示双重稳健的核心思想：把正文的 RA、IPW、AIPW 三式在同一份 2×2 子样本上各估一遍，直接观察三个估计值的异同。为用同一份在线数据，把 <code>mpdta</code> 压成一个 2×2 子样本：只留 2004 年首次处理的县和 never-treated 县，只留 2003、2004 两年。</p>
 <div id="7b5ac188" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> https:<span class="co">//friosavila.github.io/playingwithstata/drdid/mpdta.dta, clear</span></span>
@@ -1028,8 +1040,8 @@ ATET         |
 <li>Sant’Anna, P. H. C., &amp; Zhao, J. (2020). Doubly robust difference-in-differences estimators. <em>Journal of Econometrics</em>, 219(1), 101–122. 双重稳健 DID 的原始文献，公开了 R 包 <code>DRDID</code> 与复现代码（<a href="https://github.com/pedrohcgs/DRDID" class="uri">https://github.com/pedrohcgs/DRDID</a>），其实证示例用 LaLonde/NSW 就业培训数据演示「结果回归 + 倾向得分，其一正确即一致」。想在条件平行趋势下做 DID 的读者，可照该示例组织协变量与稳健性。</li>
 </ul>
 </section>
-<section id="现代事件研究修正可选模块" class="level2" data-number="F.8">
-<h2 data-number="F.8" class="anchored" data-anchor-id="现代事件研究修正可选模块"><span class="header-section-number">F.8</span> 现代事件研究修正（可选模块）</h2>
+<section id="现代事件研究修正可选模块" class="level2" data-number="H.8">
+<h2 data-number="H.8" class="anchored" data-anchor-id="现代事件研究修正可选模块"><span class="header-section-number">H.8</span> 现代事件研究修正（可选模块）</h2>
 <p>传统 TWFE 事件研究在交错处理下，lead/lag 系数可能被其他队列的处理效应污染。这里给 Sun–Abraham（<code>eventstudyinteract</code>）和 BJS（<code>did_imputation</code>）两个入口，并附 <code>did2s</code> 两步法的最小示例。两者版本敏感，用 <code>capture</code> 包裹，失败不影响前面主线。</p>
 <div id="19f33926" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> https:<span class="co">//friosavila.github.io/playingwithstata/drdid/mpdta.dta, clear</span></span>
@@ -1165,8 +1177,8 @@ did_imputation 未运行成功，help did_imputation 核对语法。
 <li><p>Butts, K., &amp; Gardner, J. (2022). did2s: Two-stage difference-in-differences. <em>The R Journal</em>, 14(3), 162–173. <a href="https://doi.org/10.32614/RJ-2022-048">Link</a>, <a href="https://journal.r-project.org/articles/RJ-2022-048/RJ-2022-048.pdf">PDF</a>, <a href="https://scholar.google.com/scholar?q=did2s+Two-Stage+Difference-in-Differences">Google</a>. 这篇文章介绍 R 包 <code>did2s</code>，用于实现 Gardner (2022) 提出的两阶段 DID 估计量，并提供了较清晰的语法说明和事件研究绘图接口。</p></li>
 </ul>
 </section>
-<section id="honestdid平行趋势敏感性分析可选模块" class="level2" data-number="F.9">
-<h2 data-number="F.9" class="anchored" data-anchor-id="honestdid平行趋势敏感性分析可选模块"><span class="header-section-number">F.9</span> <code>honestdid</code>：平行趋势敏感性分析（可选模块）</h2>
+<section id="honestdid平行趋势敏感性分析可选模块" class="level2" data-number="H.9">
+<h2 data-number="H.9" class="anchored" data-anchor-id="honestdid平行趋势敏感性分析可选模块"><span class="header-section-number">H.9</span> <code>honestdid</code>：平行趋势敏感性分析（可选模块）</h2>
 <p>honest DiD（Rambachan–Roth 2023）不检验平行趋势是否成立，而是问：平行趋势要被违反到什么程度，结论才翻转？它需要前序事件研究的系数向量与协方差矩阵作输入。</p>
 <p><code>honestdid</code> 一般从 GitHub 安装。下面给出一条<strong>能实际串起来</strong>的最小流程：用 <code>csdid</code> 的事件研究结果喂给 <code>honestdid</code>。</p>
 <div id="7d045ab4" class="cell" data-execution_count="11">
@@ -1219,8 +1231,8 @@ did_imputation 未运行成功，help did_imputation 核对语法。
 <li>Rambachan, A., &amp; Roth, J. (2023). A more credible approach to parallel trends. <em>Review of Economic Studies</em>, 90(5), 2555–2591. honest DiD 的原始文献，配套 R 包 <code>HonestDiD</code> 与 Stata 版 <code>honestdid</code>（<a href="https://github.com/mcaceresb/stata-honestdid">github</a>），复现示例直接对接事件研究输出。审稿人越来越常要求这类敏感性分析，该文是标准范本。</li>
 </ul>
 </section>
-<section id="多估计量同框对比图可选模块" class="level2" data-number="F.10">
-<h2 data-number="F.10" class="anchored" data-anchor-id="多估计量同框对比图可选模块"><span class="header-section-number">F.10</span> 多估计量同框对比图（可选模块）</h2>
+<section id="多估计量同框对比图可选模块" class="level2" data-number="H.10">
+<h2 data-number="H.10" class="anchored" data-anchor-id="多估计量同框对比图可选模块"><span class="header-section-number">H.10</span> 多估计量同框对比图（可选模块）</h2>
 <p>把 TWFE、<code>csdid</code>、Sun–Abraham 的动态效应画在同一张图，直观展示不同估计量的动态路径差异。下面给出可运行的骨架：抓取 <code>csdid</code> 事件研究结果、整理成长表、绘图。完整的多估计量模拟对比可参考 Zevelev 的 <a href="https://github.com/azev77/Compare-DiD-Estimators">Compare-DiD-Estimators</a>，周嘉怡 (<a href="https://www.lianxh.cn/details/1097.html">2023</a>) 有中文整理，正文「各估计量放在一起比一比」一节的两张图即出自该材料。</p>
 <div id="753c5541" class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> https:<span class="co">//friosavila.github.io/playingwithstata/drdid/mpdta.dta, clear</span></span>
@@ -1271,8 +1283,8 @@ See Callaway and Sant'Anna (2021) for details
 </div>
 <p><strong>这张图想说明什么</strong>：不同估计量在同一数据上给出的动态路径，<strong>形状应大体一致</strong>（都指向同方向的效应演化），但<strong>具体数值和置信区间会有差异</strong>，因为它们的目标参数与加权方式不同。图上若三条线走势一致，就是「结论不依赖单一估计量」最有力的可视化证据。</p>
 </section>
-<section id="方法与软件地图" class="level2" data-number="F.11">
-<h2 data-number="F.11" class="anchored" data-anchor-id="方法与软件地图"><span class="header-section-number">F.11</span> 方法与软件地图</h2>
+<section id="方法与软件地图" class="level2" data-number="H.11">
+<h2 data-number="H.11" class="anchored" data-anchor-id="方法与软件地图"><span class="header-section-number">H.11</span> 方法与软件地图</h2>
 <p>正文不把命令写成教程；课后系统查阅优先看这些资源：</p>
 <ul>
 <li><strong>Asjad Naqvi, DiD 方法与软件地图</strong>：<a href="https://asjadnaqvi.github.io/DiD/" class="uri">https://asjadnaqvi.github.io/DiD/</a> —— 跟踪各语言 DID 包的发展，列出 TWFE、Bacon、<code>csdid</code>、<code>did_imputation</code>、<code>eventstudyinteract</code>、<code>did2s</code>、<code>stackedev</code>、<code>jwdid</code>、<code>did_multiplegt_dyn</code>、<code>sdid</code> 等全部入口。</li>
@@ -1862,12 +1874,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="../../notebooks/ch05_counterfactuals/A05_counterfactual_replication.html" class="pagination-link" aria-label="加州禁烟：SCM/RCM/SDID">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">加州禁烟：SCM/RCM/SDID</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">G</span>&nbsp; <span class="chapter-title">加州禁烟：SCM/RCM/SDID</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="../../notebooks/ch07_ddml/A07_fwl_ddml.html" class="pagination-link" aria-label="双重机器学习 Stata 实操">
-        <span class="nav-page-text"><span class="chapter-number">G</span>&nbsp; <span class="chapter-title">双重机器学习 Stata 实操</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">I</span>&nbsp; <span class="chapter-title">双重机器学习 Stata 实操</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

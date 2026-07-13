@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>附录 D — Heckman 模型扩展阅读 – 因果推断：政策评估中的识别思维与实证设计</title>
+<title>附录 B — HCI drive 与韩国财阀的形成 – 因果推断：政策评估中的识别思维与实证设计</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,8 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../notebooks/ch03_heckman/heckman_practical_notes.html" rel="next">
-<link href="../../lectures/appendix/A02_government_guidance_fund.html" rel="prev">
+<link href="../../lectures/appendix/A02_government_guidance_fund.html" rel="next">
+<link href="../../lectures/appendix/A01_hci_policy_background.html" rel="prev">
 <link href="../../images/book-logo.png" rel="icon" type="image/png">
 <script src="../../site_libs/quarto-html/quarto.js"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
@@ -114,7 +114,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../lectures/appendix/A01_hci_policy_background.html">附录</a></li><li class="breadcrumb-item"><a href="../../lectures/appendix/A03_heckman_selection_literature.html"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">Heckman 模型扩展阅读</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../lectures/appendix/A01_hci_policy_background.html">附录</a></li><li class="breadcrumb-item"><a href="../../lectures/appendix/A01b_hci_chaebol_formation.html"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">HCI drive 与韩国财阀的形成</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -258,7 +258,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../lectures/appendix/A01b_hci_chaebol_formation.html" class="sidebar-item-text sidebar-link">
+  <a href="../../lectures/appendix/A01b_hci_chaebol_formation.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">HCI drive 与韩国财阀的形成</span></span></a>
   </div>
 </li>
@@ -270,7 +270,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../lectures/appendix/A03_heckman_selection_literature.html" class="sidebar-item-text sidebar-link active">
+  <a href="../../lectures/appendix/A03_heckman_selection_literature.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">Heckman 模型扩展阅读</span></span></a>
   </div>
 </li>
@@ -322,32 +322,45 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#按学科分类" id="toc-按学科分类" class="nav-link active" data-scroll-target="#按学科分类"><span class="header-section-number">D.1</span> 按学科分类</a>
+  <li><a href="#政策如何改变企业成长路径" id="toc-政策如何改变企业成长路径" class="nav-link active" data-scroll-target="#政策如何改变企业成长路径"><span class="header-section-number">B.1</span> 政策如何改变企业成长路径</a>
   <ul class="collapse">
-  <li><a href="#劳动经济学工资只在就业者中可见" id="toc-劳动经济学工资只在就业者中可见" class="nav-link" data-scroll-target="#劳动经济学工资只在就业者中可见"><span class="header-section-number">D.1.1</span> 劳动经济学：工资只在就业者中可见</a></li>
-  <li><a href="#国际贸易零贸易流和贸易伙伴选择" id="toc-国际贸易零贸易流和贸易伙伴选择" class="nav-link" data-scroll-target="#国际贸易零贸易流和贸易伙伴选择"><span class="header-section-number">D.1.2</span> 国际贸易：零贸易流和贸易伙伴选择</a></li>
-  <li><a href="#金融市场上市公司样本不是企业总体" id="toc-金融市场上市公司样本不是企业总体" class="nav-link" data-scroll-target="#金融市场上市公司样本不是企业总体"><span class="header-section-number">D.1.3</span> 金融市场：上市公司样本不是企业总体</a></li>
-  <li><a href="#会计研究heckman-误用和排他变量问题" id="toc-会计研究heckman-误用和排他变量问题" class="nav-link" data-scroll-target="#会计研究heckman-误用和排他变量问题"><span class="header-section-number">D.1.4</span> 会计研究：Heckman 误用和排他变量问题</a></li>
+  <li><a href="#政府选择企业企业承担产业项目" id="toc-政府选择企业企业承担产业项目" class="nav-link" data-scroll-target="#政府选择企业企业承担产业项目"><span class="header-section-number">B.1.1</span> 政府选择企业，企业承担产业项目</a></li>
+  <li><a href="#hci-政策改变了企业的最优投资决策" id="toc-hci-政策改变了企业的最优投资决策" class="nav-link" data-scroll-target="#hci-政策改变了企业的最优投资决策"><span class="header-section-number">B.1.2</span> HCI 政策改变了企业的最优投资决策</a></li>
   </ul></li>
-  <li><a href="#按-heckman-使用要点分类" id="toc-按-heckman-使用要点分类" class="nav-link" data-scroll-target="#按-heckman-使用要点分类"><span class="header-section-number">D.2</span> 按 Heckman 使用要点分类</a>
+  <li><a href="#现代hci-drive-最典型的企业执行者" id="toc-现代hci-drive-最典型的企业执行者" class="nav-link" data-scroll-target="#现代hci-drive-最典型的企业执行者"><span class="header-section-number">B.2</span> 现代：HCI drive 最典型的企业执行者</a>
   <ul class="collapse">
-  <li><a href="#经典两方程思想结果只在被选择样本中可见" id="toc-经典两方程思想结果只在被选择样本中可见" class="nav-link" data-scroll-target="#经典两方程思想结果只在被选择样本中可见"><span class="header-section-number">D.2.1</span> 经典两方程思想：结果只在被选择样本中可见</a></li>
-  <li><a href="#选择校正嵌入政策评估" id="toc-选择校正嵌入政策评估" class="nav-link" data-scroll-target="#选择校正嵌入政策评估"><span class="header-section-number">D.2.2</span> 选择校正嵌入政策评估</a></li>
-  <li><a href="#二元选择-正结果方程" id="toc-二元选择-正结果方程" class="nav-link" data-scroll-target="#二元选择-正结果方程"><span class="header-section-number">D.2.3</span> 二元选择 + 正结果方程</a></li>
-  <li><a href="#从均值选择到分布选择" id="toc-从均值选择到分布选择" class="nav-link" data-scroll-target="#从均值选择到分布选择"><span class="header-section-number">D.2.4</span> 从均值选择到分布选择</a></li>
-  <li><a href="#非-heckman-的选择机制论述" id="toc-非-heckman-的选择机制论述" class="nav-link" data-scroll-target="#非-heckman-的选择机制论述"><span class="header-section-number">D.2.5</span> 非 Heckman 的选择机制论述</a></li>
-  <li><a href="#heckman-误用警示" id="toc-heckman-误用警示" class="nav-link" data-scroll-target="#heckman-误用警示"><span class="header-section-number">D.2.6</span> Heckman 误用警示</a></li>
+  <li><a href="#造船政府战略与企业能力高度匹配" id="toc-造船政府战略与企业能力高度匹配" class="nav-link" data-scroll-target="#造船政府战略与企业能力高度匹配"><span class="header-section-number">B.2.1</span> 造船：政府战略与企业能力高度匹配</a></li>
+  <li><a href="#汽车hci-为国产化和规模生产提供了条件" id="toc-汽车hci-为国产化和规模生产提供了条件" class="nav-link" data-scroll-target="#汽车hci-为国产化和规模生产提供了条件"><span class="header-section-number">B.2.2</span> 汽车：HCI 为国产化和规模生产提供了条件</a></li>
   </ul></li>
-  <li><a href="#可复现材料备注" id="toc-可复现材料备注" class="nav-link" data-scroll-target="#可复现材料备注"><span class="header-section-number">D.3</span> 可复现材料备注</a></li>
+  <li><a href="#三星hci-提供了工业平台但半导体成功发生得更晚" id="toc-三星hci-提供了工业平台但半导体成功发生得更晚" class="nav-link" data-scroll-target="#三星hci-提供了工业平台但半导体成功发生得更晚"><span class="header-section-number">B.3</span> 三星：HCI 提供了工业平台，但半导体成功发生得更晚</a>
+  <ul class="collapse">
+  <li><a href="#hci-对三星电子的直接作用" id="toc-hci-对三星电子的直接作用" class="nav-link" data-scroll-target="#hci-对三星电子的直接作用"><span class="header-section-number">B.3.1</span> HCI 对三星电子的直接作用</a></li>
+  <li><a href="#不能把三星半导体完全归功于-hci-drive" id="toc-不能把三星半导体完全归功于-hci-drive" class="nav-link" data-scroll-target="#不能把三星半导体完全归功于-hci-drive"><span class="header-section-number">B.3.2</span> 不能把三星半导体完全归功于 HCI drive</a></li>
+  </ul></li>
+  <li><a href="#大宇国家主导企业并购的典型案例" id="toc-大宇国家主导企业并购的典型案例" class="nav-link" data-scroll-target="#大宇国家主导企业并购的典型案例"><span class="header-section-number">B.4</span> 大宇：国家主导企业并购的典型案例</a>
+  <ul class="collapse">
+  <li><a href="#接管玉浦船厂" id="toc-接管玉浦船厂" class="nav-link" data-scroll-target="#接管玉浦船厂"><span class="header-section-number">B.4.1</span> 接管玉浦船厂</a></li>
+  <li><a href="#大宇汽车是后续政策路径的延伸" id="toc-大宇汽车是后续政策路径的延伸" class="nav-link" data-scroll-target="#大宇汽车是后续政策路径的延伸"><span class="header-section-number">B.4.2</span> 大宇汽车是后续政策路径的延伸</a></li>
+  <li><a href="#大宇破产揭示了-hci-模式的另一面" id="toc-大宇破产揭示了-hci-模式的另一面" class="nav-link" data-scroll-target="#大宇破产揭示了-hci-模式的另一面"><span class="header-section-number">B.4.3</span> 大宇破产揭示了 HCI 模式的另一面</a></li>
+  </ul></li>
+  <li><a href="#lg-和-sk-也受到类似影响" id="toc-lg-和-sk-也受到类似影响" class="nav-link" data-scroll-target="#lg-和-sk-也受到类似影响"><span class="header-section-number">B.5</span> LG 和 SK 也受到类似影响</a>
+  <ul class="collapse">
+  <li><a href="#lucky-goldstar化工与电子的结合" id="toc-lucky-goldstar化工与电子的结合" class="nav-link" data-scroll-target="#lucky-goldstar化工与电子的结合"><span class="header-section-number">B.5.1</span> Lucky-Goldstar：化工与电子的结合</a></li>
+  <li><a href="#sunkyong从纺织转向能源和化工" id="toc-sunkyong从纺织转向能源和化工" class="nav-link" data-scroll-target="#sunkyong从纺织转向能源和化工"><span class="header-section-number">B.5.2</span> Sunkyong：从纺织转向能源和化工</a></li>
+  </ul></li>
+  <li><a href="#posco它不是财阀却是财阀扩张的基础" id="toc-posco它不是财阀却是财阀扩张的基础" class="nav-link" data-scroll-target="#posco它不是财阀却是财阀扩张的基础"><span class="header-section-number">B.6</span> POSCO：它不是财阀，却是财阀扩张的基础</a></li>
+  <li><a href="#为什么最后是这些企业胜出" id="toc-为什么最后是这些企业胜出" class="nav-link" data-scroll-target="#为什么最后是这些企业胜出"><span class="header-section-number">B.7</span> 为什么最后是这些企业胜出</a></li>
+  <li><a href="#一个较为准确的企业评价" id="toc-一个较为准确的企业评价" class="nav-link" data-scroll-target="#一个较为准确的企业评价"><span class="header-section-number">B.8</span> 一个较为准确的企业评价</a></li>
+  <li><a href="#延伸阅读" id="toc-延伸阅读" class="nav-link" data-scroll-target="#延伸阅读"><span class="header-section-number">B.9</span> 延伸阅读</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../lectures/appendix/A01_hci_policy_background.html">附录</a></li><li class="breadcrumb-item"><a href="../../lectures/appendix/A03_heckman_selection_literature.html"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">Heckman 模型扩展阅读</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../lectures/appendix/A01_hci_policy_background.html">附录</a></li><li class="breadcrumb-item"><a href="../../lectures/appendix/A01b_hci_chaebol_formation.html"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">HCI drive 与韩国财阀的形成</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">附录 D — Heckman 模型扩展阅读</h1>
+<h1 class="title"><span id="sec-cipolicy-hci-chaebol" class="quarto-section-identifier">附录 B — HCI drive 与韩国财阀的形成</span></h1>
 </div>
 
 
@@ -364,97 +377,232 @@ window.Quarto = {
 </header>
 
 
-<p>本附录整理正文未完全展开的相关文献。分类不是为了把文献机械分箱，而是帮助读者把 Heckman 模型的不同使用场景区分开来：有些文献是经典就业选择，有些是分布和分位数扩展，有些只是说明样本选择机制，并不使用 Heckman 模型。读者应根据研究问题选择方法，不宜把 <code>heckman</code> 命令当作统一解法。</p>
-<section id="按学科分类" class="level2" data-number="D.1">
-<h2 data-number="D.1" class="anchored" data-anchor-id="按学科分类"><span class="header-section-number">D.1</span> 按学科分类</h2>
-<section id="劳动经济学工资只在就业者中可见" class="level3" data-number="D.1.1">
-<h3 data-number="D.1.1" class="anchored" data-anchor-id="劳动经济学工资只在就业者中可见"><span class="header-section-number">D.1.1</span> 劳动经济学：工资只在就业者中可见</h3>
-<p>劳动经济学是 Heckman 样本选择模型最经典的应用领域。原因很直接：研究者通常关心潜在工资报价，但工资只在就业者中被观察到。若劳动参与由能力、偏好、家庭照护责任、保留工资和就业机会共同决定，且这些不可观测因素也影响工资，直接用就业者工资样本估计工资方程就会产生偏误。</p>
-<p>代表文献：Blau et al.&nbsp;(<a href="https://doi.org/10.1086/725032">2024</a>)、Borjas and Edo (<a href="https://doi.org/10.1086/732774">2026</a>)、Arellano and Bonhomme (<a href="https://doi.org/10.3982/ECTA14030">2017</a>)、Chernozhukov et al.&nbsp;(<a href="https://doi.org/10.1086/738148">2025</a>)、Maasoumi and Wang (<a href="https://doi.org/10.1086/701788">2019</a>)。</p>
+<div class="callout callout-style-default callout-note callout-titled" title="本附录的用途">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+本附录的用途
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>本附录承接 <a href="A01_hci_policy_background.html" class="quarto-xref"><span>Appendix A</span></a>，聚焦一个更具体的问题：HCI drive 与现代、三星、大宇、LG、SK、POSCO 等大企业的成长有什么关系。它有助于理解第一章反复提到的一点——政策不仅选择了产业，也选择了一套企业组织方式，从而塑造了处理组背后的真实主体。</p>
+</div>
+</div>
+<p>关系很直接，但需要避免一个过度简化的说法：<strong>HCI drive 并没有从零创造三星、现代和大宇，而是把这些原本已经存在的企业，推入了资本密集型产业，并显著加快了它们从单一企业成长为综合性财阀的过程。</strong></p>
+<p>在 HCI drive 之前，韩国的大企业主要从事贸易、纺织、建筑、食品加工和简单制造。到 1970 年代末，现代已经进入汽车、造船和机械，三星进入电子、造船和石化，大宇则从贸易和纺织扩张到机械、造船和汽车。企业的经营边界变化如此迅速，与政府控制信贷、选择项目、配置外汇和推动企业并购密切相关。</p>
+<section id="政策如何改变企业成长路径" class="level2" data-number="B.1">
+<h2 data-number="B.1" class="anchored" data-anchor-id="政策如何改变企业成长路径"><span class="header-section-number">B.1</span> 政策如何改变企业成长路径</h2>
+<section id="政府选择企业企业承担产业项目" class="level3" data-number="B.1.1">
+<h3 data-number="B.1.1" class="anchored" data-anchor-id="政府选择企业企业承担产业项目"><span class="header-section-number">B.1.1</span> 政府选择企业，企业承担产业项目</h3>
+<p>HCI drive 的实施单位不是抽象的「重化工业部门」，而是具体企业。钢铁厂、船厂、汽车厂和石化项目都需要一个经营主体。</p>
+<p>政府面对的选择是：重新创建大量国有企业，还是把项目交给已有工程经验、出口记录和管理能力的民营企业集团。韩国在很多领域选择了后者，尤其依赖现代、三星、大宇、Lucky-Goldstar 和 Sunkyong 等财阀。</p>
+<p>其基本机制可以表示为：</p>
+<blockquote class="blockquote">
+<p><strong>政府选择企业 → 政策性信贷 → 大规模投资 → 跨行业多元化 → 财阀扩张</strong></p>
+</blockquote>
+<p>政府通过政策性银行、外债审批、政府担保、税收优惠和进口许可，降低项目融资成本。企业则必须完成投资、产能、出口和国产化目标。HCI drive 最核心的政策工具之一，是政府选择性批准企业获得国外长期贷款，并为其中一部分借款提供担保。</p>
+<p>这种安排形成了一种带有强烈交换性质的政企关系：</p>
+<blockquote class="blockquote">
+<p>政府向企业提供资本和市场准入，企业承担政府指定的工业化任务，并接受出口业绩考核。</p>
+</blockquote>
+<p>所以，韩国财阀的成长既不能解释为纯粹的市场竞争结果，也不能看成企业被动接受政府命令。更准确的说法是：<strong>政府选择有执行能力的企业，企业利用政策机会完成跨行业扩张。</strong></p>
+</section>
+<section id="hci-政策改变了企业的最优投资决策" class="level3" data-number="B.1.2">
+<h3 data-number="B.1.2" class="anchored" data-anchor-id="hci-政策改变了企业的最优投资决策"><span class="header-section-number">B.1.2</span> HCI 政策改变了企业的最优投资决策</h3>
+<p>假设某个大型造船项目的私人净现值为：</p>
+<p><span class="math display">\[
+NPV^{private}_{i} = \sum_{t=1}^{T} \frac{CF_{it}}{(1+r_{i}^{market})^{t}} - I_{i}
+\]</span></p>
+<p>在市场利率较高、未来订单不确定时，这个项目可能满足 <span class="math inline">\(NPV^{private}_{i} &lt; 0\)</span>。</p>
+<p>政府提供低息贷款、外债担保、港口和土地后，企业面对的融资成本下降：</p>
+<p><span class="math display">\[
+r_{i}^{policy} &lt; r_{i}^{market}
+\]</span></p>
+<p>于是项目的企业净现值可能变为正值 <span class="math inline">\(NPV^{policy}_{i} &gt; 0\)</span>。这意味着一些依靠市场融资原本不会启动，或者只能晚很多年启动的项目，被提前实施。</p>
+<p>更深一层的影响在于，一旦船厂、机械厂和电子工厂建成，企业便会积累工程师、供应商、出口渠道和项目管理能力。这些能力可以继续用于其他行业，因此一次政策性投资可能推动企业连续进入多个相关行业。相关研究发现，HCI 信贷对企业销售、出口和生产率具有持续影响，部分效果在政策结束后多年才充分显现。</p>
+</section>
+</section>
+<section id="现代hci-drive-最典型的企业执行者" class="level2" data-number="B.2">
+<h2 data-number="B.2" class="anchored" data-anchor-id="现代hci-drive-最典型的企业执行者"><span class="header-section-number">B.2</span> 现代：HCI drive 最典型的企业执行者</h2>
+<p>现代与 HCI drive 的关系最直接。</p>
+<p>现代最初以建筑和工程业务为主。到 1960 年代后期，它已经通过国内基础设施建设和海外工程积累了一定的项目管理经验。现代汽车成立于 1967 年，现代造船业务于 1972 年启动，蔚山船厂在 1974 年建成并交付首批大型油轮。现代造船项目虽然早于 1973 年 HCI drive 的正式宣布，但本质上属于同一轮重工业战略转向。</p>
+<section id="造船政府战略与企业能力高度匹配" class="level3" data-number="B.2.1">
+<h3 data-number="B.2.1" class="anchored" data-anchor-id="造船政府战略与企业能力高度匹配"><span class="header-section-number">B.2.1</span> 造船：政府战略与企业能力高度匹配</h3>
+<p>现代造船是韩国 HCI 模式最具代表性的项目。</p>
+<p>建设大型船厂需要同时解决几个问题：</p>
 <ul>
-<li><p>Blau, F. D., Kahn, L. M., Boboshko, N., &amp; Comey, M. L. (2024). The impact of selection into the labor force on the gender wage gap. <em>Journal of Labor Economics</em>, 42(4), 1093–1133. <a href="https://doi.org/10.1086/725032">Link</a>, <a href="https://www.nber.org/system/files/working_papers/w28855/w28855.pdf">PDF</a>, <a href="https://www.openicpsr.org/openicpsr/project/210781/version/V1/view">Data</a>, <a href="https://scholar.google.com/scholar?q=The+Impact+of+Selection+into+the+Labor+Force+on+the+Gender+Wage+Gap">Google</a>.</p>
-<p>这篇文献适合作为女性工资主案例的升级版。它的核心不是展示一个简单 Heckman 两步回归，而是系统比较多种选择校正策略。作者使用 PSID 长面板数据，尽量增加真实工资观测，再对仍然缺失的工资进行概率加权处理。它的教学价值在于提醒读者：观察工资差距的趋势，不一定等于潜在工资报价差距的趋势。若男女劳动参与模式本身发生变化，观察样本中的工资收敛可能被放大或缩小。开放材料方面，openICPSR 提供 supplementary data；公开页面中尚未核验到完整代码仓库。</p></li>
-<li><p>Borjas, G. J., &amp; Edo, A. (2026). Gender, selection into employment, and the wage impact of immigration. <em>Journal of Labor Economics</em>, 44(2), 515–552. <a href="https://doi.org/10.1086/732774">Link</a>, <a href="https://gborjas.scholars.harvard.edu/sites/g/files/omnuum4696/files/2026-02/JOLE2026.pdf">PDF</a>, <a href="https://www.nber.org/papers/w28682">NBER</a>, <a href="https://scholar.google.com/scholar?q=Gender+Selection+into+Employment+and+the+Wage+Impact+of+Immigration">Google</a>.</p>
-<p>这篇文献把样本选择带入政策冲击估计。移民流入不仅影响本地工资，也可能改变本地劳动者是否就业。作者发现，法国女性面对移民冲击时就业率明显下降，直接观察就业女性工资会低估负面工资效应。文章使用 Heckman-type selection correction，并与 shift-share 工具变量结合。对课堂教学而言，这篇的价值在于说明：处理变量外生并不自动解决 outcome sample 变化问题。即使政策冲击本身有外生来源，也要检查政策是否改变了谁留在结果样本中。公开主页中尚未核验到独立 replication package；作者主页和 NBER 页面提供论文版本。</p></li>
-<li><p>Arellano, M., &amp; Bonhomme, S. (2017). Quantile selection models with an application to understanding changes in wage inequality. <em>Econometrica</em>, 85(1), 1–28. <a href="https://doi.org/10.3982/ECTA14030">Link</a>, <a href="https://ifs.org.uk/publications/quantile-selection-models-application-understanding-changes-wage-inequality">Working Paper</a>, <a href="https://cemmap.ac.uk/wp-content/uploads/2020/08/CWP7515.pdf">PDF</a>, <a href="https://scholar.google.com/scholar?q=Quantile+Selection+Models+with+an+Application+to+Understanding+Changes+in+Wage+Inequality">Google</a>.</p>
-<p>这篇文献从方法上把样本选择从均值方程推广到分位数。传统 Heckman 校正关注 <span class="math inline">\(E(Y^{*}\mid X)\)</span>，但许多问题真正关心的是不同分位点上的工资差距和工资不平等。Arellano and Bonhomme (2017) 用 copula 描述选择误差和结果误差之间的依赖结构，从而校正 quantile regression 中的样本选择。它适合放在高级阅读中，不建议放入入门主文。学生需要先理解 Heckman 的均值校正，再看它如何扩展到分位数。</p></li>
-<li><p>Chernozhukov, V., Fernández-Val, I., &amp; Luo, S. (2025). Distribution regression with sample selection and UK wage decomposition. <em>Journal of Political Economy</em>, 133(12), 3952–3992. <a href="https://doi.org/10.1086/738148">Link</a>, <a href="https://www.cemmap.ac.uk/wp-content/uploads/2023/04/CWP0923-Distribution-regression-with-sample-selection-and-UK-wage-decomposition.pdf">PDF</a>, <a href="https://doi.org/10.7910/DVN/JOQBNQ">Replication Package</a>, <a href="https://doi.org/10.5255/UKDA-SN-9355-1">Data</a>, <a href="https://doc.ukdataservice.ac.uk/doc/9355/mrdoc/pdf/9355_readme.pdf">Readme</a>, <a href="https://scholar.google.com/scholar?q=Distribution+Regression+with+Sample+Selection+and+UK+Wage+Decomposition">Google</a>.</p>
-<p>这篇文献是 Heckman 思路的现代推广。它把结果方程从均值扩展为 distribution regression，在不同工资阈值上刻画潜在工资分布，并允许选择相关性随工资位置变化。文章的排他变量来自 out-of-work income，用于解释就业选择，但不直接进入潜在工资分布。它的复现材料较完整：作者主页列出 replication package，UK Data Service 提供数据和说明文件。它适合作为正文中的前沿案例，也适合作为附录中「从均值到分布」的代表文献。</p></li>
-<li><p>Maasoumi, E., &amp; Wang, L. (2019). The gender gap between earnings distributions. <em>Journal of Political Economy</em>, 127(5), 2438–2504. <a href="https://doi.org/10.1086/701788">Link</a>, <a href="https://hceconomics.uchicago.edu/sites/default/files/Maasoumi_Wang_gender-gaps.pdf">PDF</a>, <a href="https://scholar.google.com/scholar?q=The+Gender+Gap+between+Earnings+Distributions">Google</a>.</p>
-<p>这篇文献关注男女收入分布之间的差距，而不是单一均值或中位数差距。它与 Arellano and Bonhomme (2017)、Chernozhukov et al.&nbsp;(2025) 都属于工资分布方向。对教学而言，它可以用来说明：一旦研究对象从平均工资扩展到分布，样本选择问题也会变得更复杂，因为选择可能改变整个分布形状。它不如 Chernozhukov et al.&nbsp;(2025) 适合作为主案例，但适合放在分布选择文献中。</p></li>
+<li>企业此前没有完整的大型船舶建造记录；</li>
+<li>船厂投资规模巨大，回收期很长；</li>
+<li>需要从国外进口设计、设备和关键技术；</li>
+<li>船厂尚未建成时，就需要取得海外订单；</li>
+<li>外国银行通常不愿单凭一家韩国企业的信用提供长期贷款。</li>
 </ul>
+<p>现代创始人郑周永负责寻找国外技术、融资和订单，政府则通过产业规划、外债审批、担保、基础设施和出口支持降低项目风险。</p>
+<p>这里不是政府单方面「送给现代一个船厂」。现代承担了相当大的经营和执行风险。但是，没有政府控制的金融和外汇体系支持，企业很难在如此短的时间内，同时建设大型船厂并承接国际订单。</p>
+<p>现代随后从造船扩展到海洋工程、发动机、重型机械、电气设备和炼油石化。这条扩张路径与产业关联高度一致：</p>
+<blockquote class="blockquote">
+<p><strong>造船 → 海洋工程 → 发动机 → 重型机械 → 电气设备</strong></p>
+</blockquote>
+<p>HD Hyundai 的官方历史也将其后来的重型机械、电气系统、炼油和石化业务，追溯到早期造船业务积累的工程能力。</p>
 </section>
-<section id="国际贸易零贸易流和贸易伙伴选择" class="level3" data-number="D.1.2">
-<h3 data-number="D.1.2" class="anchored" data-anchor-id="国际贸易零贸易流和贸易伙伴选择"><span class="header-section-number">D.1.2</span> 国际贸易：零贸易流和贸易伙伴选择</h3>
-<p>国际贸易中的选择问题很直观。大量国家对之间没有贸易。若研究者只在正贸易流国家对中估计引力模型，就忽略了贸易伙伴形成这一选择过程。这里的样本选择不是个人是否就业，而是国家对之间是否发生贸易。</p>
-<p>代表文献：Helpman et al.&nbsp;(<a href="https://doi.org/10.1162/qjec.2008.123.2.441">2008</a>)。</p>
+<section id="汽车hci-为国产化和规模生产提供了条件" class="level3" data-number="B.2.2">
+<h3 data-number="B.2.2" class="anchored" data-anchor-id="汽车hci-为国产化和规模生产提供了条件"><span class="header-section-number">B.2.2</span> 汽车：HCI 为国产化和规模生产提供了条件</h3>
+<p>汽车行业在 1973 年被纳入重化工业战略，因为汽车生产能够带动钢铁、机械、玻璃、橡胶、石化和零部件产业。政府推动汽车企业提高国产化率、建设规模化工厂并进入出口市场。</p>
+<p>现代在 1975 年推出 Pony，采用韩国品牌和整车组织体系，同时从国外引进设计、发动机、变速箱和生产设备。这个案例不能简单称为「完全自主研发」，但它使现代掌握了整车集成、供应链管理和批量出口能力。</p>
+<p>HCI drive 对现代汽车的作用主要不是直接设计一款汽车，而是提供了一整套配套条件：</p>
 <ul>
-<li><p>Helpman, E., Melitz, M., &amp; Rubinstein, Y. (2008). Estimating trade flows: Trading partners and trading volumes. <em>The Quarterly Journal of Economics</em>, 123(2), 441–487. <a href="https://doi.org/10.1162/qjec.2008.123.2.441">Link</a>, <a href="https://melitz.scholars.harvard.edu/sites/g/files/omnuum5906/files/melitz/files/estimatingtradeflows_qje.pdf">PDF</a>, <a href="https://melitz.scholars.harvard.edu/publications/estimating-trade-flows-trading-partners-and-trading-volumes">Homepage</a>, <a href="https://scholar.google.com/scholar?q=Estimating+Trade+Flows+Trading+Partners+and+Trading+Volumes">Google</a>.</p>
-<p>这篇文献是跨领域教学的最佳案例之一。文章先从异质性企业进入出口市场的理论出发，说明为什么有些国家对之间贸易额为零；再用第一阶段 Probit 估计是否发生贸易，第二阶段估计正贸易流的贸易量。它的排他变量包括企业进入监管成本和共同宗教指数。与传统 Heckman 不同，它还把 extensive margin 纳入第二阶段，因此不只是简单校正样本选择，还解释了出口企业数量变化如何影响贸易量。作者主页提供论文 PDF 和相关 religion 表格文件；尚未核验到完整代码仓库。</p></li>
+<li>国内钢铁和石化供应能力提高；</li>
+<li>进口设备和技术的融资成本下降；</li>
+<li>国内市场受到一定保护；</li>
+<li>企业被要求提高国产化率；</li>
+<li>政府鼓励通过出口扩大生产规模。</li>
 </ul>
+<p>因此，现代今天同时具有汽车、钢铁、零部件、物流和工程业务，并非偶然的多元化。它在很大程度上延续了 HCI 时期形成的纵向一体化逻辑。</p>
 </section>
-<section id="金融市场上市公司样本不是企业总体" class="level3" data-number="D.1.3">
-<h3 data-number="D.1.3" class="anchored" data-anchor-id="金融市场上市公司样本不是企业总体"><span class="header-section-number">D.1.3</span> 金融市场：上市公司样本不是企业总体</h3>
-<p>金融研究中，很多样本已经经过制度筛选。上市公司不是企业总体，IPO 公司不是所有成长型企业，能长期留在交易所中的企业也不是随机企业。此类问题不一定要用 Heckman 模型处理，但必须在研究设计中正面说明。</p>
-<p>代表文献：Allen et al.&nbsp;(<a href="https://doi.org/10.1111/jofi.13312">2024</a>)。</p>
+</section>
+<section id="三星hci-提供了工业平台但半导体成功发生得更晚" class="level2" data-number="B.3">
+<h2 data-number="B.3" class="anchored" data-anchor-id="三星hci-提供了工业平台但半导体成功发生得更晚"><span class="header-section-number">B.3</span> 三星：HCI 提供了工业平台，但半导体成功发生得更晚</h2>
+<p>三星与 HCI drive 的关系需要更谨慎地解释。</p>
+<p>三星在 HCI drive 之前已经是较大的商业集团，业务涉及贸易、食品、保险和纺织。三星电子在 1960 年代末成立，并于 1970 年代初开始生产黑白电视机。电子工业本身就是 HCI drive 的六大战略产业之一。</p>
+<p>HCI 时期，三星不只发展消费电子，也进入了造船、机械、石化和精密制造。三星重工业于 1974 年成立，随后整合或扩展船舶、重型设备和工程业务。</p>
+<section id="hci-对三星电子的直接作用" class="level3" data-number="B.3.1">
+<h3 data-number="B.3.1" class="anchored" data-anchor-id="hci-对三星电子的直接作用"><span class="header-section-number">B.3.1</span> HCI 对三星电子的直接作用</h3>
+<p>HCI drive 对三星电子早期发展的影响，主要体现在以下环节：</p>
 <ul>
-<li><p>Allen, F., Qian, J., Shan, C., &amp; Zhu, J. L. (2024). Dissecting the long-term performance of the Chinese stock market. <em>Journal of Finance</em>, 79(2), 993–1054. <a href="https://doi.org/10.1111/jofi.13312">Link</a>, <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2880021">SSRN</a>, <a href="https://cf-jrc.econ.cuhk.edu.hk/wp-content/uploads/2024/06/PDF_QJLeiZhu-DissectingtheLong%E2%80%90TermPerformanceoftheChineseStockMarket.pdf">PDF</a>, <a href="https://scholar.google.com/scholar?q=Dissecting+the+Long-Term+Performance+of+the+Chinese+Stock+Market">Google</a>.</p>
-<p>这篇文献不属于 Heckman 方程应用，但适合作为「选择机制论述」的金融案例。文章研究中国 A 股长期表现，比较 A 股上市企业、境外上市中国企业、其他市场企业以及匹配的未上市中国企业。它提醒读者，上市样本本身就是制度筛选结果。对于科创板、注册制和 IPO 政策评估，不能把最终上市企业简单看作处理组总体。若研究者看不到申报失败、撤回、审核未通过、未上市但相似的企业，就必须重新定义估计对象。公开页面中可以访问 SSRN 和作者机构 PDF；尚未核验到公开 replication code。</p></li>
+<li>政府把电子产业列为战略产业；</li>
+<li>企业进口生产线、零部件和技术时获得外汇与关税支持；</li>
+<li>政府鼓励电视机、家电和电子零件出口；</li>
+<li>国内化工、金属、机械和电子元件产业扩张，改善了供应链条件；</li>
+<li>集团在其他 HCI 产业中积累的资本和工程能力，可以转移到电子业务。</li>
 </ul>
+<p>1970 年代，三星电子的优势仍主要集中在电视机、冰箱、洗衣机和微波炉等产品的大规模制造与出口。1977 年三星开始出口彩色电视，1979 年开始批量生产微波炉。</p>
 </section>
-<section id="会计研究heckman-误用和排他变量问题" class="level3" data-number="D.1.4">
-<h3 data-number="D.1.4" class="anchored" data-anchor-id="会计研究heckman-误用和排他变量问题"><span class="header-section-number">D.1.4</span> 会计研究：Heckman 误用和排他变量问题</h3>
-<p>会计和公司金融研究中，Heckman 模型经常被当作自选择稳健性检验使用。问题是，很多研究并没有真正说明选择机制，也没有可信的排他变量。此时，Heckman 不是增强可信度，反而可能制造一种形式上的严谨。</p>
-<p>代表文献：Lennox et al.&nbsp;(<a href="https://doi.org/10.2308/accr-10195">2012</a>)。</p>
+<section id="不能把三星半导体完全归功于-hci-drive" class="level3" data-number="B.3.2">
+<h3 data-number="B.3.2" class="anchored" data-anchor-id="不能把三星半导体完全归功于-hci-drive"><span class="header-section-number">B.3.2</span> 不能把三星半导体完全归功于 HCI drive</h3>
+<p>三星后来成为半导体巨头，决定性的投资和技术追赶主要发生在 1980 年代以后。HCI drive 在 1979 年已经结束，所以不能直接说「HCI drive 创造了三星半导体」。</p>
+<p>更准确的因果链条是：</p>
+<blockquote class="blockquote">
+<p><strong>HCI 电子产业 → 大规模制造 → 工程能力 → 出口网络 → 后来的半导体投资</strong></p>
+</blockquote>
+<p>HCI drive 为三星提供了大规模工业制造、进口技术吸收、出口组织和集团内部资本配置的基础。后来三星进入 DRAM 时，已经不是一家从零开始的技术创业公司，而是拥有制造经验、出口现金流、政策沟通能力和集团融资能力的大型财阀。</p>
+<p>因此，HCI 对三星半导体的作用是<strong>间接但深远的能力积累效应</strong>，而不是一项从 1973 年直接延续到今天的半导体补贴计划。</p>
+</section>
+</section>
+<section id="大宇国家主导企业并购的典型案例" class="level2" data-number="B.4">
+<h2 data-number="B.4" class="anchored" data-anchor-id="大宇国家主导企业并购的典型案例"><span class="header-section-number">B.4</span> 大宇：国家主导企业并购的典型案例</h2>
+<p>大宇的经历与现代、三星不同。</p>
+<p>大宇成立于 1967 年，早期主要从事贸易、服装和纺织品出口。它依靠出口业绩迅速成长，并因此进入政府重点支持的企业范围。</p>
+<p>进入 HCI 时期后，大宇的发展模式并不是主要依靠自己从头建设新项目，而是不断接管经营困难、建设停滞或政府希望重组的企业。这形成了大宇后来最有代表性的经营模式：<strong>以较低价格接管问题企业，通过集团管理、政策融资和出口市场进行重组。</strong></p>
+<section id="接管玉浦船厂" class="level3" data-number="B.4.1">
+<h3 data-number="B.4.1" class="anchored" data-anchor-id="接管玉浦船厂"><span class="header-section-number">B.4.1</span> 接管玉浦船厂</h3>
+<p>玉浦船厂最初由其他企业负责建设，但项目因融资、建设和经营问题陷入困难。1978 年，韩国政府选择大宇接管该船厂，而没有把它交给已经拥有大型船厂的现代。相关研究指出，政府在私有化和产业布局过程中有意选择大宇，以形成另一个大型造船企业，并避免造船能力全部集中于现代。</p>
+<p>这件事改变了大宇的企业性质。它从一个以贸易和轻工业为主的出口企业，进入了造船、机械设备和国防工业。</p>
+<p>其扩张链条大致是：</p>
+<blockquote class="blockquote">
+<p><strong>贸易 → 纺织 → 机械 → 造船 → 汽车 → 电子</strong></p>
+</blockquote>
+<p>玉浦船厂后来成为大宇造船业务的核心。虽然船厂早期长期亏损，但经过追加投资和技术积累，最终成为韩国大型造船基地。</p>
+</section>
+<section id="大宇汽车是后续政策路径的延伸" class="level3" data-number="B.4.2">
+<h3 data-number="B.4.2" class="anchored" data-anchor-id="大宇汽车是后续政策路径的延伸"><span class="header-section-number">B.4.2</span> 大宇汽车是后续政策路径的延伸</h3>
+<p>大宇正式控制 Saehan Motors 主要发生在 1982 年，即 HCI drive 结束之后。因此，大宇汽车不能严格视为 1973–1979 年 HCI 政策的直接项目。</p>
+<p>但这种进入方式延续了 HCI 时期形成的制度逻辑：</p>
 <ul>
-<li><p>Lennox, C. S., Francis, J. R., &amp; Wang, Z. (2012). Selection models in accounting research. <em>The Accounting Review</em>, 87(2), 589–616. <a href="https://doi.org/10.2308/accr-10195">Link</a>, <a href="https://publications.aaahq.org/accounting-review/article/87/2/589/3388/Selection-Models-in-Accounting-Research">Publisher</a>, <a href="https://scholar.google.com/scholar?q=Selection+Models+in+Accounting+Research+Lennox+Francis+Wang">Google</a>.</p>
-<p>这篇文献是方法警示，不是应用案例。作者系统讨论会计研究中选择模型的使用问题，指出许多研究者把 Heckman 当作机械校正，忽视了排他变量、选择方程解释力、IMR 与核心解释变量共线性、以及模型对函数形式假设的敏感性。它适合放在「排他性变量不是装饰」之后，提醒读者：没有机制支撑的选择方程很难说服审稿人。若研究者只是为了回应「自选择问题」而加入 IMR，通常不能真正解决识别问题。</p></li>
+<li>政府决定行业重组方向；</li>
+<li>政府选择具有融资和管理能力的财阀接管问题企业；</li>
+<li>银行提供重组融资；</li>
+<li>企业通过出口和规模扩张消化产能。</li>
 </ul>
-<hr>
+<p>所以，大宇后来进入汽车、电子、航空和国防工业，可以视为 HCI 模式在 1980 年代的制度延续。</p>
+</section>
+<section id="大宇破产揭示了-hci-模式的另一面" class="level3" data-number="B.4.3">
+<h3 data-number="B.4.3" class="anchored" data-anchor-id="大宇破产揭示了-hci-模式的另一面"><span class="header-section-number">B.4.3</span> 大宇破产揭示了 HCI 模式的另一面</h3>
+<p>大宇在 1997 年亚洲金融危机后继续通过借债扩张，最终于 1999 年解体。不能把大宇破产简单归因于 1970 年代的 HCI drive，因为此后还经历了二十年的企业决策、国际扩张和金融制度变化。</p>
+<p>但大宇的危机确实暴露了 HCI—财阀模式的一些内生风险：</p>
+<blockquote class="blockquote">
+<p><strong>政策支持 → 预期政府救助 → 高杠杆 → 过度扩张 → 系统性风险</strong></p>
+</blockquote>
+<p>在长期政企关系下，大型财阀可能预期政府不会允许其倒闭。银行也可能基于集团规模和隐性担保继续放贷。这会削弱债权人的风险约束，鼓励企业通过债务不断扩张。</p>
+<p>大宇因此具有双重象征意义：它一方面说明政府可以借助企业集团迅速建立复杂工业能力；另一方面说明政策性融资、交叉担保和过度多元化可能积累巨大的金融风险。</p>
 </section>
 </section>
-<section id="按-heckman-使用要点分类" class="level2" data-number="D.2">
-<h2 data-number="D.2" class="anchored" data-anchor-id="按-heckman-使用要点分类"><span class="header-section-number">D.2</span> 按 Heckman 使用要点分类</h2>
-<section id="经典两方程思想结果只在被选择样本中可见" class="level3" data-number="D.2.1">
-<h3 data-number="D.2.1" class="anchored" data-anchor-id="经典两方程思想结果只在被选择样本中可见"><span class="header-section-number">D.2.1</span> 经典两方程思想：结果只在被选择样本中可见</h3>
-<p>代表文献：Blau et al.&nbsp;(<a href="https://doi.org/10.1086/725032">2024</a>)、Borjas and Edo (<a href="https://doi.org/10.1086/732774">2026</a>)。</p>
-<p>这类文献最适合与 Mroz 数据例子搭配。教学重点是：先定义选择变量 <span class="math inline">\(D\)</span>，再定义潜在结果 <span class="math inline">\(Y^{*}\)</span>，最后说明为何 <span class="math inline">\(Y=Y^{*}\)</span> 只在 <span class="math inline">\(D=1\)</span> 时被观察到。排他变量通常来自家庭结构、非劳动收入、照护责任或财富约束。真正困难的地方不是写方程，而是说明这些变量为什么只影响劳动参与，不直接影响潜在工资。</p>
+<section id="lg-和-sk-也受到类似影响" class="level2" data-number="B.5">
+<h2 data-number="B.5" class="anchored" data-anchor-id="lg-和-sk-也受到类似影响"><span class="header-section-number">B.5</span> LG 和 SK 也受到类似影响</h2>
+<section id="lucky-goldstar化工与电子的结合" class="level3" data-number="B.5.1">
+<h3 data-number="B.5.1" class="anchored" data-anchor-id="lucky-goldstar化工与电子的结合"><span class="header-section-number">B.5.1</span> Lucky-Goldstar：化工与电子的结合</h3>
+<p>今天的 LG 集团来自 Lucky 和 Goldstar 两条业务线。</p>
+<p>Lucky 主要从事化工和消费品，Goldstar 则生产收音机、电视机和家用电器。石油化工与电子都属于 HCI 的战略领域，因此 LG 的产业结构与 HCI 规划高度吻合。</p>
+<p>HCI drive 推动国内石化原料、塑料、电子元件和机械设备发展，使 Lucky 的化工业务与 Goldstar 的电子业务之间形成较强的产业协同：</p>
+<blockquote class="blockquote">
+<p><strong>石油化工 → 塑料材料 → 电子元件 → 消费电子</strong></p>
+</blockquote>
+<p>LG 后来在家电、显示面板、电池和化工材料领域形成优势，与这种「化工材料 + 电子制造」的历史积累有关。</p>
 </section>
-<section id="选择校正嵌入政策评估" class="level3" data-number="D.2.2">
-<h3 data-number="D.2.2" class="anchored" data-anchor-id="选择校正嵌入政策评估"><span class="header-section-number">D.2.2</span> 选择校正嵌入政策评估</h3>
-<p>代表文献：Borjas and Edo (<a href="https://doi.org/10.1086/732774">2026</a>)。</p>
-<p>这类文献适合讲 DID、IV 和 shift-share 之外的问题。即使冲击变量本身可以被视为外生，政策冲击仍可能改变谁留在样本中。若政策影响就业参与、上市申请、企业存活、信息披露或样本追踪，研究者需要区分「政策对结果的影响」和「政策对结果可见性的影响」。</p>
-</section>
-<section id="二元选择-正结果方程" class="level3" data-number="D.2.3">
-<h3 data-number="D.2.3" class="anchored" data-anchor-id="二元选择-正结果方程"><span class="header-section-number">D.2.3</span> 二元选择 + 正结果方程</h3>
-<p>代表文献：Helpman et al.&nbsp;(<a href="https://doi.org/10.1162/qjec.2008.123.2.441">2008</a>)。</p>
-<p>这类文献的结构是：第一阶段解释是否出现正结果，第二阶段解释正结果的规模。与女性工资相比，它更适合讲贸易、专利、投资、并购、融资、出口等存在大量零值或未进入状态的研究。需要注意的是，零值结果不一定都应该用 Heckman。若零值本身是结果变量的一部分，Poisson、PPML、two-part model 或 hurdle model 也可能更合适。Helpman et al.&nbsp;(2008) 的价值在于它把零贸易流和企业进入出口市场的理论机制连在一起。</p>
-</section>
-<section id="从均值选择到分布选择" class="level3" data-number="D.2.4">
-<h3 data-number="D.2.4" class="anchored" data-anchor-id="从均值选择到分布选择"><span class="header-section-number">D.2.4</span> 从均值选择到分布选择</h3>
-<p>代表文献：Arellano and Bonhomme (<a href="https://doi.org/10.3982/ECTA14030">2017</a>)、Maasoumi and Wang (<a href="https://doi.org/10.1086/701788">2019</a>)、Chernozhukov et al.&nbsp;(<a href="https://doi.org/10.1086/738148">2025</a>)。</p>
-<p>这类文献说明，样本选择不只是均值问题。如果研究者关心分位数、分布差距、不平等、顶部工资或底部工资，选择机制可能在分布不同位置产生不同影响。经典 Heckman 的一个相关系数和一个均值校正项太粗糙，未必能描述复杂选择。现代方法把选择校正扩展到 quantile regression 和 distribution regression，但代价是模型更技术化，对识别变量和样本规模要求更高。</p>
-</section>
-<section id="非-heckman-的选择机制论述" class="level3" data-number="D.2.5">
-<h3 data-number="D.2.5" class="anchored" data-anchor-id="非-heckman-的选择机制论述"><span class="header-section-number">D.2.5</span> 非 Heckman 的选择机制论述</h3>
-<p>代表文献：Allen et al.&nbsp;(<a href="https://doi.org/10.1111/jofi.13312">2024</a>)。</p>
-<p>并不是所有样本选择问题都要用 Heckman。若结果在处理组和对照组都可见，但处理组进入机制不随机，问题更接近处理效应识别、匹配、DID、合成控制或选择性进入政策的问题。上市公司样本、试点城市样本、被投企业样本、幸存企业样本都属于这一类。研究者需要先说明估计对象，再判断是否需要选择模型。</p>
-</section>
-<section id="heckman-误用警示" class="level3" data-number="D.2.6">
-<h3 data-number="D.2.6" class="anchored" data-anchor-id="heckman-误用警示"><span class="header-section-number">D.2.6</span> Heckman 误用警示</h3>
-<p>代表文献：Lennox et al.&nbsp;(<a href="https://doi.org/10.2308/accr-10195">2012</a>)。</p>
-<p>Heckman 模型最容易被误用为稳健性检验按钮。规范写法不是「我们使用 Heckman 修正自选择偏误，结果稳健」，而是要具体说明：选择方程解释什么？结果方程解释什么？排他变量是什么？为什么它影响选择而不直接影响结果？IMR 与核心解释变量是否高度共线？结果是否对选择方程设定敏感？这些问题比软件命令更重要。</p>
+<section id="sunkyong从纺织转向能源和化工" class="level3" data-number="B.5.2">
+<h3 data-number="B.5.2" class="anchored" data-anchor-id="sunkyong从纺织转向能源和化工"><span class="header-section-number">B.5.2</span> Sunkyong：从纺织转向能源和化工</h3>
+<p>今天的 SK 集团早期以纺织业务为主。其向石油、化工和能源领域的大规模扩张主要发生在 HCI 后期及 1980 年代。</p>
+<p>SK 的转型说明，HCI 的影响并不限于 1973–1979 年直接获得项目的企业。政策改变了社会对大企业集团的功能定位：一个成功的出口企业可以继续获得机会，进入更上游、资本更密集的行业。</p>
+<p>这也是为什么韩国大型财阀很少长期停留在最初创业的行业。它们普遍经历了类似路径：</p>
+<blockquote class="blockquote">
+<p><strong>轻工业 → 出口 → 获得政策认可 → 重工业 → 综合性集团</strong></p>
+</blockquote>
 </section>
 </section>
-<section id="可复现材料备注" class="level2" data-number="D.3">
-<h2 data-number="D.3" class="anchored" data-anchor-id="可复现材料备注"><span class="header-section-number">D.3</span> 可复现材料备注</h2>
-<p>本附录只列入已经核验到的公开材料链接。</p>
+<section id="posco它不是财阀却是财阀扩张的基础" class="level2" data-number="B.6">
+<h2 data-number="B.6" class="anchored" data-anchor-id="posco它不是财阀却是财阀扩张的基础"><span class="header-section-number">B.6</span> POSCO：它不是财阀，却是财阀扩张的基础</h2>
+<p>讨论现代、三星和大宇时，还不能忽略浦项制铁 (POSCO)。</p>
+<p>POSCO 是政府主导建立的钢铁企业，不属于家族控制的财阀。但它是整个 HCI 体系的上游基础。造船、汽车、机械、建筑和家电都需要大量稳定且价格可控的钢材。</p>
+<p>因此，韩国模式实际上包含两类组织：</p>
 <ul>
-<li>Blau et al.&nbsp;(<a href="https://doi.org/10.1086/725032">2024</a>): openICPSR 提供 supplementary data，页面显示项目 DOI 为 10.3886/E210781V1，并列出 <code>main_PSID.dta</code>。</li>
-<li>Chernozhukov et al.&nbsp;(<a href="https://doi.org/10.1086/738148">2025</a>): 作者主页列出 replication package 和 UK Data Service 数据链接；UKDS Readme 说明包括 Stata 数据、<code>Construction.do</code> 和整理后的 DRS 数据。</li>
-<li>Helpman et al.&nbsp;(<a href="https://doi.org/10.1162/qjec.2008.123.2.441">2008</a>): Marc Melitz 主页提供论文 PDF 和 religion 表格修正文件。</li>
-<li>Borjas and Edo (<a href="https://doi.org/10.1086/732774">2026</a>): 作者主页和 NBER 页面提供论文版本；尚未核验到独立公开 replication package。</li>
-<li>Arellano and Bonhomme (<a href="https://doi.org/10.3982/ECTA14030">2017</a>)、Maasoumi and Wang (<a href="https://doi.org/10.1086/701788">2019</a>)、Allen et al.&nbsp;(<a href="https://doi.org/10.1111/jofi.13312">2024</a>)、Lennox et al.&nbsp;(<a href="https://doi.org/10.2308/accr-10195">2012</a>): 本轮整理尚未核验到可直接下载的官方 replication package。后续若要做实操复现，可按论文主页、期刊 replication policy、Dataverse、openICPSR、AEA Data Editor、GitHub 和作者主页逐一检索。</li>
+<li>国家或公共部门控制的基础产业，如早期 POSCO；</li>
+<li>民营财阀控制的下游和中游制造业，如现代、三星和大宇。</li>
+</ul>
+<p>二者形成了互补：</p>
+<blockquote class="blockquote">
+<p><strong>浦项制铁 → 钢铁 → 现代的船舶与汽车 → 三星的机械与电子 → 大宇的造船</strong></p>
+</blockquote>
+<p>Lane (2025) 的研究表明，HCI 政策除直接促进目标产业外，还通过投入产出关系提高了下游行业的发展和出口能力。这意味着现代汽车的发展既受汽车政策影响，也受钢铁、机械、石化和电子产业共同扩张的间接影响。</p>
+</section>
+<section id="为什么最后是这些企业胜出" class="level2" data-number="B.7">
+<h2 data-number="B.7" class="anchored" data-anchor-id="为什么最后是这些企业胜出"><span class="header-section-number">B.7</span> 为什么最后是这些企业胜出</h2>
+<p>HCI drive 并没有平等地支持所有韩国企业。政府通常更愿意把项目交给以下类型的企业：</p>
+<ul>
+<li>已经有良好出口记录；</li>
+<li>能够完成政府规定的业绩目标；</li>
+<li>有能力与国外银行和技术供应商谈判；</li>
+<li>能够承担大型、长期和高风险项目；</li>
+<li>与政府部门保持稳定的协调关系。</li>
+</ul>
+<p>于是产生一种累积优势：</p>
+<blockquote class="blockquote">
+<p><strong>过去的出口成功 → 获得政策资源 → 规模扩大 → 能力增强 → 进一步获得政策资源</strong></p>
+</blockquote>
+<p>过去的出口成功提高企业获得政策资源的概率，政策资源又扩大企业规模和能力。大型企业越来越容易承担新的国家项目，小企业则越来越难进入资本密集型产业。</p>
+<p>因此，HCI drive 不仅改变了韩国的<strong>产业结构</strong>，也改变了韩国的<strong>企业规模分布</strong>。它推动资源向少数大型企业集团集中，使财阀成为韩国工业化的核心组织形式。</p>
+</section>
+<section id="一个较为准确的企业评价" class="level2" data-number="B.8">
+<h2 data-number="B.8" class="anchored" data-anchor-id="一个较为准确的企业评价"><span class="header-section-number">B.8</span> 一个较为准确的企业评价</h2>
+<p>可以把三家企业与 HCI drive 的关系概括为：</p>
+<ul>
+<li><strong>现代</strong>是最典型的项目建设者。政府的重工业战略与现代的工程、造船和汽车能力相互强化，最终形成以重型制造和纵向一体化为特征的集团。</li>
+<li><strong>三星</strong>是能力积累和产业跃迁的典型。HCI 直接支持了电子、造船、机械和化工扩张，后来半导体成功则建立在这些早期工业能力之上。</li>
+<li><strong>大宇</strong>是政府主导重组和企业接管的典型。它依靠出口表现和政策融资接管问题企业，迅速成为综合财阀，但高负债扩张最终也暴露了这一模式的风险。</li>
+</ul>
+<p>所以，不能说「没有 HCI drive 就不会有三星、现代和大宇」，因为这些企业在政策出台前已经存在。更可信的反事实判断是：</p>
+<blockquote class="blockquote">
+<p>没有 HCI drive，现代可能不会如此迅速成为造船和汽车巨头；三星可能更晚形成重工业和电子制造平台；大宇也很难在十几年内从一家贸易企业扩张为横跨造船、机械和汽车的第三大财阀。</p>
+</blockquote>
+<p>简言之，HCI drive 不只是选择了六个产业，也选择了一套企业组织方式：<strong>国家负责配置长期资本和设定产业方向，财阀负责执行大型项目、吸收技术并争夺国际市场。</strong>这一制度安排塑造了韩国今天的大企业格局，也留下了市场集中、高负债和政企关系过密等长期问题。</p>
+</section>
+<section id="延伸阅读" class="level2" data-number="B.9">
+<h2 data-number="B.9" class="anchored" data-anchor-id="延伸阅读"><span class="header-section-number">B.9</span> 延伸阅读</h2>
+<p>以下学术文献的作者、年份与卷期均已核对。文中涉及的企业史细节 (如现代蔚山船厂、大宇接管玉浦船厂、三星电子产品线) 主要依据公开报道与企业官方史，使用时请注意其立场。</p>
+<ul>
+<li>Lane, N. (2025). Manufacturing revolutions: Industrial policy and industrialization in South Korea. <em>Quarterly Journal of Economics</em>, 140(3), 1683–1741. DOI: <code>10.1093/qje/qjaf025</code>.</li>
+<li>Choi, J., &amp; Levchenko, A. A. (2025). The long-term effects of industrial policy. <em>Journal of Monetary Economics</em>, 152, 103779. DOI: <code>10.1016/j.jmoneco.2025.103779</code>.</li>
+<li>Kim, M., Lee, M., &amp; Shin, Y. (2021). The plant-level view of an industrial policy: The Korean Heavy Industry Drive of 1973. <em>NBER Working Paper No.&nbsp;29252</em>. DOI: <code>10.3386/w29252</code>.</li>
 </ul>
 
 
@@ -1029,13 +1177,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../lectures/appendix/A02_government_guidance_fund.html" class="pagination-link" aria-label="政府引导基金政策梳理笔记">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">政府引导基金政策梳理笔记</span></span>
+      <a href="../../lectures/appendix/A01_hci_policy_background.html" class="pagination-link" aria-label="韩国 HCI drive：政策背景、政策工具与亚洲四小龙">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">韩国 HCI drive：政策背景、政策工具与亚洲四小龙</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../notebooks/ch03_heckman/heckman_practical_notes.html" class="pagination-link" aria-label="Heckman 实操笔记">
-        <span class="nav-page-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">Heckman 实操笔记</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../lectures/appendix/A02_government_guidance_fund.html" class="pagination-link" aria-label="政府引导基金政策梳理笔记">
+        <span class="nav-page-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">政府引导基金政策梳理笔记</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

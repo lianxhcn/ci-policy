@@ -56,7 +56,7 @@
 
 完整配置说明：
 
-<https://lianxhcn.github.io/ci-policy/settings.html>
+<https://lianxhcn.github.io/ci-policy/settings.html>    
 
 
 ## 3. 课程交流微信群

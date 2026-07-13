@@ -33,6 +33,10 @@ format: html
 
 Lane (2025) 研究韩国 1973–1979 年 HCI drive 对工业化的影响。这项政策并不是一个笼统的产业升级口号，而是韩国政府在 1970 年代特定安全、国防和工业化背景下推出的重大战略。政策重点支持钢铁、有色金属、造船、机械、电子和石化六大战略部门，并在 1979 年以后随着政治和经济环境变化进入调整阶段。作者详细讨论了这个政策的发生过程，进而以此为基础有针对性地进行了研究设计。
 
+::: {.callout-tip title="延伸阅读：HCI drive 的政策背景"}
+本节只概述与研究设计直接相关的政策事实。想更完整地了解这项政策的读者，可参阅两个附录：附录 [-@sec-cipolicy-hci-background] 梳理 HCI drive 的国际背景、政策工具、终止原因、长期影响以及它与亚洲四小龙的关系；附录 [-@sec-cipolicy-hci-chaebol] 讨论这项政策与现代、三星、大宇、LG、SK、POSCO 等企业成长之间的关系。先了解这段政策史，会让后文的处理组划分、政策窗口和产业链溢出分析更容易理解。
+:::
+
 @fig-cipolicy-background-lane-2025 展示了从从政策事实一步步走向研究设计的思考过程。左侧是政策发生的历史背景和时间线；中间是目标产业和数据映射；右侧是识别策略与结果变量。
 
 ![Lane (2025)：从政策背景到研究设计](https://fig-lianxh.oss-cn-shenzhen.aliyuncs.com/ci-policy-Lane-2025-intro-outline.png){#fig-cipolicy-background-lane-2025}
